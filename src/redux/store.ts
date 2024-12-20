@@ -1,0 +1,70 @@
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
+
+import { persistReducer } from "redux-persist";
+// import storage from "redux-persist/lib/storage";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { themeReducer } from "./slices/theme.slice";
+import { appReducer } from "./slices/app.slice";
+import { notificationsReducer } from "./slices/notifications.slice";
+
+const createNoopStorage = () => {
+  return {
+    getItem(_key: any) {
+      return Promise.resolve(null);
+    },
+    setItem(_key: any, value: any) {
+      return Promise.resolve(value);
+    },
+    removeItem(_key: any) {
+      return Promise.resolve();
+    },
+  };
+};
+
+const fixedStorage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage();
+
+const themePersistConfig = {
+  key: "theme",
+  storage: fixedStorage,
+};
+
+const appSlicePersistConfig = {
+  key: "app",
+  storage: fixedStorage,
+};
+
+const notificationsSlicePersistConfig = {
+  key: "notifications",
+  storage: fixedStorage,
+};
+
+const rootReducer = combineReducers({
+  theme: persistReducer(themePersistConfig, themeReducer),
+  app: persistReducer(appSlicePersistConfig, appReducer),
+  notifications: persistReducer(
+    notificationsSlicePersistConfig,
+    notificationsReducer
+  ),
+});
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
+});
+
+// export const store = configureStore({
+//   reducer: { cart: cartReducer },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware({ serializableCheck: false }),
+// });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

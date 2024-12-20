@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  role_id    Int      @id @default(autoincrement())
+  role       String   @db.VarChar(24)
+  role_desc  String?  @db.VarChar(160)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  users User[]
+
+  @@map("role")
+}
+
+model Status {
+  status_id   Int      @id @default(autoincrement())
+  status      String   @db.VarChar(24)
+  status_desc String?  @db.VarChar(160)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  users User[]
+
+  @@map("status")
+}
+
+model User {
+  userId          Int      @id @default(autoincrement())
+  co_user_id      String   @unique @db.VarChar(20)
+  firstName       String   @db.VarChar(24)
+  lastName        String   @db.VarChar(24)
+  otherName       String?  @db.VarChar(24)
+  email           String   @unique @db.VarChar(64)
+  email_verified  Int      @default(0)
+  phone_number    String   @unique @db.VarChar(16)
+  phone_verified  Int      @default(0)
+  hash            String   @db.VarChar(244)
+  profile_picture String?  @db.VarChar(120)
+  status_id       Int
+  status_reason   String?  @db.VarChar(260)
+  role_id         Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  role       Role        @relation(fields: [role_id], references: [role_id])
+  status     Status      @relation(fields: [status_id], references: [status_id])
+  quotations Quotation[]
+
+  @@map("user")
+}
+
+model Currency {
+  currency_id   Int      @id @default(autoincrement())
+  currency_code String   @db.VarChar(6)
+  currency_name String   @db.VarChar(24)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  quotations Quotation[]
+
+  @@map("currency")
+}
+
+model Unit {
+  unit_id    Int      @id @default(autoincrement())
+  name       String   @db.VarChar(24)
+  short_name String?  @db.VarChar(10)
+  unit_desc  String?  @db.VarChar(160)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  @@map("unit")
+}
+
+model Company {
+  co_id           Int      @id @default(autoincrement())
+  legal_name      String?  @db.VarChar(64)
+  business_name   String   @db.VarChar(64)
+  tin             String?
+  email           String   @db.VarChar(64)
+  phone_number_1  String   @db.VarChar(16)
+  phone_number_2  String?  @db.VarChar(16)
+  landline_number String?  @db.VarChar(16)
+  logo            String?  @db.VarChar(120)
+  web             String?  @db.VarChar(120)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  addresses Company_address[]
+  bank      Bank[]
+
+  @@map("company")
+}
+
+model Company_address {
+  co_ad_id      Int      @id @default(autoincrement())
+  co_id         Int
+  branch_number String?  @db.VarChar(20)
+  branch_name   String?  @db.VarChar(20)
+  box_number    String?  @db.VarChar(20)
+  street        String?  @db.VarChar(60)
+  plot_number   String?  @db.VarChar(20)
+  building_name String?  @db.VarChar(20)
+  floor_number  Int
+  room_number   String   @db.VarChar(20)
+  country       String   @default("Uganda") @db.VarChar(20)
+  district      String   @db.VarChar(20)
+  county        String   @db.VarChar(20)
+  subcounty     String   @db.VarChar(20)
+  village       String   @db.VarChar(20)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  company Company @relation(fields: [co_id], references: [co_id])
+
+  @@map("company_address")
+}
+
+model Bank {
+  bank_id     Int      @id @default(autoincrement())
+  co_id       Int
+  name        String   @db.VarChar(60)
+  branch_name String   @db.VarChar(60)
+  swift_code  String?  @db.VarChar(60)
+  ac_title    String   @db.VarChar(60)
+  ac_number   String   @db.VarChar(60)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  company Company @relation(fields: [co_id], references: [co_id])
+
+  @@map("bank")
+}
+
+model Quotation_type {
+  type_id Int    @id @default(autoincrement())
+  name    String @db.VarChar(60)
+
+  quotationTcs Quotation_tcs[]
+  quotations   Quotation[]
+
+  @@map("quotation_type")
+}
+
+model Quotation_tcs {
+  tc_id             Int      @id @default(autoincrement())
+  delivery          String   @db.VarChar(120)
+  validity          String   @db.VarChar(120)
+  payment_period    String   @db.VarChar(160)
+  payment_details   String   @db.VarChar(160)
+  quotation_type_id Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
+
+  @@map("quotation_tcs")
+}
+
+model Quotation {
+  quotation_id      Int      @id @default(autoincrement())
+  quotation_number  String   @db.VarChar(12)
+  quotation_type_id Int
+  co_user_id        String   @db.VarChar(20)
+  date              BigInt
+  client_name       String   @db.VarChar(60)
+  contact_email     String   @db.VarChar(60)
+  contact_person    String   @db.VarChar(60)
+  contact_phone     String   @db.VarChar(16)
+  currency_id       Int      @default(1)
+  sub_total         Float
+  vat               Float
+  grand_total       Float
+  day_to_expire     Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
+  currency      Currency       @relation(fields: [currency_id], references: [currency_id])
+  user          User           @relation(fields: [co_user_id], references: [co_user_id])
+
+  @@map("quotation")
+}
