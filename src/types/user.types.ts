@@ -1,7 +1,7 @@
 import { Role, Status, User } from "@prisma/client";
 import { ReactElement } from "react";
 
-export type UserDtoType = {
+export type SimpleUserDtoType = {
   firstName: string;
   lastName: string;
   email: string;

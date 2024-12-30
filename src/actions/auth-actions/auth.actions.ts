@@ -5,13 +5,15 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { User } from "@prisma/client";
 import { LoginCredentials } from "@/types/auth.types";
-import { UserDtoType } from "@/types/user.types";
+import { SimpleUserDtoType } from "@/types/user.types";
 import { logger } from "@/logger/default-logger";
 import { UserService } from "@/actions/user-actions/user.service";
 
 const userService = new UserService();
 
-const login = async (credentials: LoginCredentials): Promise<UserDtoType> => {
+const login = async (
+  credentials: LoginCredentials
+): Promise<SimpleUserDtoType> => {
   try {
     const user: User | null = await userService.getUserByEmail(
       credentials.email
@@ -25,14 +27,14 @@ const login = async (credentials: LoginCredentials): Promise<UserDtoType> => {
 
     if (!isPassCorrect) throw new Error("Wrong credentials!");
 
-    return Promise.resolve(userService.generateUserDto(user));
+    return Promise.resolve(userService.generateSimpleUserDto(user));
   } catch (err) {
     logger.error(err);
     throw err;
   }
 };
 
-export type SessionUser = UserDtoType & {
+export type SessionUser = SimpleUserDtoType & {
   isAdmin: Boolean;
 };
 
@@ -41,7 +43,7 @@ declare module "next-auth" {
     user: SessionUser;
   }
 
-  interface User extends UserDtoType {}
+  interface User extends SimpleUserDtoType {}
 }
 
 export const authOptions: NextAuthOptions = {
@@ -68,7 +70,7 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
           };
 
-          const user: UserDtoType = await login(loginCredentials);
+          const user: SimpleUserDtoType = await login(loginCredentials);
 
           if (user) {
             return Promise.resolve(user);
@@ -113,7 +115,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session: async ({ session, token, user }) => {
-      const _user = token.user as UserDtoType;
+      const _user = token.user as SimpleUserDtoType;
       session.user = { ..._user, isAdmin: _user.role_id == 1 };
       return session;
     },

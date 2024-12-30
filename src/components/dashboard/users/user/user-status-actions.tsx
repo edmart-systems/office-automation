@@ -16,6 +16,7 @@ import { PopupState as PopupStateHook } from "material-ui-popup-state/hooks";
 import { toast } from "react-toastify";
 import {
   FullUser,
+  SimpleUserDtoType,
   UserStatus,
   UserStatusAction,
   UserStatusActionType,
@@ -32,6 +33,7 @@ import {
   setUserAsLeftAction,
 } from "@/actions/user-actions/user.actions";
 import ConfirmUserStatusDialog from "./confirm-user-status-dialog";
+import { logger } from "@/logger/default-logger";
 
 const MyMenuItem = styled("div")({
   padding: "6px 16px",
@@ -132,63 +134,78 @@ const UserStatusActions = ({ user }: Props) => {
     popupState: PopupStateHook,
     reason?: string
   ) => {
-    if (isFetching || !selectedAction) {
-      return;
-    }
+    try {
+      if (isFetching || !selectedAction) {
+        return;
+      }
 
-    setIsFetching(true);
+      setIsFetching(true);
 
-    let res: ActionResponse | null = null;
+      let res: ActionResponse | null = null;
 
-    switch (selectedAction) {
-      case "activate":
-        res = await activateUserAction(user.co_user_id);
-        break;
-      case "block":
-        res = await blockUserAction(user.co_user_id, reason);
-        break;
-      case "delete":
-        res = await deleteUserAction(user.co_user_id);
-        break;
-      case "setLeft":
-        res = await setUserAsLeftAction(user.co_user_id, reason);
-        break;
-    }
+      switch (selectedAction) {
+        case "activate":
+          res = await activateUserAction(user.co_user_id);
+          break;
+        case "block":
+          res = await blockUserAction(user.co_user_id, reason);
+          break;
+        case "delete":
+          res = await deleteUserAction(user.co_user_id);
+          break;
+        case "setLeft":
+          res = await setUserAsLeftAction(user.co_user_id, reason);
+          break;
+      }
 
-    if (!res) {
-      toast("Failed to update user status", {
-        type: "error",
-      });
-      closeDialogHandler();
-      setIsFetching(false);
-      return;
-    }
+      if (!res) {
+        toast("Failed to update user status", {
+          type: "error",
+        });
+        closeDialogHandler();
+        setIsFetching(false);
+        return;
+      }
 
-    if (!res.status) {
+      if (!res.status) {
+        toast(res.message, {
+          type: "error",
+        });
+        closeDialogHandler();
+        setIsFetching(false);
+        return;
+      }
+
       toast(res.message, {
+        type: "success",
+      });
+      setIsFetching(false);
+      closeDialogHandler();
+      popupState && popupState.close();
+
+      if (!res.data || selectedAction === "delete") {
+        nProgress.start();
+        router.push(paths.dashboard.users.main);
+        return;
+      }
+
+      const updatedUser = res.data as SimpleUserDtoType;
+
+      if (updatedUser.co_user_id !== user.co_user_id) {
+        nProgress.start();
+        router.push(paths.dashboard.users.main);
+        return;
+      }
+
+      nProgress.start();
+      router.refresh();
+      return;
+    } catch (err) {
+      logger.error(err);
+      toast("An error occurred, 10033234", {
         type: "error",
       });
-      closeDialogHandler();
-      setIsFetching(false);
-      return;
     }
-
-    toast(res.message, {
-      type: "success",
-    });
-    setIsFetching(false);
-    closeDialogHandler();
-    popupState && popupState.close();
-
-    if (selectedAction === "delete" || user.status.status === "pending") {
-      nProgress.start();
-      router.push(paths.dashboard.users.main);
-      return;
-    }
-
-    nProgress.start();
-    router.refresh();
-    return;
   };
 
   return (

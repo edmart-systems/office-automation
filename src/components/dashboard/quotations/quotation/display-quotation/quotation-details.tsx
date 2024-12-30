@@ -13,7 +13,7 @@ const IntroItem = ({ title, content }: IntroItemProps) => {
       <Typography flex={1} variant="body1">
         {title}:
       </Typography>
-      <Typography flex={1} variant="body1">
+      <Typography flex={2} variant="body1">
         {content}
       </Typography>
       <Box flex={{ xl: 3, lg: 3, md: 3, sm: 2, xs: 0 }}></Box>

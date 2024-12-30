@@ -74,12 +74,12 @@ npm run dev
 
 ##### User 1 (Admin):
 
-- Email `mike.smith@test.com`
+- Email `sama.nk@officeautomata.com`
 - Password `Psu#sm3RSMgS-92`
 
 ##### User 2 (Normal User):
 
-- Email `jane.smith@test.com`
+- Email `sera97@officeautomata.com`
 - Password `Psu#sm3RSMgS-91`
 
 ## 💡 Additional Notes

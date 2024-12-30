@@ -6,7 +6,7 @@ import {
   FullUser,
   NewUser,
   PendingUserActivationData,
-  UserDtoType,
+  SimpleUserDtoType,
   UserRegInfo,
   UserRegPass,
   UsersAndStatusCounts,
@@ -206,6 +206,7 @@ export class UserService {
       return Promise.resolve({
         status: true,
         message: "User deleted successfully",
+        data: this.generateSimpleUserDto(deletedUser),
       });
     } catch (err) {
       logger.error(err);
@@ -246,6 +247,7 @@ export class UserService {
         return Promise.resolve({
           status: true,
           message: "User activated successfully",
+          data: this.generateSimpleUserDto(activatedUser),
         });
       }
 
@@ -271,6 +273,7 @@ export class UserService {
       return Promise.resolve({
         status: true,
         message: "User activated successfully",
+        data: this.generateSimpleUserDto(activatedUser),
       });
     } catch (err) {
       logger.error(err);
@@ -314,6 +317,7 @@ export class UserService {
       return Promise.resolve({
         status: true,
         message: "User blocked successfully",
+        data: this.generateSimpleUserDto(blockedUser),
       });
     } catch (err) {
       logger.error(err);
@@ -357,6 +361,7 @@ export class UserService {
       return Promise.resolve({
         status: true,
         message: "User successfully set as left",
+        data: this.generateSimpleUserDto(setToLeftUser),
       });
     } catch (err) {
       logger.error(err);
@@ -382,7 +387,7 @@ export class UserService {
     }
   };
 
-  generateUserDto = (user: User): UserDtoType => {
+  generateSimpleUserDto = (user: User): SimpleUserDtoType => {
     const { hash, created_at, updated_at, ...rest } = user;
     return rest;
   };

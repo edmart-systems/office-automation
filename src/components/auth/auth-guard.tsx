@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { paths } from "@/utils/paths.utils";
 import { logger } from "@/logger/default-logger";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import ScreenLoader from "../errors/screen-loading";
 import nProgress from "nprogress";
+import { toast } from "react-toastify";
 
 export interface AuthGuardProps {
   children: React.ReactNode;
@@ -27,6 +28,32 @@ const AuthGuard = ({ children }: AuthGuardProps): React.JSX.Element | null => {
       router.replace(paths.auth.login);
       return;
     }
+
+    if (status == "authenticated" && data) {
+      const { status_id, role_id } = data.user;
+
+      // if (status_id === 1) {
+      //   return router.replace(paths.dashboard.overview);
+      // }
+
+      if (status_id === 2) {
+        nProgress.start();
+        return router.replace(paths.userStatus.blocked);
+      }
+
+      if (status_id === 3) {
+        nProgress.start();
+        return router.replace(paths.userStatus.pending);
+      }
+
+      if (status_id === 4) {
+        toast("Account Disabled", { type: "warning" });
+        await signOut();
+        return;
+      }
+
+      return;
+    }
   };
 
   useEffect(() => {
@@ -36,7 +63,11 @@ const AuthGuard = ({ children }: AuthGuardProps): React.JSX.Element | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
   }, [status]);
 
-  if (status == "authenticated") {
+  if (!data) {
+    return <ScreenLoader fullScreen />;
+  }
+
+  if (status == "authenticated" && data.user.status_id === 1) {
     return <>{children}</>;
   } else {
     return <ScreenLoader fullScreen />;

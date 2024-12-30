@@ -64,7 +64,7 @@ export const MainNav = (): JSX.Element => {
             </Tooltip>
           </Stack>
           <Stack sx={{ alignItems: "center" }} direction="row" spacing={2}>
-            <ThemeButton />
+            {/* <ThemeButton /> */}
             <NotificationsButton />
             <Divider variant="middle" orientation="vertical" flexItem />
             {/* <UserAvatar
