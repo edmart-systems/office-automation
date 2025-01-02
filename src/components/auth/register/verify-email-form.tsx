@@ -162,7 +162,7 @@ const VerifyEmailForm = ({
         mb={1}
       >
         <Typography color="text.secondary" variant="body2">
-          Let's Verify Your email address
+          Let&apos;s Verify Your email address
         </Typography>
         <IconButton
           color="primary"

@@ -85,7 +85,7 @@ export const approvedAccountEmailTemplate = ({
         Please use this ID whenever required to authenticate or perform
         company-specific operations.
       </p>
-      <p>If you have any questions, please don't hesitate to contact us.</p>
+      <p>If you have any questions, please don&apos;t hesitate to contact us.</p>
 
       <div class="footer">
         <h4 class="m-0 fwp-footer-name">Edmart Systems Office Automata</h4>

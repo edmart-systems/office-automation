@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 const getThisUser = async (userId: string): Promise<FullUser | null> => {
@@ -40,7 +40,7 @@ const getThisUser = async (userId: string): Promise<FullUser | null> => {
 };
 
 const SingleUserPage = async ({ params }: Props) => {
-  const { id } = params;
+  const { id } = await params;
   const user = await getThisUser(id);
 
   if (!user) {

@@ -1,5 +1,5 @@
 "use client";
-import React, { forwardRef, Fragment, Ref, useState } from "react";
+import React, { forwardRef, Fragment, Ref, Suspense, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,6 +10,7 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { Funnel } from "@phosphor-icons/react/dist/ssr";
 import QuotationsFilterCard from "./quotations-filter-card";
+import { CircularProgress } from "@mui/material";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -52,7 +53,9 @@ const FilterQuotationsDialog = () => {
         aria-describedby="filter-quotations-dialog-slide"
         sx={{ display: { xl: "none", lg: "block", md: "block", sm: "block" } }}
       >
-        <QuotationsFilterCard closeHandler={closeHandler} />
+        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+          <QuotationsFilterCard closeHandler={closeHandler} />
+        </Suspense>
       </Dialog>
     </Fragment>
   );

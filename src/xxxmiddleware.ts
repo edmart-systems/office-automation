@@ -1,12 +1,12 @@
 // import NextAuth from "next-auth";
 // import { authOptions } from "./auth/auth";
-import { authConfig } from "./actions/auth-actions/auth.config";
+// import { authConfig } from "./actions/auth-actions/auth.config";
 import withAuth from "next-auth/middleware";
 
 // export default NextAuth(authConfig).auth;
 
 export default withAuth({
-  pages: authConfig.pages,
+  // pages: authConfig.pages,
 });
 
 export const config = {

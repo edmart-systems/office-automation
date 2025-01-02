@@ -7,9 +7,17 @@ import QuotationsTableContainer from "@/components/dashboard/quotations/quotatio
 import { QuotationsAnalyticSummary } from "@/types/quotations.types";
 import { paths } from "@/utils/paths.utils";
 import { Add, AddCircle } from "@mui/icons-material";
-import { Button, Card, Grid2 as Grid, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Grid2 as Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Quotations | Office X",
@@ -61,8 +69,12 @@ const QuotationsPage = () => {
         >
           <FilterQuotationsDialog />
         </Stack>
-        <QuotationsSortByTime />
-        <QuotationsDisplayMode />
+        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+          <QuotationsSortByTime />
+        </Suspense>
+        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+          <QuotationsDisplayMode />
+        </Suspense>
       </Stack>
       <Grid container spacing={3}>
         <Grid
@@ -77,10 +89,14 @@ const QuotationsPage = () => {
             },
           }}
         >
-          <QuotationsFilterCard />
+          <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+            <QuotationsFilterCard />
+          </Suspense>
         </Grid>
         <Grid size={{ xl: 9, lg: 12, md: 12, sm: 12 }}>
-          <QuotationsTableContainer />
+          <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+            <QuotationsTableContainer />
+          </Suspense>
         </Grid>
       </Grid>
     </Stack>

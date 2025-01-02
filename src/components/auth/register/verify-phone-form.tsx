@@ -211,7 +211,7 @@ const VerifyPhoneForm = ({
         mb={1}
       >
         <Typography color="text.secondary" variant="body2">
-          Let's Verify Your Phone Number{" "}
+          Let&apos;s Verify Your Phone Number{" "}
           <span style={{ cursor: "pointer" }} onClick={() => skipHandler()}>
             <strong>(or skip)</strong>
           </span>

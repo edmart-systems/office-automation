@@ -26,9 +26,13 @@ const UserKinInfoCard = () => {
           <Avatar>
             <Users size={28} />
           </Avatar>
-          <Typography variant="h6">Next Of Kin Details</Typography>
+          <Typography variant="h6">Next Of Kin</Typography>
         </Stack>
       </CardContent>
+      <MyCardContent>
+        <UserInfoCardItem title="Name" content="Not Available" />
+      </MyCardContent>
+      <Divider />
       <MyCardContent>
         <UserInfoCardItem title="Relationship" content="Not Available" />
       </MyCardContent>

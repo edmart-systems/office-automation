@@ -193,7 +193,7 @@ const UserStatusActions = ({ user }: Props) => {
 
       if (updatedUser.co_user_id !== user.co_user_id) {
         nProgress.start();
-        router.push(paths.dashboard.users.main);
+        router.replace(paths.dashboard.users.single(updatedUser.co_user_id));
         return;
       }
 

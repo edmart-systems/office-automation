@@ -110,10 +110,10 @@ const QuotationStatusActions = ({ status }: Props) => {
 
     switch (selectedAction) {
       case "setAccepted":
-        // res = await activateUserAction(user.co_user_id);
+        res = { message: "", status: false };
         break;
       case "setRejected":
-        // res = await blockUserAction(user.co_user_id, reason);
+        res = { message: "", status: false };
         break;
     }
 

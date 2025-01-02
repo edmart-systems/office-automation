@@ -9,6 +9,7 @@ import AuthProvider from "@/components/auth/auth-provider";
 import "react-toastify/dist/ReactToastify.css";
 import ToastProvider from "@/components/toast/toast-provider";
 import ReduxProvider from "@/components/redux/redux-provider";
+import SessionMonitor from "@/components/auth/session-monitor";
 
 export const viewport = {
   width: "device-width",
@@ -34,7 +35,7 @@ const RootLayout = ({ children }: Props): JSX.Element => {
             <Fragment>
               <ReduxProvider>
                 <ThemeProvider>
-                  {children}
+                  <SessionMonitor>{children}</SessionMonitor>
                   <ToastProvider />
                 </ThemeProvider>
               </ReduxProvider>

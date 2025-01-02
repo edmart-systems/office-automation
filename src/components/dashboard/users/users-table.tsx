@@ -3,6 +3,7 @@
 import React, {
   ChangeEvent,
   MouseEvent,
+  Suspense,
   useEffect,
   useMemo,
   useState,
@@ -331,18 +332,32 @@ const UsersTable = () => {
 
   return (
     <Card>
-      <UserTableTabs
-        statusCounts={statusCounts}
-        selectedTab={selectedStatusTab}
-        setSelectedTab={setSelectedStatusTab}
-      />
+      <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+        <UserTableTabs
+          statusCounts={statusCounts}
+          selectedTab={selectedStatusTab}
+          setSelectedTab={setSelectedStatusTab}
+        />
+      </Suspense>
       <Divider />
       <CardContent>
         <Stack direction="row" justifyContent="space-between">
           <Stack spacing={2} direction="row">
-            <UserTableNameFilter />
-            <UserTableEmailFilter />
-            <UserTablePhoneFilter />
+            <Suspense
+              fallback={<CircularProgress color="primary" size="30px" />}
+            >
+              <UserTableNameFilter />
+            </Suspense>
+            <Suspense
+              fallback={<CircularProgress color="primary" size="30px" />}
+            >
+              <UserTableEmailFilter />
+            </Suspense>
+            <Suspense
+              fallback={<CircularProgress color="primary" size="30px" />}
+            >
+              <UserTablePhoneFilter />
+            </Suspense>
             {inSearchMode && (
               <Button
                 variant="text"

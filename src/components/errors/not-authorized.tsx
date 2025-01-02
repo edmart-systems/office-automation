@@ -40,7 +40,7 @@ const NotAuthorized = (): JSX.Element => {
           variant="body1"
           sx={{ textAlign: "center" }}
         >
-          If you're supposed to be here, try using the link below.
+          If you&apos;re supposed to be here, try using the link below.
         </Typography>
         <Button
           component={RouterLink}

@@ -8,6 +8,7 @@ import { LoginCredentials } from "@/types/auth.types";
 import { SimpleUserDtoType } from "@/types/user.types";
 import { logger } from "@/logger/default-logger";
 import { UserService } from "@/actions/user-actions/user.service";
+import { Session } from "next-auth";
 
 const userService = new UserService();
 
@@ -50,7 +51,8 @@ export const authOptions: NextAuthOptions = {
   // ...authConfig,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    maxAge: 0.5 * 24 * 60 * 60, // 0.5 day
+    // maxAge: 0.5 * 24 * 60 * 60, // 0.5 day
+    maxAge: 10, // 0.5 day
   },
   providers: [
     CredentialsProvider({
@@ -122,6 +124,29 @@ export const authOptions: NextAuthOptions = {
     // ...authConfig.callbacks,
   },
 };
+
+// export const checkExpiration = async (
+//   sessionData: Session | null
+// ): Promise<void> => {
+//   if (!sessionData) {
+//     return;
+//   }
+
+//   const { expires } = sessionData;
+
+//   const now = new Date().getTime();
+//   const expired = new Date(expires).getTime();
+
+//   const isExpired = expired < now;
+
+//   console.log("Expired " + isExpired);
+//   if (isExpired) {
+//     signOut();
+//     return;
+//   }
+
+//   return;
+// };
 
 export const {
   // handlers: { GET, POST },
