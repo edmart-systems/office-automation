@@ -1,4 +1,11 @@
-import { Grid2 as Grid, Stack, TextField, Typography } from "@mui/material";
+import { fDate } from "@/utils/time";
+import {
+  Grid2 as Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 
 const BasicInfo = () => {
@@ -27,7 +34,7 @@ const BasicInfo = () => {
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Issue Date"
-            value={new Date().toString()}
+            value={fDate(new Date())}
             size="small"
             fullWidth
           />
@@ -35,21 +42,32 @@ const BasicInfo = () => {
 
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
-            label="External Ref"
-            value="Email"
+            label="Validity"
+            value="30"
             size="small"
             fullWidth
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">Days</InputAdornment>
+                ),
+              },
+            }}
           />
-        </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
-          <TextField label="Validity" value="30 Days" size="small" fullWidth />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Payment Grace Period"
-            value="20 Days"
+            value="20"
             size="small"
             fullWidth
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">Days</InputAdornment>
+                ),
+              },
+            }}
           />
         </Grid>
       </Grid>

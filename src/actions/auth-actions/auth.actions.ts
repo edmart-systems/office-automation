@@ -51,8 +51,7 @@ export const authOptions: NextAuthOptions = {
   // ...authConfig,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    // maxAge: 0.5 * 24 * 60 * 60, // 0.5 day
-    maxAge: 10, // 0.5 day
+    maxAge: 0.5 * 24 * 60 * 60, // 0.5 day
   },
   providers: [
     CredentialsProvider({

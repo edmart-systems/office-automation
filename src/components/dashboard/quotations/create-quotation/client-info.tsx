@@ -1,4 +1,11 @@
-import { Grid2 as Grid, Stack, TextField, Typography } from "@mui/material";
+import { Message, Phone } from "@mui/icons-material";
+import {
+  Grid2 as Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 
 const ClientInfo = () => {
@@ -12,6 +19,14 @@ const ClientInfo = () => {
           <TextField
             label="Name"
             value="Uzima Chicken"
+            size="small"
+            fullWidth
+          />
+        </Grid>
+        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+          <TextField
+            label="External Ref"
+            value="Email"
             size="small"
             fullWidth
           />
@@ -33,14 +48,35 @@ const ClientInfo = () => {
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
-          <TextField label="Phone" value="0393255022" size="small" fullWidth />
+          <TextField
+            label="Phone"
+            value="0393255022"
+            size="small"
+            fullWidth
+            // slotProps={{
+            //   input: {
+            //     startAdornment: (
+            //       <InputAdornment position="start">
+            //         <Phone />
+            //       </InputAdornment>
+            //     ),
+            //   },
+            // }}
+          />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
-            label="P. O. Box Number"
-            value="11233"
+            label="Box Number"
+            // value="11233"
             size="small"
             fullWidth
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">P. O. Box</InputAdornment>
+                ),
+              },
+            }}
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>

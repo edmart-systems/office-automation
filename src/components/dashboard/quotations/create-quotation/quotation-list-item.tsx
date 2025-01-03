@@ -4,6 +4,7 @@ import {
   Divider,
   Grid2 as Grid,
   IconButton,
+  InputAdornment,
   Stack,
   TextField,
   Typography,
@@ -56,9 +57,16 @@ const QuotationListItem = ({ num, deleteFn }: Props) => {
         <Grid size={{ xl: 2, lg: 2, md: 5.4, sm: 5.4, xs: 11 }}>
           <TextField
             label="Unit Price"
-            value="UGX 33,000,000"
+            value="33,000,000"
             size="small"
             fullWidth
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">UGX</InputAdornment>
+                ),
+              },
+            }}
           />
         </Grid>
         <Grid

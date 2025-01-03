@@ -13,5 +13,9 @@ export const createTheme = (mode: ColorScheme) =>
         main: "#D98219",
         contrastText: "#fff",
       },
+      secondary: {
+        main: "#42A5F5",
+        contrastText: "#fff",
+      },
     },
   });
