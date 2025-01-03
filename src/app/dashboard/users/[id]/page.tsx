@@ -5,6 +5,7 @@ import UserSysActionsCard from "@/components/dashboard/users/user/user-sys-actio
 import UserAddressCard from "@/components/dashboard/users/user/user-address-card";
 import UserBasicInfoCard from "@/components/dashboard/users/user/user-basic-info-card";
 import UserFinanceInfoCard from "@/components/dashboard/users/user/user-finance-info-card";
+import UserAcademicInfoCard from "@/components/dashboard/users/user/user-academic-info-card";
 import UserInvoicesCard from "@/components/dashboard/users/user/user-invoices-card";
 import UserKinInfoCard from "@/components/dashboard/users/user/user-kin-info-card";
 import UserMaritalInfoCard from "@/components/dashboard/users/user/user-marital-info-card";
@@ -72,9 +73,12 @@ const SingleUserPage = async ({ params }: Props) => {
             <UserMaritalInfoCard />
           </Grid>
         </Grid>
-        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }} container spacing={2}>
           <Grid size={12}>
             <UserKinInfoCard />
+          </Grid>
+          <Grid size={12}>
+            <UserAcademicInfoCard />
           </Grid>
         </Grid>
 

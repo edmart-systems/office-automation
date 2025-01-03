@@ -43,6 +43,14 @@ const UserMaritalInfoCard = () => {
           content="Not Available"
         />
       </MyCardContent>
+      <Divider />
+      <MyCardContent>&ensp; &ensp;</MyCardContent>
+      <Divider />
+      <MyCardContent>&ensp; &ensp;</MyCardContent>
+      <Divider />
+      <MyCardContent>&ensp; &ensp;</MyCardContent>
+      <Divider />
+      <MyCardContent>&ensp; &ensp;</MyCardContent>
     </Card>
   );
 };

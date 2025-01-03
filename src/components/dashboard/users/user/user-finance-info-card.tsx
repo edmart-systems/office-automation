@@ -34,6 +34,10 @@ const UserFinanceInfoCard = () => {
       </MyCardContent>
       <Divider />
       <MyCardContent>
+        <UserInfoCardItem title="NSSF Number" content="Not Available" />
+      </MyCardContent>
+      <Divider />
+      <MyCardContent>
         <UserInfoCardItem title="Bank Name" content="Not Available" />
       </MyCardContent>
       <Divider />
