@@ -135,11 +135,17 @@ CREATE TABLE `quotation_type` (
 -- CreateTable
 CREATE TABLE `quotation_tcs` (
     `tc_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `delivery` VARCHAR(120) NOT NULL,
-    `validity` VARCHAR(120) NOT NULL,
-    `payment_period` VARCHAR(160) NOT NULL,
-    `payment_details` VARCHAR(160) NOT NULL,
+    `delivery_days` INTEGER NOT NULL,
+    `delivery_words` VARCHAR(120) NOT NULL,
+    `validity_days` INTEGER NOT NULL,
+    `validity_words` VARCHAR(120) NULL,
+    `payment_grace_days` INTEGER NULL,
+    `payment_words` VARCHAR(160) NULL,
+    `initial_payment_percentage` INTEGER NULL,
+    `last_payment_percentage` INTEGER NULL,
+    `payment_method_words` VARCHAR(160) NULL,
     `quotation_type_id` INTEGER NOT NULL,
+    `bank_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3),
 
@@ -182,6 +188,9 @@ ALTER TABLE `bank` ADD CONSTRAINT `bank_co_id_fkey` FOREIGN KEY (`co_id`) REFERE
 
 -- AddForeignKey
 ALTER TABLE `quotation_tcs` ADD CONSTRAINT `quotation_tcs_quotation_type_id_fkey` FOREIGN KEY (`quotation_type_id`) REFERENCES `quotation_type`(`type_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `quotation_tcs` ADD CONSTRAINT `quotation_tcs_bank_id_fkey` FOREIGN KEY (`bank_id`) REFERENCES `bank`(`bank_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `quotation` ADD CONSTRAINT `quotation_quotation_type_id_fkey` FOREIGN KEY (`quotation_type_id`) REFERENCES `quotation_type`(`type_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

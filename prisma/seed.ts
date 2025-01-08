@@ -170,39 +170,6 @@ const main = async () => {
     });
 
   //Edmart Specific Data
-  const quotationTcsTable: Prisma.BatchPayload =
-    await prisma.quotation_tcs.createMany({
-      data: [
-        {
-          tc_id: 1,
-          quotation_type_id: 1,
-          delivery: "Within two (02) days from the date of purchase order",
-          validity: "Thirty (30) days from the date of quotation",
-          payment_period:
-            "30 days after delivery of the items and presentation of a tax invoice",
-          payment_details:
-            "The payment shall be by Cheque, EFT or RTGS to our account with the following details",
-        },
-        {
-          tc_id: 2,
-          quotation_type_id: 2,
-          delivery: "Within two (02) days from the date of purchase order",
-          validity: "Thirty (30) days from the date of quotation",
-          payment_period: "70% on commissioning and 30% on completion of works",
-          payment_details:
-            "The payment shall be by Cheque, EFT or RTGS to our account with the following details",
-        },
-        {
-          tc_id: 3,
-          quotation_type_id: 3,
-          delivery: "Within two (02) days from the date of purchase order",
-          validity: "Thirty (30) days from the date of quotation",
-          payment_period: "70% on commissioning and 30% on completion of works",
-          payment_details:
-            "The payment shall be by Cheque, EFT or RTGS to our account with the following details",
-        },
-      ],
-    });
 
   const companyTable: Prisma.BatchPayload = await prisma.company.createMany({
     data: [
@@ -256,6 +223,59 @@ const main = async () => {
       },
     ],
   });
+
+  const quotationTcsTable: Prisma.BatchPayload =
+    await prisma.quotation_tcs.createMany({
+      data: [
+        {
+          tc_id: 1,
+          quotation_type_id: 1,
+          delivery_days: 2,
+          delivery_words:
+            "Within {delivery_days} days from the date of purchase order.",
+          validity_days: 30,
+          validity_words: "{validity_days} days.",
+          payment_grace_days: 30,
+          payment_words:
+            "{payment_grace_days} days after delivery of the items and presentation of a tax invoice",
+          payment_method_words:
+            "The payment shall be by Cheque, EFT or RTGS to our account with the following details:-",
+          bank_id: 1,
+        },
+        {
+          tc_id: 2,
+          quotation_type_id: 2,
+          delivery_days: 2,
+          delivery_words:
+            "Within {delivery_days} days from the date of purchase order.",
+          validity_days: 30,
+          validity_words: "{validity_days} days.",
+          initial_payment_percentage: 70,
+          last_payment_percentage: 30,
+          payment_words:
+            "{initial_payment_percentage}% on commissioning and {last_payment_percentage}% after completion of works.",
+          payment_method_words:
+            "The payment shall be by Cheque, EFT or RTGS to our account with the following details:-",
+          bank_id: 1,
+        },
+        {
+          tc_id: 3,
+          quotation_type_id: 3,
+          delivery_days: 2,
+          delivery_words:
+            "Within {delivery_days} days from the date of purchase order.",
+          validity_days: 30,
+          validity_words: "{validity_days} days.",
+          initial_payment_percentage: 70,
+          last_payment_percentage: 30,
+          payment_words:
+            "{initial_payment_percentage}% on commissioning and {last_payment_percentage}% after completion of works.",
+          payment_method_words:
+            "The payment shall be by Cheque, EFT or RTGS to our account with the following details:-",
+          bank_id: 1,
+        },
+      ],
+    });
   //Edmart Specific Data End
 };
 

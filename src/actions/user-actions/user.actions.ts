@@ -19,8 +19,10 @@ import { getAuthSession } from "../auth-actions/auth.actions";
 import { revalidatePath } from "next/cache";
 import { paths } from "@/utils/paths.utils";
 import { Session } from "next-auth";
+import { SessionService } from "../auth-actions/session.service";
 
 const userService = new UserService();
+const sessionService = new SessionService();
 
 export const checkCredentialsExistence = async (
   credentials: CheckUserExistenceType
@@ -81,7 +83,7 @@ export const fetchAllUsers = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",
@@ -112,7 +114,7 @@ export const fetchSingleUser = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",
@@ -137,7 +139,7 @@ export const activateUserAction = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",
@@ -174,7 +176,7 @@ export const deleteUserAction = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",
@@ -210,7 +212,7 @@ export const blockUserAction = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",
@@ -249,7 +251,7 @@ export const setUserAsLeftAction = async (
   try {
     const session = await getAuthSession();
 
-    if (!(await userService.isUserSessionManager(session))) {
+    if (!(await sessionService.isUserSessionManager(session))) {
       return Promise.resolve({
         status: false,
         message: "Not Authorized",

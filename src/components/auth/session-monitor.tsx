@@ -10,6 +10,13 @@ type Props = {
 
 const timeInterval = 0.8 * 60 * 1000; // 0.8 of a Minute
 
+const checkIsSessionExpired = (session: Session): boolean => {
+  const { expires } = session;
+  const now = new Date().getTime();
+  const expiry = new Date(expires).getTime();
+  return expiry < now; // True if Expired
+};
+
 export const checkSessionExpiration = async (
   sessionData: Session | null
 ): Promise<void> => {
@@ -17,14 +24,7 @@ export const checkSessionExpiration = async (
     return;
   }
 
-  const { expires } = sessionData;
-
-  const now = new Date().getTime();
-  const expired = new Date(expires).getTime();
-
-  const isExpired = expired < now;
-
-  if (isExpired) {
+  if (checkIsSessionExpired(sessionData)) {
     alert("This session is expired, please login again.");
     signOut();
     return;

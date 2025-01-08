@@ -420,14 +420,6 @@ export class UserService {
     }
   };
 
-  isUserSessionManager = async (session: Session | null): Promise<boolean> => {
-    if (!session || session.user.role_id !== 1) {
-      return Promise.resolve(false);
-    }
-
-    return Promise.resolve(true);
-  };
-
   userCanUpdateOtherUsersAccountStatus = async (
     otherUserId: string,
     session: Session | null

@@ -134,7 +134,8 @@ model Bank {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 
-  company Company @relation(fields: [co_id], references: [co_id])
+  company      Company         @relation(fields: [co_id], references: [co_id])
+  quotationTcs Quotation_tcs[]
 
   @@map("bank")
 }
@@ -150,16 +151,23 @@ model Quotation_type {
 }
 
 model Quotation_tcs {
-  tc_id             Int      @id @default(autoincrement())
-  delivery          String   @db.VarChar(120)
-  validity          String   @db.VarChar(120)
-  payment_period    String   @db.VarChar(160)
-  payment_details   String   @db.VarChar(160)
-  quotation_type_id Int
-  created_at        DateTime @default(now())
-  updated_at        DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+  tc_id                      Int      @id @default(autoincrement())
+  delivery_days              Int
+  delivery_words             String   @db.VarChar(120)
+  validity_days              Int
+  validity_words             String?  @db.VarChar(120)
+  payment_grace_days         Int?
+  payment_words              String?  @db.VarChar(160)
+  initial_payment_percentage Int?
+  last_payment_percentage    Int?
+  payment_method_words       String?  @db.VarChar(160)
+  quotation_type_id          Int
+  bank_id                    Int
+  created_at                 DateTime @default(now())
+  updated_at                 DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 
   quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
+  bank          Bank           @relation(fields: [bank_id], references: [bank_id])
 
   @@map("quotation_tcs")
 }
