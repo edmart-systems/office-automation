@@ -1,11 +1,6 @@
-import {
-  Bank,
-  Company,
-  Company_address,
-  Quotation_tcs,
-  Quotation_type,
-} from "@prisma/client";
+import { Bank, Quotation_tcs, Quotation_type } from "@prisma/client";
 import { ReactElement } from "react";
+import { BankDto, CompanyDto } from "./company.types";
 
 export type QuotationStatus = "sent" | "accepted" | "rejected" | "expired";
 
@@ -64,12 +59,12 @@ export type QuotationStatusAction = {
   }[];
 };
 
+export type TcsDto = Omit<Quotation_tcs, "created_at" | "updated_at"> & {
+  bank: BankDto;
+};
+
 export type CreateQuotationPageData = {
-  company: Omit<Company, "created_at" | "updated_at"> & {
-    address: Omit<Company_address, "created_at" | "updated_at">;
-  };
-  quotationTypes: Quotation_type;
-  tcs: (Omit<Quotation_tcs, "created_at" | "updated_at"> & {
-    bank: Omit<Bank, "created_at" | "updated_at">;
-  })[];
+  company: CompanyDto;
+  quotationTypes: Quotation_type[];
+  tcs: TcsDto[];
 };

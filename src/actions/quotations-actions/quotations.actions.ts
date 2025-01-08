@@ -5,8 +5,10 @@ import { ActionResponse } from "@/types/actions-response.types";
 import { getAuthSession } from "../auth-actions/auth.actions";
 import { SessionService } from "../auth-actions/session.service";
 import { CreateQuotationPageData } from "@/types/quotations.types";
+import { QuotationsService } from "./quotations.service";
 
 const sessionService = new SessionService();
+const quotationsService = new QuotationsService();
 
 export const getCreateNewQuotationsPageData =
   async (): Promise<ActionResponse> => {
@@ -20,14 +22,10 @@ export const getCreateNewQuotationsPageData =
         });
       }
 
-      //TODO: All Login Here
-      const pageData: CreateQuotationPageData = null;
+      const pageDataRes: ActionResponse =
+        await quotationsService.getCreateQuotationPageData();
 
-      return Promise.resolve({
-        status: true,
-        message: "Success",
-        data: pageData,
-      });
+      return Promise.resolve(pageDataRes);
     } catch (err) {
       logger.error(err);
       return Promise.resolve({

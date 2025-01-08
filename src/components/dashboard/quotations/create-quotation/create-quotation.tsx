@@ -10,9 +10,8 @@ import {
   Stack,
   styled,
   Tooltip,
-  Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BasicInfo from "./basic-info";
 import ClientInfo from "./client-info";
 import QuotationLineItems from "./quotation-line-items";
@@ -20,17 +19,44 @@ import TaxDiscountInfo from "./tax-discount-info";
 import NewQuotationTscInfo from "./new-quotation-tsc-info";
 import NewQuotationPriceSummary from "./new-quotation-price-summary";
 import { Save } from "@mui/icons-material";
+import { CreateQuotationPageData, TcsDto } from "@/types/quotations.types";
+import { Quotation_type } from "@prisma/client";
 
 const MyDivider = styled(Divider)(({ theme }) => ({
   background: theme.palette.mode === "dark" ? "#b8b8b8" : "#dadada",
 }));
 
-const CreateQuotation = () => {
+type Props = {
+  baseData: CreateQuotationPageData;
+};
+
+const CreateQuotation = ({ baseData }: Props) => {
+  const { company, quotationTypes, tcs } = baseData;
+  const [selectedQuoteType, setSelectedQuoteType] = useState<Quotation_type>(
+    quotationTypes[0]
+  );
+  const [selectedTcs, setSelectedTcs] = useState<TcsDto>(tcs[0]);
+
+  useEffect(() => {
+    const newSelectedTc = tcs.filter(
+      (item) => item.quotation_type_id === selectedQuoteType.type_id
+    )[0];
+    setSelectedTcs(newSelectedTc);
+  }, [selectedQuoteType]);
+
   return (
     <Card>
       <CardContent>
         <Stack spacing={2}>
-          <BasicInfo />
+          <BasicInfo
+            tin={company.tin ?? "N/A"}
+            quotationTypes={quotationTypes}
+            selectedTcs={selectedTcs}
+            selectedQuoteType={selectedQuoteType}
+            setSelectedQuoteType={setSelectedQuoteType}
+            setSelectedTcs={setSelectedTcs}
+            tcs={tcs}
+          />
           <MyDivider />
           <ClientInfo />
           <MyDivider />
@@ -38,7 +64,10 @@ const CreateQuotation = () => {
           <MyDivider />
           <TaxDiscountInfo />
           <MyDivider />
-          <NewQuotationTscInfo />
+          <NewQuotationTscInfo
+            selectedTcs={selectedTcs}
+            selectedQuoteType={selectedQuoteType}
+          />
           <MyDivider />
           <NewQuotationPriceSummary />
         </Stack>
