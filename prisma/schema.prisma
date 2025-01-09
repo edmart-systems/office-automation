@@ -163,6 +163,7 @@ model Quotation_tcs {
   payment_method_words       String?  @db.VarChar(160)
   quotation_type_id          Int
   bank_id                    Int
+  vat_percentage             Int      @default(18)
   created_at                 DateTime @default(now())
   updated_at                 DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 

@@ -32,6 +32,7 @@ type Props = {
 
 const CreateQuotation = ({ baseData }: Props) => {
   const { company, quotationTypes, tcs } = baseData;
+  const [editTcs, setEditTcs] = useState<boolean>(false);
   const [selectedQuoteType, setSelectedQuoteType] = useState<Quotation_type>(
     quotationTypes[0]
   );
@@ -56,6 +57,8 @@ const CreateQuotation = ({ baseData }: Props) => {
             setSelectedQuoteType={setSelectedQuoteType}
             setSelectedTcs={setSelectedTcs}
             tcs={tcs}
+            editTcs={editTcs}
+            setEditTcs={setEditTcs}
           />
           <MyDivider />
           <ClientInfo />
@@ -67,6 +70,10 @@ const CreateQuotation = ({ baseData }: Props) => {
           <NewQuotationTscInfo
             selectedTcs={selectedTcs}
             selectedQuoteType={selectedQuoteType}
+            setSelectedTcs={setSelectedTcs}
+            tcs={tcs}
+            editTcs={editTcs}
+            setEditTcs={setEditTcs}
           />
           <MyDivider />
           <NewQuotationPriceSummary />

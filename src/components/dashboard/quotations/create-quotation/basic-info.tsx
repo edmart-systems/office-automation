@@ -1,5 +1,6 @@
 import { TcsDto } from "@/types/quotations.types";
 import { fDate } from "@/utils/time";
+import { checkDigits } from "@/utils/verification-validation.utils";
 import { CalendarMonth } from "@mui/icons-material";
 import {
   FormControl,
@@ -14,16 +15,18 @@ import {
   Typography,
 } from "@mui/material";
 import { Quotation_type } from "@prisma/client";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 type Props = {
   tin: string;
   selectedTcs: TcsDto;
   selectedQuoteType: Quotation_type;
-  setSelectedQuoteType: React.Dispatch<React.SetStateAction<Quotation_type>>;
-  setSelectedTcs: React.Dispatch<React.SetStateAction<TcsDto>>;
+  setSelectedQuoteType: Dispatch<SetStateAction<Quotation_type>>;
+  setSelectedTcs: Dispatch<SetStateAction<TcsDto>>;
   quotationTypes: Quotation_type[];
   tcs: TcsDto[];
+  editTcs: boolean;
+  setEditTcs: Dispatch<SetStateAction<boolean>>;
 };
 
 const BasicInfo = ({
@@ -34,6 +37,8 @@ const BasicInfo = ({
   setSelectedTcs,
   quotationTypes,
   tcs,
+  editTcs,
+  setEditTcs,
 }: Props) => {
   const handleQuoteTypeChange = (evt: SelectChangeEvent) => {
     const selectedType = quotationTypes.filter(
@@ -44,6 +49,87 @@ const BasicInfo = ({
     )[0];
     setSelectedQuoteType(selectedType);
     setSelectedTcs(newSelectedTc);
+    setEditTcs(false);
+  };
+
+  const validityChangeHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      if (!editTcs) return;
+      const str = evt.target.value;
+
+      if (!checkDigits(str)) return;
+
+      const num = parseInt(str, 10);
+
+      setSelectedTcs((prev) => ({
+        ...prev,
+        edited_validity_days: isNaN(num) ? 0 : num,
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  const graceDaysChangeHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      if (!editTcs) return;
+      const str = evt.target.value;
+
+      if (!checkDigits(str)) return;
+
+      const num = parseInt(str, 10);
+
+      setSelectedTcs((prev) => ({
+        ...prev,
+        edited_payment_grace_days: isNaN(num) ? 0 : num,
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  const initialPaymentPercentageChangeHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      if (!editTcs) return;
+      const str = evt.target.value;
+
+      if (!checkDigits(str)) return;
+
+      const num = parseInt(str, 10);
+
+      setSelectedTcs((prev) => ({
+        ...prev,
+        edited_initial_payment_percentage: isNaN(num) ? 0 : num,
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  const lastPaymentPercentageChangeHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      if (!editTcs) return;
+      const str = evt.target.value;
+
+      if (!checkDigits(str)) return;
+
+      const num = parseInt(str, 10);
+
+      setSelectedTcs((prev) => ({
+        ...prev,
+        edited_last_payment_percentage: isNaN(num) ? 0 : num,
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
   };
 
   return (
@@ -80,26 +166,6 @@ const BasicInfo = ({
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField label="TIN" value={tin} size="small" fullWidth />
         </Grid>
-        {/* <Grid size={{ lg: 6, md: 6, sm: 12 }}>
-          <TextField
-            label="Quotation Type"
-            defaultValue={quotationTypes[0].name}
-            value={selectedQuoteType.name}
-            size="small"
-            select
-            fullWidth
-            onChange={handleQuoteTypeChange}
-          >
-            {quotationTypes.map((item, index) => {
-              return (
-                <MenuItem key={item.type_id + "-" + index} value={item.name}>
-                  {item.name}
-                </MenuItem>
-              );
-            })}
-          </TextField>
-        </Grid> */}
-
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
@@ -126,9 +192,10 @@ const BasicInfo = ({
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Validity"
-            value={selectedTcs.validity_days}
+            value={selectedTcs.edited_validity_days}
             size="small"
             fullWidth
+            onChange={validityChangeHandler}
             slotProps={{
               input: {
                 endAdornment: (
@@ -142,9 +209,10 @@ const BasicInfo = ({
           <Grid size={{ lg: 6, md: 6, sm: 12 }}>
             <TextField
               label="Payment Grace Period"
-              value={selectedTcs.payment_grace_days}
+              value={selectedTcs.edited_payment_grace_days}
               size="small"
               fullWidth
+              onChange={graceDaysChangeHandler}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -159,9 +227,10 @@ const BasicInfo = ({
             <Grid size={6}>
               <TextField
                 label="Payment % On Commissioning"
-                value={selectedTcs.initial_payment_percentage}
+                value={selectedTcs.edited_initial_payment_percentage}
                 size="small"
                 fullWidth
+                onChange={initialPaymentPercentageChangeHandler}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -174,9 +243,10 @@ const BasicInfo = ({
             <Grid size={6}>
               <TextField
                 label="Payment % On Completion"
-                value={selectedTcs.last_payment_percentage}
+                value={selectedTcs.edited_last_payment_percentage}
                 size="small"
                 fullWidth
+                onChange={lastPaymentPercentageChangeHandler}
                 slotProps={{
                   input: {
                     endAdornment: (

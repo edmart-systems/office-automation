@@ -29,6 +29,11 @@ export class QuotationsRepository {
         const { bank, created_at, updated_at, ...tcsRest } = tc;
         formattedTcs.push({
           ...tcsRest,
+          edited_delivery_days: tcsRest.delivery_days,
+          edited_validity_days: tcsRest.validity_days,
+          edited_payment_grace_days: tcsRest.payment_grace_days,
+          edited_initial_payment_percentage: tcsRest.initial_payment_percentage,
+          edited_last_payment_percentage: tcsRest.last_payment_percentage,
           bank,
         });
       }

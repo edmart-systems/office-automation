@@ -60,6 +60,12 @@ export type QuotationStatusAction = {
 };
 
 export type TcsDto = Omit<Quotation_tcs, "created_at" | "updated_at"> & {
+  edited_validity_days: number | null;
+  edited_delivery_days: number | null;
+  edited_payment_grace_days: number | null;
+  edited_initial_payment_percentage: number | null;
+  edited_last_payment_percentage: number | null;
+
   bank: BankDto;
 };
 
