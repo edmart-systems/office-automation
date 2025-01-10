@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import LineItemDialog from "./line-item-dialog";
 
 type Props = {
@@ -37,15 +37,15 @@ const QuotationListItem = ({
   updateFullItem,
 }: Props) => {
   const [openAddNewItem, setOpenNewItem] = useState<boolean>(false);
-
   const { units } = useAppSelector((state) => state.units);
+
   const totalPrice =
     lineItem.unitPrice && lineItem.quantity
       ? lineItem.unitPrice * lineItem.quantity
       : null;
 
-  const gainFocusHandler = () => {
-    if (itemsLength < 3) {
+  const openItemEditorHandler = () => {
+    if (itemsLength < 4) {
       return;
     }
     setOpenNewItem(true);
@@ -72,16 +72,18 @@ const QuotationListItem = ({
     <Stack spacing={2}>
       <Grid container spacing={{ xl: 1, lg: 1, md: 2, sm: 2, xs: 2 }}>
         <Grid
-          size={{ xl: 0.4, lg: 0.4, md: 0.4, sm: 0.5, xs: 0.5 }}
+          size={{ xl: 0.4, lg: 0.4, md: 0.4, sm: 0.4, xs: 1 }}
           display="flex"
           justifyContent="center"
           alignItems="center"
         >
           <Avatar sx={{ height: "30px", width: "30px" }}>
-            <Typography variant="body1">{num}</Typography>
+            <Typography variant="body1" id="item">
+              {num}
+            </Typography>
           </Avatar>
         </Grid>
-        <Grid size={{ xl: 2, lg: 3, md: 5, sm: 5, xs: 11.5 }}>
+        <Grid size={{ xl: 2, lg: 2, md: 5, sm: 5, xs: 11 }}>
           <TextField
             label="Product/Service Name"
             value={lineItem.name || ""}
@@ -90,10 +92,10 @@ const QuotationListItem = ({
             minRows={1}
             fullWidth
             onChange={(evt) => handleFieldChange("name", evt.target.value)}
-            onFocus={gainFocusHandler}
+            onClick={openItemEditorHandler}
           />
         </Grid>
-        <Grid size={{ xl: 3, lg: 4, md: 6.6, sm: 6.5, xs: 12 }}>
+        <Grid size={{ xl: 3, lg: 3, md: 6.6, sm: 6.6, xs: 12 }}>
           <TextField
             label="Description"
             value={lineItem.description || ""}
@@ -104,18 +106,20 @@ const QuotationListItem = ({
             onChange={(evt) =>
               handleFieldChange("description", evt.target.value)
             }
+            onClick={openItemEditorHandler}
           />
         </Grid>
-        <Grid size={{ xl: 1, lg: 1, md: 3, sm: 3, xs: 6 }}>
+        <Grid size={{ xl: 1, lg: 1, md: 6, sm: 6, xs: 6 }}>
           <TextField
             label="Quantity"
             value={lineItem.quantity || ""}
             size="small"
             fullWidth
             onChange={(evt) => handleFieldChange("quantity", evt.target.value)}
+            onClick={openItemEditorHandler}
           />
         </Grid>
-        <Grid size={{ xl: 1, lg: 1, md: 3, sm: 3, xs: 6 }}>
+        <Grid size={{ xl: 1, lg: 1, md: 6, sm: 6, xs: 6 }}>
           <TextField
             label="Units"
             value={lineItem.units || ""}
@@ -123,6 +127,7 @@ const QuotationListItem = ({
             size="small"
             fullWidth
             onChange={(evt) => handleFieldChange("units", evt.target.value)}
+            onClick={openItemEditorHandler}
           >
             {units &&
               units.map((item, index) => {
@@ -134,13 +139,14 @@ const QuotationListItem = ({
               })}
           </TextField>
         </Grid>
-        <Grid size={{ xl: 2, lg: 2, md: 5.4, sm: 5.4, xs: 11 }}>
+        <Grid size={{ xl: 2, lg: 2, md: 6.4, sm: 6.4, xs: 12 }}>
           <TextField
             label="Unit Price"
             size="small"
             fullWidth
             value={lineItem.unitPrice || ""}
             onChange={(evt) => handleFieldChange("unitPrice", evt.target.value)}
+            onClick={openItemEditorHandler}
             slotProps={{
               input: {
                 endAdornment: (
@@ -152,12 +158,13 @@ const QuotationListItem = ({
             }}
           />
         </Grid>
-        <Grid size={{ xl: 2, lg: 2, md: 5.4, sm: 5.4, xs: 11 }}>
+        <Grid size={{ xl: 2, lg: 2, md: 5, sm: 5, xs: 11 }}>
           <TextField
             label="Total Price"
             size="small"
             fullWidth
             value={totalPrice?.toLocaleString() || ""}
+            onClick={openItemEditorHandler}
             slotProps={{
               input: {
                 endAdornment: (
@@ -184,11 +191,12 @@ const QuotationListItem = ({
       {openAddNewItem && (
         <LineItemDialog
           mode="update"
-          itemNumber={itemsLength}
+          itemNumber={num}
           open={openAddNewItem}
           setOpen={setOpenNewItem}
           selectedCurrency={selectedCurrency}
           updateFn={updateFullItem}
+          originalItem={lineItem}
         />
       )}
     </Stack>

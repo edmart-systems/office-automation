@@ -27,6 +27,7 @@ import {
   Typography,
 } from "@mui/material";
 import { QuotationLineItem } from "@/types/quotations.types";
+import { getTimeNum } from "@/utils/time";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -60,7 +61,7 @@ const LineItemDialog = ({
 }: Props) => {
   const { units } = useAppSelector((state) => state.units);
   const [lineItem, setLineItem] = useState<QuotationLineItem>(
-    originalItem || { id: 4 }
+    originalItem || { id: getTimeNum() }
   );
 
   const totalPrice =
@@ -105,7 +106,7 @@ const LineItemDialog = ({
   return (
     <Fragment>
       <Dialog
-        maxWidth="md"
+        maxWidth="xl"
         fullWidth={true}
         open={open}
         TransitionComponent={Transition}
@@ -117,10 +118,10 @@ const LineItemDialog = ({
           {mode === "new" ? "Add New Line Item" : "Update Line Item"}
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={2}>
+          <Stack spacing={2} sx={{ p: 1 }}>
             <Grid container spacing={{ xl: 1, lg: 1, md: 2, sm: 2, xs: 2 }}>
               <Grid
-                size={{ xl: 0.4, lg: 0.4, md: 0.4, sm: 0.5, xs: 0.5 }}
+                size={{ xl: 0.5, lg: 0.5, md: 0.5, sm: 0.5, xs: 0.5 }}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
@@ -129,10 +130,10 @@ const LineItemDialog = ({
                   <Typography variant="body1">{itemNumber}</Typography>
                 </Avatar>
               </Grid>
-              <Grid size={{ xl: 2, lg: 3, md: 5, sm: 5, xs: 11.5 }}>
+              <Grid size={{ xl: 2.5, lg: 2.5, md: 5.5, sm: 5.5, xs: 11.4 }}>
                 <TextField
                   label="Product/Service Name"
-                  value={originalItem?.name || ""}
+                  value={lineItem.name || ""}
                   size="small"
                   multiline
                   minRows={1}
@@ -142,10 +143,10 @@ const LineItemDialog = ({
                   }
                 />
               </Grid>
-              <Grid size={{ xl: 3, lg: 4, md: 6.6, sm: 6.5, xs: 12 }}>
+              <Grid size={{ xl: 3, lg: 3, md: 6, sm: 6, xs: 12 }}>
                 <TextField
                   label="Description"
-                  value={originalItem?.description || ""}
+                  value={lineItem.description || ""}
                   size="small"
                   multiline
                   minRows={1}
@@ -155,10 +156,10 @@ const LineItemDialog = ({
                   }
                 />
               </Grid>
-              <Grid size={{ xl: 1, lg: 1, md: 3, sm: 3, xs: 6 }}>
+              <Grid size={{ xl: 1, lg: 1, md: 3, sm: 6, xs: 6 }}>
                 <TextField
                   label="Quantity"
-                  value={originalItem?.quantity || ""}
+                  value={lineItem.quantity || ""}
                   size="small"
                   fullWidth
                   onChange={(evt) =>
@@ -166,10 +167,10 @@ const LineItemDialog = ({
                   }
                 />
               </Grid>
-              <Grid size={{ xl: 1, lg: 1, md: 3, sm: 3, xs: 6 }}>
+              <Grid size={{ xl: 1, lg: 1, md: 3, sm: 6, xs: 6 }}>
                 <TextField
                   label="Units"
-                  value={originalItem?.units || ""}
+                  value={lineItem.units || ""}
                   select
                   size="small"
                   fullWidth
@@ -187,12 +188,12 @@ const LineItemDialog = ({
                     })}
                 </TextField>
               </Grid>
-              <Grid size={{ xl: 2, lg: 2, md: 5.4, sm: 5.4, xs: 11 }}>
+              <Grid size={{ xl: 2, lg: 2, md: 3, sm: 6, xs: 12 }}>
                 <TextField
                   label="Unit Price"
                   size="small"
                   fullWidth
-                  value={originalItem?.unitPrice || ""}
+                  value={lineItem.unitPrice || ""}
                   onChange={(evt) =>
                     handleFieldChange("unitPrice", evt.target.value)
                   }
@@ -207,7 +208,7 @@ const LineItemDialog = ({
                   }}
                 />
               </Grid>
-              <Grid size={{ xl: 2, lg: 2, md: 5.4, sm: 5.4, xs: 11 }}>
+              <Grid size={{ xl: 2, lg: 2, md: 3, sm: 6, xs: 12 }}>
                 <TextField
                   label="Total Price"
                   size="small"

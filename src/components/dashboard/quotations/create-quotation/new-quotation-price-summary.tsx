@@ -2,14 +2,7 @@
 
 import { Currency2 } from "@/types/currency.types";
 import { QuotationPriceSummary } from "@/types/quotations.types";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Checkbox, Stack, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import RemoveVatDialog from "./remove-vat-dialog";
 

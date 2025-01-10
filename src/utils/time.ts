@@ -27,3 +27,7 @@ export const fToNow = (date: FormatDateParam): string => {
     addSuffix: true,
   });
 };
+
+export const getTimeNum = (date?: FormatDateParam): number => {
+  return date ? new Date(date).getTime() : new Date().getTime();
+};

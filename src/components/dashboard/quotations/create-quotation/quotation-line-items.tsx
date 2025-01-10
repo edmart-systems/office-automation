@@ -1,12 +1,13 @@
 "use client";
 
 import { AddCircleOutline, Clear } from "@mui/icons-material";
-import { Button, Grid2 as Grid, Stack, Typography } from "@mui/material";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { Button, Stack, TextField, Typography } from "@mui/material";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import QuotationListItem from "./quotation-line-item";
 import { QuotationLineItem } from "@/types/quotations.types";
 import { Currency2 } from "@/types/currency.types";
 import LineItemDialog from "./line-item-dialog";
+import { getTimeNum } from "@/utils/time";
 
 type Props = {
   lineItems: QuotationLineItem[];
@@ -23,9 +24,10 @@ const QuotationListItems = ({
 
   const incrementItems = () => {
     if (lineItems.length >= 3) {
+      setOpenNewItem(true);
       return;
     }
-    setLineItems((prev) => [...prev, { id: prev.length + 1 }]);
+    setLineItems((prev) => [...prev, { id: getTimeNum() }]);
   };
 
   const addFullItem = (item: QuotationLineItem) => {
@@ -57,7 +59,7 @@ const QuotationListItems = ({
   };
 
   const ClearList = () => {
-    setLineItems([{ id: 1 }]);
+    setLineItems([{ id: getTimeNum() }]);
   };
 
   return (
