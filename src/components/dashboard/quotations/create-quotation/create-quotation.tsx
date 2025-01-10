@@ -74,7 +74,7 @@ const CreateQuotation = ({ baseData }: Props) => {
     finalTotal: 0,
   });
   const [isCalculating, startCalculation] = useTransition();
-
+  const [excludeVat, setExcludeVat] = useState<boolean>(false);
   const calculatePrices = () => {
     startCalculation(() => {
       let subtotal = 0;
@@ -82,7 +82,10 @@ const CreateQuotation = ({ baseData }: Props) => {
         if (!item.quantity || !item.unitPrice) continue;
         subtotal += item.quantity * item.unitPrice;
       }
-      const vat = (subtotal * selectedTcs.vat_percentage) / 100;
+
+      const vat = excludeVat
+        ? 0
+        : (subtotal * selectedTcs.vat_percentage) / 100;
       const finalTotal = subtotal + vat;
       setPriceSummary({ subtotal, vat, finalTotal });
     });
@@ -90,7 +93,7 @@ const CreateQuotation = ({ baseData }: Props) => {
 
   useEffect(() => {
     calculatePrices();
-  }, [lineItems]);
+  }, [lineItems, excludeVat]);
 
   useEffect(() => {
     dispatch(setUnits(units));
@@ -119,6 +122,8 @@ const CreateQuotation = ({ baseData }: Props) => {
             editTcs={editTcs}
             setEditTcs={setEditTcs}
             date={date}
+            selectedCurrency={selectedCurrency}
+            setSelectedCurrency={setSelectedCurrency}
           />
           <MyDivider />
           <ClientInfo setClientData={setClientData} clientData={clientData} />
@@ -129,7 +134,7 @@ const CreateQuotation = ({ baseData }: Props) => {
             selectedCurrency={selectedCurrency}
           />
           <MyDivider />
-          <TaxDiscountInfo selectedTcs={selectedTcs} />
+          <TaxDiscountInfo selectedTcs={selectedTcs} excludeVat={excludeVat} />
           <MyDivider />
           <NewQuotationTscInfo
             selectedTcs={selectedTcs}
@@ -145,6 +150,8 @@ const CreateQuotation = ({ baseData }: Props) => {
             isCalculating={isCalculating}
             vatPercentage={selectedTcs.vat_percentage}
             selectedCurrency={selectedCurrency}
+            excludeVat={excludeVat}
+            setExcludeVat={setExcludeVat}
           />
         </Stack>
       </CardContent>

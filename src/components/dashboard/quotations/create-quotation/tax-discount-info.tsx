@@ -10,9 +10,10 @@ import React from "react";
 
 type Props = {
   selectedTcs: TcsDto;
+  excludeVat: boolean;
 };
 
-const TaxDiscountInfo = ({ selectedTcs }: Props) => {
+const TaxDiscountInfo = ({ selectedTcs, excludeVat }: Props) => {
   return (
     <Stack spacing={2}>
       <Typography variant="body1" fontWeight={600}>
@@ -39,7 +40,7 @@ const TaxDiscountInfo = ({ selectedTcs }: Props) => {
         <Grid size={6}>
           <TextField
             label="Tax Rate"
-            value={selectedTcs.vat_percentage}
+            value={excludeVat ? "" : selectedTcs.vat_percentage}
             size="small"
             fullWidth
             onChange={() => {}}

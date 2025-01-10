@@ -1,4 +1,5 @@
 import { logger } from "@/logger/default-logger";
+import { Currency2 } from "@/types/currency.types";
 import { TcsDto, Unit2 } from "@/types/quotations.types";
 import { PrismaClient, Quotation_type, Unit } from "@prisma/client";
 
@@ -59,6 +60,26 @@ export class QuotationsRepository {
       }
 
       return Promise.resolve(formattedUnits);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchCurrencies2 = async (): Promise<Currency2[]> => {
+    try {
+      const currencies = await this.prisma.currency.findMany();
+
+      const formattedCurrencies: Currency2[] = [];
+
+      for (const item of currencies) {
+        const { updated_at, created_at, ...rest } = item;
+        formattedCurrencies.push({
+          ...rest,
+        });
+      }
+
+      return Promise.resolve(formattedCurrencies);
     } catch (err) {
       logger.error(err);
       return Promise.reject(err);

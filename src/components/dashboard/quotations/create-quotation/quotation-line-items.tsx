@@ -6,6 +6,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import QuotationListItem from "./quotation-line-item";
 import { QuotationLineItem } from "@/types/quotations.types";
 import { Currency2 } from "@/types/currency.types";
+import LineItemDialog from "./line-item-dialog";
 
 type Props = {
   lineItems: QuotationLineItem[];
@@ -18,8 +19,17 @@ const QuotationListItems = ({
   setLineItems,
   selectedCurrency,
 }: Props) => {
+  const [openAddNewItem, setOpenNewItem] = useState<boolean>(false);
+
   const incrementItems = () => {
+    if (lineItems.length >= 3) {
+      return;
+    }
     setLineItems((prev) => [...prev, { id: prev.length + 1 }]);
+  };
+
+  const addFullItem = (item: QuotationLineItem) => {
+    setLineItems((prev) => [...prev, item]);
   };
 
   const removeItem = (id: number) => {
@@ -38,6 +48,14 @@ const QuotationListItems = ({
     );
   };
 
+  const updateFullItem = (updatedItem: QuotationLineItem) => {
+    setLineItems((prev) =>
+      prev.map((item) => {
+        return item.id === updatedItem.id ? updatedItem : item;
+      })
+    );
+  };
+
   const ClearList = () => {
     setLineItems([{ id: 1 }]);
   };
@@ -51,11 +69,13 @@ const QuotationListItems = ({
         return (
           <QuotationListItem
             key={item.id + "-" + index}
+            itemsLength={lineItems.length}
             num={index + 1}
             lineItem={item}
             deleteFn={() => removeItem(item.id)}
             selectedCurrency={selectedCurrency}
             updateFn={updateLineItem}
+            updateFullItem={updateFullItem}
           />
         );
       })}
@@ -80,6 +100,16 @@ const QuotationListItems = ({
           </Button>
         )}
       </Stack>
+      {openAddNewItem && (
+        <LineItemDialog
+          mode="new"
+          itemNumber={lineItems.length + 1}
+          open={openAddNewItem}
+          setOpen={setOpenNewItem}
+          selectedCurrency={selectedCurrency}
+          addFn={addFullItem}
+        />
+      )}
     </Stack>
   );
 };

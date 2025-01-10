@@ -193,7 +193,7 @@ const BasicInfo = ({
               labelId="currency-select-label"
               id="currency-select"
               value={selectedCurrency.currency_code}
-              label="Quotation Type"
+              label="Currency"
               onChange={handleCurrencyChange}
               size="small"
             >
@@ -204,7 +204,7 @@ const BasicInfo = ({
                       key={item.currency_code}
                       value={item.currency_code}
                     >
-                      {item.currency_code} - {item.currency_name}
+                      {item.currency_name} ({item.currency_code})
                     </MenuItem>
                   );
                 })}

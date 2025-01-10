@@ -14,7 +14,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import LineItemDialog from "./line-item-dialog";
 
 type Props = {
   num: number;
@@ -22,6 +23,8 @@ type Props = {
   deleteFn: () => void;
   updateFn: (id: number, field: keyof QuotationLineItem, value: any) => void;
   selectedCurrency: Currency2;
+  itemsLength: number;
+  updateFullItem: (updatedItem: QuotationLineItem) => void;
 };
 
 const QuotationListItem = ({
@@ -30,12 +33,23 @@ const QuotationListItem = ({
   deleteFn,
   updateFn,
   selectedCurrency,
+  itemsLength,
+  updateFullItem,
 }: Props) => {
+  const [openAddNewItem, setOpenNewItem] = useState<boolean>(false);
+
   const { units } = useAppSelector((state) => state.units);
   const totalPrice =
     lineItem.unitPrice && lineItem.quantity
       ? lineItem.unitPrice * lineItem.quantity
       : null;
+
+  const gainFocusHandler = () => {
+    if (itemsLength < 3) {
+      return;
+    }
+    setOpenNewItem(true);
+  };
 
   const handleFieldChange = (field: keyof QuotationLineItem, value: any) => {
     try {
@@ -76,6 +90,7 @@ const QuotationListItem = ({
             minRows={1}
             fullWidth
             onChange={(evt) => handleFieldChange("name", evt.target.value)}
+            onFocus={gainFocusHandler}
           />
         </Grid>
         <Grid size={{ xl: 3, lg: 4, md: 6.6, sm: 6.5, xs: 12 }}>
@@ -166,6 +181,16 @@ const QuotationListItem = ({
         </Grid>
       </Grid>
       <Divider />
+      {openAddNewItem && (
+        <LineItemDialog
+          mode="update"
+          itemNumber={itemsLength}
+          open={openAddNewItem}
+          setOpen={setOpenNewItem}
+          selectedCurrency={selectedCurrency}
+          updateFn={updateFullItem}
+        />
+      )}
     </Stack>
   );
 };

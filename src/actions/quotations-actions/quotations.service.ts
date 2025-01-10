@@ -10,6 +10,7 @@ import { logger } from "@/logger/default-logger";
 import { Quotation_type } from "@prisma/client";
 import { CompanyService } from "../company-actions/company.service";
 import { CompanyDto } from "@/types/company.types";
+import { Currency2 } from "@/types/currency.types";
 
 export class QuotationsService {
   private readonly quotationsRepo = new QuotationsRepository(prisma);
@@ -28,11 +29,15 @@ export class QuotationsService {
 
       const units: Unit2[] = await this.quotationsRepo.fetchUnits2();
 
+      const currencies: Currency2[] =
+        await this.quotationsRepo.fetchCurrencies2();
+
       const pageData: CreateQuotationPageData = {
         quotationTypes: quotationTypes,
         company: company,
         tcs: tcs,
         units: units,
+        currencies: currencies,
       };
 
       return Promise.resolve({
