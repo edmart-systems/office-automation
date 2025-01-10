@@ -1,4 +1,5 @@
-import { Message, Phone } from "@mui/icons-material";
+import { QuotationInputClientData } from "@/types/quotations.types";
+import { checkDigits } from "@/utils/verification-validation.utils";
 import {
   Grid2 as Grid,
   InputAdornment,
@@ -6,9 +7,33 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 
-const ClientInfo = () => {
+type Props = {
+  setClientData: Dispatch<SetStateAction<QuotationInputClientData>>;
+  clientData: QuotationInputClientData;
+};
+
+const ClientInfo = ({ clientData, setClientData }: Props) => {
+  const boxNumberChangeHandler = (
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      const str = evt.target.value;
+
+      if (!checkDigits(str)) return;
+
+      const num = parseInt(str, 10);
+
+      setClientData((prev) => ({
+        ...prev,
+        boxNumber: isNaN(num) ? 0 : num,
+      }));
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
   return (
     <Stack spacing={2}>
       <Typography variant="body1" fontWeight={600}>
@@ -18,58 +43,68 @@ const ClientInfo = () => {
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Name"
-            value="Uzima Chicken"
+            value={clientData.name}
             size="small"
             fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, name: evt.target.value }))
+            }
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="External Ref"
-            value="Email"
+            value={clientData.ref}
             size="small"
             fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, ref: evt.target.value }))
+            }
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Contact Person"
-            value="Optimus Prime"
+            value={clientData.contactPerson}
             size="small"
             fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({
+                ...prev,
+                contactPerson: evt.target.value,
+              }))
+            }
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Email"
-            value="procurement@uzimachicken.com"
+            value={clientData.email}
             size="small"
             fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, email: evt.target.value }))
+            }
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Phone"
-            value="0393255022"
+            value={clientData.phone}
             size="small"
             fullWidth
-            // slotProps={{
-            //   input: {
-            //     startAdornment: (
-            //       <InputAdornment position="start">
-            //         <Phone />
-            //       </InputAdornment>
-            //     ),
-            //   },
-            // }}
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, phone: evt.target.value }))
+            }
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Box Number"
-            // value="11233"
+            value={clientData.boxNumber}
             size="small"
             fullWidth
+            onChange={boxNumberChangeHandler}
             slotProps={{
               input: {
                 startAdornment: (
@@ -80,17 +115,39 @@ const ClientInfo = () => {
           />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
-          <TextField label="Country" value="Uganda" size="small" fullWidth />
+          <TextField
+            label="Country"
+            value={clientData.country}
+            size="small"
+            fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, country: evt.target.value }))
+            }
+          />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
-          <TextField label="City" value="Kampala" size="small" fullWidth />
+          <TextField
+            label="City"
+            value={clientData.city}
+            size="small"
+            fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({ ...prev, city: evt.target.value }))
+            }
+          />
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Street Address"
-            value="Plot 128, Ntinda"
+            value={clientData.addressLine1}
             size="small"
             fullWidth
+            onChange={(evt) =>
+              setClientData((prev) => ({
+                ...prev,
+                addressLine1: evt.target.value,
+              }))
+            }
           />
         </Grid>
       </Grid>

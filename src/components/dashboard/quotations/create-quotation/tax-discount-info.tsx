@@ -1,3 +1,4 @@
+import { TcsDto } from "@/types/quotations.types";
 import {
   Grid2 as Grid,
   InputAdornment,
@@ -7,7 +8,11 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const TaxDiscountInfo = () => {
+type Props = {
+  selectedTcs: TcsDto;
+};
+
+const TaxDiscountInfo = ({ selectedTcs }: Props) => {
   return (
     <Stack spacing={2}>
       <Typography variant="body1" fontWeight={600}>
@@ -20,6 +25,7 @@ const TaxDiscountInfo = () => {
             value="0"
             size="small"
             fullWidth
+            onChange={() => {}}
             slotProps={{
               input: {
                 endAdornment: <InputAdornment position="end">%</InputAdornment>,
@@ -33,9 +39,10 @@ const TaxDiscountInfo = () => {
         <Grid size={6}>
           <TextField
             label="Tax Rate"
-            value="18"
+            value={selectedTcs.vat_percentage}
             size="small"
             fullWidth
+            onChange={() => {}}
             slotProps={{
               input: {
                 endAdornment: <InputAdornment position="end">%</InputAdornment>,

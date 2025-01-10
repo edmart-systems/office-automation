@@ -1,4 +1,8 @@
-import { CreateQuotationPageData, TcsDto } from "@/types/quotations.types";
+import {
+  CreateQuotationPageData,
+  TcsDto,
+  Unit2,
+} from "@/types/quotations.types";
 import prisma from "../../../db/db";
 import { QuotationsRepository } from "./quotations.respository";
 import { ActionResponse } from "@/types/actions-response.types";
@@ -22,10 +26,13 @@ export class QuotationsService {
 
       const tcs: TcsDto[] = await this.quotationsRepo.fetchQuotationTcs();
 
+      const units: Unit2[] = await this.quotationsRepo.fetchUnits2();
+
       const pageData: CreateQuotationPageData = {
         quotationTypes: quotationTypes,
         company: company,
         tcs: tcs,
+        units: units,
       };
 
       return Promise.resolve({

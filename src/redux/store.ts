@@ -7,6 +7,8 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { themeReducer } from "./slices/theme.slice";
 import { appReducer } from "./slices/app.slice";
 import { notificationsReducer } from "./slices/notifications.slice";
+import { unitsReducer } from "./slices/units.slice";
+import { currenciesReducer } from "./slices/currencies.slice";
 
 const createNoopStorage = () => {
   return {
@@ -42,6 +44,16 @@ const notificationsSlicePersistConfig = {
   storage: fixedStorage,
 };
 
+const unitsPersistConfig = {
+  key: "units",
+  storage: fixedStorage,
+};
+
+const currenciesPersistConfig = {
+  key: "currencies",
+  storage: fixedStorage,
+};
+
 const rootReducer = combineReducers({
   theme: persistReducer(themePersistConfig, themeReducer),
   app: persistReducer(appSlicePersistConfig, appReducer),
@@ -49,6 +61,8 @@ const rootReducer = combineReducers({
     notificationsSlicePersistConfig,
     notificationsReducer
   ),
+  units: persistReducer(unitsPersistConfig, unitsReducer),
+  currencies: persistReducer(currenciesPersistConfig, currenciesReducer),
 });
 
 export const store = configureStore({

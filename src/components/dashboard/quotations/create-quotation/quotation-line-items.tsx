@@ -1,45 +1,61 @@
 "use client";
 
-import { AddCircleOutline, Clear, Delete } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Button,
-  Grid2 as Grid,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
-import QuotationListItem from "./quotation-list-item";
+import { AddCircleOutline, Clear } from "@mui/icons-material";
+import { Button, Grid2 as Grid, Stack, Typography } from "@mui/material";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import QuotationListItem from "./quotation-line-item";
+import { QuotationLineItem } from "@/types/quotations.types";
+import { Currency2 } from "@/types/currency.types";
 
-const QuotationLineItems = () => {
-  const [items, setItems] = useState<number[]>([1]);
+type Props = {
+  lineItems: QuotationLineItem[];
+  setLineItems: Dispatch<SetStateAction<QuotationLineItem[]>>;
+  selectedCurrency: Currency2;
+};
 
+const QuotationListItems = ({
+  lineItems,
+  setLineItems,
+  selectedCurrency,
+}: Props) => {
   const incrementItems = () => {
-    setItems((prev) => [...prev, prev.length + 1]);
+    setLineItems((prev) => [...prev, { id: prev.length + 1 }]);
   };
 
-  const decrementItems = () => {
-    setItems((prev) => prev.slice(0, prev.length - 1));
+  const removeItem = (id: number) => {
+    setLineItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const updateLineItem = (
+    id: number,
+    field: keyof QuotationLineItem,
+    value: any
+  ) => {
+    setLineItems((prev) =>
+      prev.map((item) => {
+        return item.id === id ? { ...item, [field]: value } : item;
+      })
+    );
   };
 
   const ClearList = () => {
-    setItems([1]);
+    setLineItems([{ id: 1 }]);
   };
 
   return (
     <Stack spacing={2}>
       <Typography variant="body1" fontWeight={600}>
-        Line Items {items.length > 0 && `(${items.length})`}
+        Line Items {lineItems.length > 0 && `(${lineItems.length})`}
       </Typography>
-      {items.map((item, index) => {
+      {lineItems.map((item, index) => {
         return (
           <QuotationListItem
-            key={index}
+            key={item.id + "-" + index}
             num={index + 1}
-            deleteFn={decrementItems}
+            lineItem={item}
+            deleteFn={() => removeItem(item.id)}
+            selectedCurrency={selectedCurrency}
+            updateFn={updateLineItem}
           />
         );
       })}
@@ -53,7 +69,7 @@ const QuotationLineItems = () => {
         >
           Add Item
         </Button>
-        {items.length > 1 && (
+        {lineItems.length > 1 && (
           <Button
             variant="outlined"
             color="error"
@@ -68,4 +84,4 @@ const QuotationLineItems = () => {
   );
 };
 
-export default QuotationLineItems;
+export default QuotationListItems;

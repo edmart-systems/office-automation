@@ -1,6 +1,6 @@
 import { logger } from "@/logger/default-logger";
-import { TcsDto } from "@/types/quotations.types";
-import { PrismaClient, Quotation_type } from "@prisma/client";
+import { TcsDto, Unit2 } from "@/types/quotations.types";
+import { PrismaClient, Quotation_type, Unit } from "@prisma/client";
 
 export class QuotationsRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -39,6 +39,26 @@ export class QuotationsRepository {
       }
 
       return Promise.resolve(formattedTcs);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchUnits2 = async (): Promise<Unit2[]> => {
+    try {
+      const units = await this.prisma.unit.findMany();
+
+      const formattedUnits: Unit2[] = [];
+
+      for (const unit of units) {
+        const { updated_at, created_at, unit_desc, ...unitRest } = unit;
+        formattedUnits.push({
+          ...unitRest,
+        });
+      }
+
+      return Promise.resolve(formattedUnits);
     } catch (err) {
       logger.error(err);
       return Promise.reject(err);

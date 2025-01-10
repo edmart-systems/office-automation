@@ -1,3 +1,5 @@
+import { useAppSelector } from "@/redux/store";
+import { Currency2 } from "@/types/currency.types";
 import { TcsDto } from "@/types/quotations.types";
 import { fDate } from "@/utils/time";
 import { checkDigits } from "@/utils/verification-validation.utils";
@@ -27,6 +29,9 @@ type Props = {
   tcs: TcsDto[];
   editTcs: boolean;
   setEditTcs: Dispatch<SetStateAction<boolean>>;
+  date: Date;
+  selectedCurrency: Currency2;
+  setSelectedCurrency: Dispatch<SetStateAction<Currency2>>;
 };
 
 const BasicInfo = ({
@@ -39,17 +44,32 @@ const BasicInfo = ({
   tcs,
   editTcs,
   setEditTcs,
+  date,
+  selectedCurrency,
+  setSelectedCurrency,
 }: Props) => {
+  const { currencies } = useAppSelector((state) => state.currencies);
+
   const handleQuoteTypeChange = (evt: SelectChangeEvent) => {
     const selectedType = quotationTypes.filter(
       (item) => item.name == evt.target.value
     )[0];
     const newSelectedTc = tcs.filter(
-      (item) => item.quotation_type_id === selectedQuoteType.type_id
+      (item) => item.quotation_type_id === selectedType.type_id
     )[0];
     setSelectedQuoteType(selectedType);
     setSelectedTcs(newSelectedTc);
     setEditTcs(false);
+  };
+
+  const handleCurrencyChange = (evt: SelectChangeEvent) => {
+    if (!currencies) return;
+
+    const _selectedCurrency = currencies.filter(
+      (item) => item.currency_code === evt.target.value
+    )[0];
+
+    setSelectedCurrency(_selectedCurrency);
   };
 
   const validityChangeHandler = (
@@ -149,7 +169,7 @@ const BasicInfo = ({
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField
             label="Issue Date"
-            value={fDate(new Date())}
+            value={fDate(date)}
             size="small"
             fullWidth
             slotProps={{
@@ -165,6 +185,31 @@ const BasicInfo = ({
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <TextField label="TIN" value={tin} size="small" fullWidth />
+        </Grid>
+        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+            <Select
+              labelId="currency-select-label"
+              id="currency-select"
+              value={selectedCurrency.currency_code}
+              label="Quotation Type"
+              onChange={handleCurrencyChange}
+              size="small"
+            >
+              {currencies &&
+                currencies.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={item.currency_code}
+                      value={item.currency_code}
+                    >
+                      {item.currency_code} - {item.currency_name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid size={{ lg: 6, md: 6, sm: 12 }}>
           <FormControl fullWidth>

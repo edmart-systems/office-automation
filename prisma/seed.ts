@@ -99,54 +99,65 @@ const main = async () => {
     data: [
       {
         unit_id: 1,
+        name: "Piece",
+        short_name: "pc",
+        unit_desc: "Unit representing a single item or object",
+      },
+      {
+        unit_id: 2,
+        name: "Box",
+        short_name: "box",
+      },
+      {
+        unit_id: 3,
+        name: "Pack",
+        short_name: "pk",
+        unit_desc: "Unit representing a group of items packaged together",
+      },
+      {
+        unit_id: 4,
+        name: "Dozen",
+        short_name: "doz",
+        unit_desc: "A group of twelve (12)",
+      },
+      {
+        unit_id: 5,
         name: "Kilogram",
         short_name: "kg",
         unit_desc: "Unit of mass in the metric system",
       },
       {
-        unit_id: 2,
+        unit_id: 6,
         name: "Gram",
         short_name: "g",
         unit_desc:
           "A smaller unit of mass in the metric system, equal to 1/1000 of a kilogram",
       },
       {
-        unit_id: 3,
+        unit_id: 7,
         name: "Meter",
         short_name: "m",
         unit_desc: "Base unit of length in the metric system",
       },
       {
-        unit_id: 4,
+        unit_id: 8,
         name: "Centimeter",
         short_name: "cm",
         unit_desc: "A unit of length equal to 1/100 of a meter",
       },
       {
-        unit_id: 5,
+        unit_id: 9,
         name: "Liter",
         short_name: "L",
         unit_desc:
           "Unit of volume in the metric system, commonly used for liquids",
       },
       {
-        unit_id: 6,
+        unit_id: 10,
         name: "Milliliter",
         short_name: "mL",
         unit_desc:
           "A smaller unit of volume in the metric system, equal to 1/1000 of a liter",
-      },
-      {
-        unit_id: 7,
-        name: "Piece",
-        short_name: "pc",
-        unit_desc: "Unit representing a single item or object",
-      },
-      {
-        unit_id: 8,
-        name: "Pack",
-        short_name: "pk",
-        unit_desc: "Unit representing a group of items packaged together",
       },
     ],
   });

@@ -38,7 +38,7 @@ const EditTcsDialog = ({ open, setOpen, setEditTcs }: Props) => {
   const confirmBtnHandler = () => {
     setEditTcs(true);
     toast("You can now edit the TCs", {
-      type: "success",
+      type: "info",
     });
     handleClose();
   };

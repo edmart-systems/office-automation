@@ -1,24 +1,18 @@
 "use server";
 
 import { logger } from "@/logger/default-logger";
+import { ActionResponse } from "@/types/actions-response.types";
 import {
-  ActionResponse,
-  isActionResponse,
-} from "@/types/actions-response.types";
-import {
-  FullUser,
   UserRegInfo,
   UserRegPass,
   UsersAndStatusCounts,
   UserStatus,
 } from "@/types/user.types";
-import { User } from "@prisma/client";
 import { CheckUserExistenceType } from "@/types/verification.types";
 import { UserService } from "./user.service";
 import { getAuthSession } from "../auth-actions/auth.actions";
 import { revalidatePath } from "next/cache";
 import { paths } from "@/utils/paths.utils";
-import { Session } from "next-auth";
 import { SessionService } from "../auth-actions/session.service";
 
 const userService = new UserService();

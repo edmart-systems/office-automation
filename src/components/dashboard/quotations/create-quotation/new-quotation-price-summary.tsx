@@ -1,7 +1,21 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Currency2 } from "@/types/currency.types";
+import { QuotationPriceSummary } from "@/types/quotations.types";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import React from "react";
 
-const NewQuotationPriceSummary = () => {
+type Props = {
+  priceSummary: QuotationPriceSummary;
+  isCalculating: boolean;
+  vatPercentage: number;
+  selectedCurrency: Currency2;
+};
+
+const NewQuotationPriceSummary = ({
+  priceSummary,
+  isCalculating,
+  vatPercentage,
+  selectedCurrency,
+}: Props) => {
   return (
     <Stack spacing={1} justifyContent="flex-end">
       <Stack direction="row" spacing={2}>
@@ -10,16 +24,17 @@ const NewQuotationPriceSummary = () => {
           Subtotal
         </Typography>
         <Typography flex={1} variant="body1" align="right">
-          UGX {(200000).toLocaleString()}
+          {selectedCurrency.currency_code}{" "}
+          {priceSummary.subtotal.toLocaleString()}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={2}>
         <Box flex={{ xl: 6, lg: 5, md: 3, sm: 2, xs: 0 }}></Box>
         <Typography flex={1} variant="body1">
-          VAT (18%)
+          VAT ({vatPercentage}%)
         </Typography>
         <Typography flex={1} variant="body1" align="right">
-          UGX {(110000).toLocaleString()}
+          {selectedCurrency.currency_code} {priceSummary.vat.toLocaleString()}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={2}>
@@ -28,7 +43,8 @@ const NewQuotationPriceSummary = () => {
           Total
         </Typography>
         <Typography flex={1} variant="body1" align="right" fontWeight={600}>
-          UGX {(310000).toLocaleString()}
+          {selectedCurrency.currency_code}{" "}
+          {priceSummary.finalTotal.toLocaleString()}
         </Typography>
       </Stack>
     </Stack>

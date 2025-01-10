@@ -1,6 +1,7 @@
-import { Bank, Quotation_tcs, Quotation_type } from "@prisma/client";
+import { Bank, Quotation_tcs, Quotation_type, Unit } from "@prisma/client";
 import { ReactElement } from "react";
 import { BankDto, CompanyDto } from "./company.types";
+import { Currency2 } from "./currency.types";
 
 export type QuotationStatus = "sent" | "accepted" | "rejected" | "expired";
 
@@ -69,8 +70,51 @@ export type TcsDto = Omit<Quotation_tcs, "created_at" | "updated_at"> & {
   bank: BankDto;
 };
 
+export type Unit2 = Omit<Unit, "unit_desc" | "updated_at" | "created_at">;
+
 export type CreateQuotationPageData = {
   company: CompanyDto;
   quotationTypes: Quotation_type[];
   tcs: TcsDto[];
+  units: Unit2[];
+  currencies: Currency2[];
+};
+
+export type QuotationInputClientData = {
+  name: string | null;
+  ref: string | null;
+  contactPerson: string | null;
+  email: string | null;
+  phone: string | null;
+  boxNumber: number | null;
+  country: string | null;
+  city: string | null;
+  addressLine1: string | null;
+};
+
+export type QuotationClientData = {
+  name: string;
+  ref: string | null;
+  contactPerson: string | null;
+  email: string | null;
+  phone: string | null;
+  boxNumber: number | null;
+  country: string | null;
+  city: string | null;
+  addressLine1: string | null;
+};
+
+export type QuotationLineItem = {
+  id: number;
+  name?: string | null;
+  description?: string | null;
+  quantity?: number | null;
+  units?: number | null;
+  unitPrice?: number | null;
+};
+
+export type QuotationPriceSummary = {
+  subtotal: number;
+  vat: number;
+  finalTotal: number;
 };
