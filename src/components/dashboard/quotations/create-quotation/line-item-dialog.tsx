@@ -22,12 +22,15 @@ import {
   Grid2 as Grid,
   InputAdornment,
   MenuItem,
+  Paper,
+  PaperProps,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { QuotationLineItem } from "@/types/quotations.types";
 import { getTimeNum } from "@/utils/time";
+import Draggable from "react-draggable";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -37,6 +40,19 @@ const Transition = forwardRef(function Transition(
 ) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
+
+const PaperComponent = (props: PaperProps) => {
+  const nodeRef = React.useRef<HTMLDivElement>(null);
+  return (
+    <Draggable
+      nodeRef={nodeRef as React.RefObject<HTMLDivElement>}
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} ref={nodeRef} />
+    </Draggable>
+  );
+};
 
 type Props = {
   open: boolean;
@@ -110,11 +126,13 @@ const LineItemDialog = ({
         fullWidth={true}
         open={open}
         TransitionComponent={Transition}
+        PaperComponent={PaperComponent}
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        aria-labelledby="draggable-dialog-title"
       >
-        <DialogTitle>
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
           {mode === "new" ? "Add New Line Item" : "Update Line Item"}
         </DialogTitle>
         <DialogContent>

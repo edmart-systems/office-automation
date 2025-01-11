@@ -21,6 +21,7 @@ import NewQuotationPriceSummary from "./new-quotation-price-summary";
 import { Save } from "@mui/icons-material";
 import {
   CreateQuotationPageData,
+  QuotationError,
   QuotationInputClientData,
   QuotationLineItem,
   QuotationPriceSummary,
@@ -31,6 +32,14 @@ import { useAppDispatch } from "@/redux/store";
 import { setUnits } from "@/redux/slices/units.slice";
 import { setCurrencies } from "@/redux/slices/currencies.slice";
 import { Currency2 } from "@/types/currency.types";
+import { getTimeNum } from "@/utils/time";
+import {
+  verifyClientInfo,
+  verifyLineItems,
+  verifyTcs,
+} from "./create-quotation-methods";
+import QuotationErrors from "./quotation-errors";
+import { toast } from "react-toastify";
 
 const MyDivider = styled(Divider)(({ theme }) => ({
   background: theme.palette.mode === "dark" ? "#b8b8b8" : "#dadada",
@@ -52,10 +61,19 @@ const blankClientData: QuotationInputClientData = {
   addressLine1: "",
 };
 
+const blankLineItem = (id: number): QuotationLineItem => ({
+  id: id,
+  description: "",
+  name: "",
+  quantity: null,
+  unitPrice: null,
+  units: "",
+});
+
 const CreateQuotation = ({ baseData }: Props) => {
   const dispatch = useAppDispatch();
   const date = new Date();
-  const quotationId = date.getTime();
+  const quotationId = getTimeNum(date);
   const { company, quotationTypes, tcs, units, currencies } = baseData;
   const [editTcs, setEditTcs] = useState<boolean>(false);
   const [selectedQuoteType, setSelectedQuoteType] = useState<Quotation_type>(
@@ -67,7 +85,9 @@ const CreateQuotation = ({ baseData }: Props) => {
   );
   const [clientData, setClientData] =
     useState<QuotationInputClientData>(blankClientData);
-  const [lineItems, setLineItems] = useState<QuotationLineItem[]>([{ id: 1 }]);
+  const [lineItems, setLineItems] = useState<QuotationLineItem[]>([
+    blankLineItem(quotationId),
+  ]);
   const [priceSummary, setPriceSummary] = useState<QuotationPriceSummary>({
     subtotal: 0,
     vat: 0,
@@ -75,6 +95,9 @@ const CreateQuotation = ({ baseData }: Props) => {
   });
   const [isCalculating, startCalculation] = useTransition();
   const [excludeVat, setExcludeVat] = useState<boolean>(false);
+  const [quotationErrors, setQuotationErrors] = useState<QuotationError[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
   const calculatePrices = () => {
     startCalculation(() => {
       let subtotal = 0;
@@ -99,6 +122,41 @@ const CreateQuotation = ({ baseData }: Props) => {
     dispatch(setUnits(units));
     dispatch(setCurrencies(currencies));
   }, []);
+
+  const resetErrors = () => {
+    setQuotationErrors([]);
+  };
+
+  const submitQuotation = () => {
+    resetErrors();
+
+    const errArr: QuotationError[] = [];
+
+    const tcsCheckRes = verifyTcs({
+      selectedTcs: selectedTcs,
+      quotationType: selectedQuoteType,
+      editTcs: editTcs,
+    });
+
+    const clientInfoCheckRes = verifyClientInfo(clientData);
+
+    const lineItemsCheckRes = verifyLineItems(lineItems);
+
+    typeof tcsCheckRes !== "boolean" && errArr.push(...tcsCheckRes);
+    typeof clientInfoCheckRes !== "boolean" &&
+      errArr.push(...clientInfoCheckRes);
+    typeof lineItemsCheckRes !== "boolean" && errArr.push(...lineItemsCheckRes);
+
+    if (errArr.length > 0) {
+      toast("Your quotation has issues. Please resolve them to submit", {
+        type: "error",
+      });
+      setQuotationErrors(errArr);
+      return;
+    }
+
+    // setIsFetching(true);
+  };
 
   // useEffect(() => {
   //   const newSelectedTc = tcs.filter(
@@ -153,6 +211,15 @@ const CreateQuotation = ({ baseData }: Props) => {
             excludeVat={excludeVat}
             setExcludeVat={setExcludeVat}
           />
+          {quotationErrors.length > 0 && (
+            <>
+              <MyDivider />
+              <QuotationErrors
+                quotationErrors={quotationErrors}
+                closeFn={resetErrors}
+              />
+            </>
+          )}
         </Stack>
       </CardContent>
       <CardActions
@@ -179,7 +246,8 @@ const CreateQuotation = ({ baseData }: Props) => {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => console.log(clientData)}
+            disabled={isFetching}
+            onClick={submitQuotation}
           >
             Create Quotation
           </Button>

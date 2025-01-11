@@ -8,6 +8,7 @@ import { QuotationLineItem } from "@/types/quotations.types";
 import { Currency2 } from "@/types/currency.types";
 import LineItemDialog from "./line-item-dialog";
 import { getTimeNum } from "@/utils/time";
+import ClearListDialog from "./clear-list-dialog";
 
 type Props = {
   lineItems: QuotationLineItem[];
@@ -15,19 +16,30 @@ type Props = {
   selectedCurrency: Currency2;
 };
 
+const blankLineItem = (id: number): QuotationLineItem => ({
+  id: id,
+  description: "",
+  name: "",
+  quantity: null,
+  unitPrice: null,
+  units: "",
+});
+
 const QuotationListItems = ({
   lineItems,
   setLineItems,
   selectedCurrency,
 }: Props) => {
   const [openAddNewItem, setOpenNewItem] = useState<boolean>(false);
+  const [openClearListDialog, setOpenClearListDialog] =
+    useState<boolean>(false);
 
   const incrementItems = () => {
     if (lineItems.length >= 3) {
       setOpenNewItem(true);
       return;
     }
-    setLineItems((prev) => [...prev, { id: getTimeNum() }]);
+    setLineItems((prev) => [...prev, blankLineItem(getTimeNum())]);
   };
 
   const addFullItem = (item: QuotationLineItem) => {
@@ -58,8 +70,8 @@ const QuotationListItems = ({
     );
   };
 
-  const ClearList = () => {
-    setLineItems([{ id: getTimeNum() }]);
+  const clearList = () => {
+    setLineItems([blankLineItem(getTimeNum())]);
   };
 
   return (
@@ -96,7 +108,7 @@ const QuotationListItems = ({
             variant="outlined"
             color="error"
             startIcon={<Clear />}
-            onClick={ClearList}
+            onClick={() => setOpenClearListDialog(true)}
           >
             Clear List
           </Button>
@@ -110,6 +122,13 @@ const QuotationListItems = ({
           setOpen={setOpenNewItem}
           selectedCurrency={selectedCurrency}
           addFn={addFullItem}
+        />
+      )}
+      {openClearListDialog && (
+        <ClearListDialog
+          open={openClearListDialog}
+          setOpen={setOpenClearListDialog}
+          clearListFn={clearList}
         />
       )}
     </Stack>

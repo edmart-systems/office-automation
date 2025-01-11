@@ -109,7 +109,7 @@ export type QuotationLineItem = {
   name?: string | null;
   description?: string | null;
   quantity?: number | null;
-  units?: number | null;
+  units?: string | null;
   unitPrice?: number | null;
 };
 
@@ -117,4 +117,15 @@ export type QuotationPriceSummary = {
   subtotal: number;
   vat: number;
   finalTotal: number;
+};
+
+export type QuotationError = {
+  id?: number;
+  message: string;
+  origin: "TCs" | "Client Info" | "Line Items";
+};
+
+export type QuotationTcsItemRange = {
+  min: number;
+  max: number;
 };

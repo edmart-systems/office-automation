@@ -36,7 +36,7 @@ const QuotationTableUser = ({ openQuotation }: Props) => {
           }}
           onClick={openQuotation}
         >
-          QUO-107
+          Q250111002
         </Typography>
         <Typography variant="caption">{userName}</Typography>
       </Stack>

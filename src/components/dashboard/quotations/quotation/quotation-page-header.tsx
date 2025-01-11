@@ -25,7 +25,7 @@ const QuotationPageHead = ({}: Props) => {
           // fontSize="24px"
           alignItems="center"
         >
-          {`QUO-107`}&ensp;
+          {`Q250111002`}&ensp;
           <QuotationStatusChip status="accepted" />
         </Typography>
         <Typography variant="body1" color="textSecondary">

@@ -24,7 +24,7 @@ const IntroItem = ({ title, content }: IntroItemProps) => {
 const QuotationDetails = () => {
   return (
     <Stack spacing={1} justifyContent="flex-start">
-      <IntroItem title="Number" content="QUO-107" />
+      <IntroItem title="Number" content="Q250111002" />
       <IntroItem title="Currency" content="UGX" />
       <IntroItem
         title="Issue Date"
