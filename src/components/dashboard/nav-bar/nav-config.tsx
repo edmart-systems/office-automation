@@ -30,7 +30,6 @@ const navItems: NavItemConfig[] = [
     title: "Invoices",
     href: paths.dashboard.invoices.main,
     icon: "invoice",
-    disabled: true,
     adminOnly: false,
   },
   {

@@ -130,7 +130,7 @@ export type QuotationTcsItemRange = {
   max: number;
 };
 
-export type QuotationDraft = {
+export type NewQuotation = {
   quotationId: number;
   time: number;
   type: Quotation_type;

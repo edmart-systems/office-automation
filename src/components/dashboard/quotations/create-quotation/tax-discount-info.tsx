@@ -20,7 +20,7 @@ const TaxDiscountInfo = ({ selectedTcs, excludeVat }: Props) => {
         Discount
       </Typography>
       <Grid container spacing={3}>
-        <Grid size={6}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Discount"
             value="0"
@@ -37,7 +37,7 @@ const TaxDiscountInfo = ({ selectedTcs, excludeVat }: Props) => {
         {/* <Grid size={4}>
           <TextField label="Shipping Rate" value={0} size="small" fullWidth />
         </Grid> */}
-        <Grid size={6}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Tax Rate"
             value={excludeVat ? "" : selectedTcs.vat_percentage}

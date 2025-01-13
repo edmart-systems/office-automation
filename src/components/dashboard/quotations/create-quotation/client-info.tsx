@@ -40,7 +40,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
         Client Information
       </Typography>
       <Grid container spacing={3}>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Name"
             value={clientData.name}
@@ -51,7 +51,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="External Ref"
             value={clientData.ref}
@@ -62,7 +62,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Contact Person"
             value={clientData.contactPerson}
@@ -76,7 +76,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Email"
             value={clientData.email}
@@ -87,7 +87,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Phone"
             value={clientData.phone}
@@ -98,7 +98,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Box Number"
             value={clientData.boxNumber}
@@ -114,7 +114,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }}
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Country"
             value={clientData.country}
@@ -125,7 +125,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="City"
             value={clientData.city}
@@ -136,7 +136,7 @@ const ClientInfo = ({ clientData, setClientData }: Props) => {
             }
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Street Address"
             value={clientData.addressLine1}

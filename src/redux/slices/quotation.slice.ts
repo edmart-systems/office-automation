@@ -1,12 +1,12 @@
 import {
-  QuotationDraft,
+  NewQuotation,
   QuotationDraftSummary,
   Unit2,
 } from "@/types/quotations.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface QuotationState {
-  quotations: QuotationDraft[];
+  quotations: NewQuotation[];
   summary: QuotationDraftSummary[];
 }
 
@@ -15,7 +15,7 @@ const initialState: QuotationState = {
   summary: [],
 };
 
-const createSummary = (draft: QuotationDraft): QuotationDraftSummary => {
+const createSummary = (draft: NewQuotation): QuotationDraftSummary => {
   const { quotationId, clientData } = draft;
   const clientName = clientData.name;
   const contactPerson = clientData.contactPerson;
@@ -33,10 +33,10 @@ const quotationsSlice = createSlice({
   name: "quotations",
   initialState: initialState,
   reducers: {
-    saveQuotationDraft: (state, action: PayloadAction<QuotationDraft>) => {
+    saveQuotationDraft: (state, action: PayloadAction<NewQuotation>) => {
       if (state.summary.length >= 5) return;
 
-      const draft = action.payload as QuotationDraft;
+      const draft = action.payload as NewQuotation;
       const { quotationId } = draft;
 
       const existingIndex = state.summary.findIndex(

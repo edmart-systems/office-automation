@@ -158,7 +158,7 @@ const BasicInfo = ({
         Basic Information
       </Typography>
       <Grid container spacing={3}>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Quotation Number"
             value="Auto Generated"
@@ -166,7 +166,7 @@ const BasicInfo = ({
             fullWidth
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Issue Date"
             value={fDate(date)}
@@ -183,10 +183,10 @@ const BasicInfo = ({
             }}
           />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField label="TIN" value={tin} size="small" fullWidth />
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Currency</InputLabel>
             <Select
@@ -211,7 +211,7 @@ const BasicInfo = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
               Quotation Type
@@ -234,7 +234,7 @@ const BasicInfo = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
           <TextField
             label="Validity"
             value={selectedTcs.edited_validity_days}
@@ -251,7 +251,7 @@ const BasicInfo = ({
           />
         </Grid>
         {selectedQuoteType.type_id === 1 ? (
-          <Grid size={{ lg: 6, md: 6, sm: 12 }}>
+          <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
             <TextField
               label="Payment Grace Period"
               value={selectedTcs.edited_payment_grace_days}
@@ -268,8 +268,8 @@ const BasicInfo = ({
             />
           </Grid>
         ) : (
-          <Grid size={{ lg: 6, md: 6, sm: 12 }} container spacing={1}>
-            <Grid size={6}>
+          <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }} container spacing={1}>
+            <Grid size={{ lg: 6, md: 6, sm: 6, xs: 12 }}>
               <TextField
                 label="Payment % On Commissioning"
                 value={selectedTcs.edited_initial_payment_percentage}
@@ -285,7 +285,7 @@ const BasicInfo = ({
                 }}
               />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ lg: 6, md: 6, sm: 6, xs: 12 }}>
               <TextField
                 label="Payment % On Completion"
                 value={selectedTcs.edited_last_payment_percentage}

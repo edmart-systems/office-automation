@@ -139,7 +139,7 @@ const QuotationDraftsMenu = () => {
           <MenuItem key={4004534} onClick={handleClose}>
             <Box
               component="img"
-              alt="Under development"
+              alt="No items"
               src="/assets/Empty.gif"
               borderRadius={2}
               sx={{

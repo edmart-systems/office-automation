@@ -1,16 +1,22 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { Metadata } from "next";
 
-const Page = () => {
+export const metadata: Metadata = {
+  title: "Single Invoice | Office X",
+  description: "Office Automation System",
+};
+
+const SettingsPage = () => {
   return (
     <Stack spacing={3}>
       <Stack spacing={1} sx={{ flex: "1 1 auto" }}>
-        <Typography variant="h4">Dashboard</Typography>
+        <Typography variant="h4">Single Invoice</Typography>
       </Stack>
       <Stack width="100%" justifyContent="center" alignItems="center">
         <Box
           component="img"
           alt="Dash"
-          src="/assets/Site_Stats.gif"
+          src="/assets/Invoice.gif"
           borderRadius={2}
           sx={{
             display: "inline-block",
@@ -25,4 +31,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default SettingsPage;

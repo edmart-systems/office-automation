@@ -21,7 +21,7 @@ import NewQuotationPriceSummary from "./new-quotation-price-summary";
 import { Save } from "@mui/icons-material";
 import {
   CreateQuotationPageData,
-  QuotationDraft,
+  NewQuotation,
   QuotationDraftSummary,
   QuotationError,
   QuotationInputClientData,
@@ -263,7 +263,7 @@ const CreateQuotation = ({ baseData }: Props) => {
       return;
     }
 
-    const quotationDraft: QuotationDraft = {
+    const quotationDraft: NewQuotation = {
       quotationId: quotationId,
       time: getTimeNum(quotationDate),
       type: selectedQuoteType,

@@ -1,7 +1,7 @@
 "use server";
 
 import React, { Suspense } from "react";
-import { Stack, Typography } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 import PageGoBack from "@/components/dashboard/common/page-go-back";
 import CreateQuotation from "@/components/dashboard/quotations/create-quotation/create-quotation";
 import { CreateQuotationPageData } from "@/types/quotations.types";
@@ -41,12 +41,12 @@ const CreateQuotationPage = async () => {
       </Stack>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4">Create Quotation</Typography>
-        <Suspense fallback={<Typography variant="caption">...</Typography>}>
+        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
           <QuotationDraftsMenu />
         </Suspense>
       </Stack>
       <Stack>
-        <Suspense fallback={<Typography variant="caption">...</Typography>}>
+        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
           <CreateQuotation baseData={data} />
         </Suspense>
       </Stack>
