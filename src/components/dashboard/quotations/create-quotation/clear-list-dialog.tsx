@@ -27,9 +27,15 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   clearListFn: () => void;
+  isResetFields?: boolean;
 };
 
-const ClearListDialog = ({ open, setOpen, clearListFn }: Props) => {
+const ClearListDialog = ({
+  open,
+  setOpen,
+  clearListFn,
+  isResetFields,
+}: Props) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -50,10 +56,15 @@ const ClearListDialog = ({ open, setOpen, clearListFn }: Props) => {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Confirm Clearing List.</DialogTitle>
+        <DialogTitle>
+          {isResetFields
+            ? "Confirm resetting all fields"
+            : "Confirm Clearing List."}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Are you sure you want to delete all items?
+            Are you sure you want to{" "}
+            {isResetFields ? "clear all fields" : "delete all items"}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

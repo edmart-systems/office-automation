@@ -1,0 +1,79 @@
+import {
+  QuotationDraft,
+  QuotationDraftSummary,
+  Unit2,
+} from "@/types/quotations.types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface QuotationState {
+  quotations: QuotationDraft[];
+  summary: QuotationDraftSummary[];
+}
+
+const initialState: QuotationState = {
+  quotations: [],
+  summary: [],
+};
+
+const createSummary = (draft: QuotationDraft): QuotationDraftSummary => {
+  const { quotationId, clientData } = draft;
+  const clientName = clientData.name;
+  const contactPerson = clientData.contactPerson;
+
+  return {
+    name: (clientName
+      ? `${clientName}${contactPerson ? ` (${contactPerson})` : ""}`
+      : contactPerson || "Unknown"
+    ).substring(0, 24),
+    quotationId,
+  };
+};
+
+const quotationsSlice = createSlice({
+  name: "quotations",
+  initialState: initialState,
+  reducers: {
+    saveQuotationDraft: (state, action: PayloadAction<QuotationDraft>) => {
+      if (state.summary.length >= 5) return;
+
+      const draft = action.payload as QuotationDraft;
+      const { quotationId } = draft;
+
+      const existingIndex = state.summary.findIndex(
+        (item) => item.quotationId === quotationId
+      );
+
+      const summary = createSummary(draft);
+
+      if (existingIndex >= 0) {
+        state.quotations[existingIndex] = draft;
+        state.summary[existingIndex] = summary;
+        return;
+      }
+
+      state.quotations.push(draft);
+      state.summary.push(summary);
+      return;
+    },
+    removeQuotationDraft: (state, action: PayloadAction<number>) => {
+      const draftId = action.payload as number;
+      state.quotations = state.quotations.filter(
+        (item) => item.quotationId !== draftId
+      );
+      state.summary = state.summary.filter(
+        (item) => item.quotationId !== draftId
+      );
+    },
+    clearQuotationDrafts: (state) => {
+      state.quotations = [];
+      state.summary = [];
+    },
+  },
+});
+
+export const {
+  saveQuotationDraft,
+  clearQuotationDrafts,
+  removeQuotationDraft,
+} = quotationsSlice.actions;
+export const quotationsReducer = quotationsSlice.reducer;

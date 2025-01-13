@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface AppState {
   notificationsBar: boolean;
@@ -12,7 +12,7 @@ const appSlice = createSlice({
   name: "app",
   initialState: initialState,
   reducers: {
-    setNotificationsDrawer: (state, action) => {
+    setNotificationsDrawer: (state, action: PayloadAction<boolean>) => {
       state.notificationsBar = action.payload as boolean;
     },
   },

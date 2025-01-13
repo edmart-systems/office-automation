@@ -1,11 +1,11 @@
 import { Unit2 } from "@/types/quotations.types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface ThemeState {
+export interface UnitsState {
   units: Unit2[] | null;
 }
 
-const initialState: ThemeState = {
+const initialState: UnitsState = {
   units: null,
 };
 
@@ -13,8 +13,8 @@ const unitsSlice = createSlice({
   name: "units",
   initialState: initialState,
   reducers: {
-    setUnits: (state, action) => {
-      state.units = action.payload as Unit2[];
+    setUnits: (state, action: PayloadAction<Unit2[]>) => {
+      state.units = action.payload;
     },
   },
 });

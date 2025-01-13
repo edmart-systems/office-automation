@@ -129,3 +129,20 @@ export type QuotationTcsItemRange = {
   min: number;
   max: number;
 };
+
+export type QuotationDraft = {
+  quotationId: number;
+  time: number;
+  type: Quotation_type;
+  tcsEdited: boolean;
+  vatExcluded: boolean;
+  tcs: TcsDto;
+  currency: Currency2;
+  clientData: QuotationInputClientData;
+  lineItems: QuotationLineItem[];
+};
+
+export type QuotationDraftSummary = {
+  quotationId: number;
+  name: string;
+};

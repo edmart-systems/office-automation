@@ -9,6 +9,7 @@ import { appReducer } from "./slices/app.slice";
 import { notificationsReducer } from "./slices/notifications.slice";
 import { unitsReducer } from "./slices/units.slice";
 import { currenciesReducer } from "./slices/currencies.slice";
+import { quotationsReducer } from "./slices/quotation.slice";
 
 const createNoopStorage = () => {
   return {
@@ -54,6 +55,11 @@ const currenciesPersistConfig = {
   storage: fixedStorage,
 };
 
+const quotationsPersistConfig = {
+  key: "quotations",
+  storage: fixedStorage,
+};
+
 const rootReducer = combineReducers({
   theme: persistReducer(themePersistConfig, themeReducer),
   app: persistReducer(appSlicePersistConfig, appReducer),
@@ -63,6 +69,7 @@ const rootReducer = combineReducers({
   ),
   units: persistReducer(unitsPersistConfig, unitsReducer),
   currencies: persistReducer(currenciesPersistConfig, currenciesReducer),
+  quotations: persistReducer(quotationsPersistConfig, quotationsReducer),
 });
 
 export const store = configureStore({

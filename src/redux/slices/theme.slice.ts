@@ -1,5 +1,5 @@
 import { ColorScheme } from "@/styles/theme/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ThemeState {
   mode: ColorScheme | null;
@@ -13,7 +13,7 @@ const themeSlice = createSlice({
   name: "theme",
   initialState: initialState,
   reducers: {
-    setThemeMode: (state, action) => {
+    setThemeMode: (state, action: PayloadAction<ColorScheme>) => {
       const newMode = action.payload as ColorScheme;
       state.mode = newMode;
     },

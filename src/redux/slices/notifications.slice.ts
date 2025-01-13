@@ -1,6 +1,6 @@
 import { AppNotification } from "@/types/app.types";
 import { dummyNotifications } from "@/utils/dummies";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface NotificationsState {
   notifications: AppNotification[];
@@ -18,14 +18,14 @@ const notificationsSlice = createSlice({
   name: "notifications",
   initialState: initialState,
   reducers: {
-    addNotification: (state, action) => {
-      const _new = action.payload as AppNotification;
+    addNotification: (state, action: PayloadAction<AppNotification>) => {
+      const _new = action.payload;
       state.notifications.push(_new);
       state.count += 1;
       state.unread += 1;
     },
-    deleteNotification: (state, action) => {
-      const removeId = action.payload as string;
+    deleteNotification: (state, action: PayloadAction<string>) => {
+      const removeId = action.payload;
       const omitted = state.notifications.find((item) => item.id === removeId);
 
       if (!omitted) {
@@ -38,7 +38,7 @@ const notificationsSlice = createSlice({
       state.count -= 1;
       !omitted.isRead ? (state.unread -= 1) : "";
     },
-    markNotificationAsRead: (state, action) => {
+    markNotificationAsRead: (state, action: PayloadAction<string>) => {
       const id = action.payload as string;
       const altered = state.notifications.find((item) => item.id === id);
 

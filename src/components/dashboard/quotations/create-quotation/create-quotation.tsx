@@ -21,6 +21,8 @@ import NewQuotationPriceSummary from "./new-quotation-price-summary";
 import { Save } from "@mui/icons-material";
 import {
   CreateQuotationPageData,
+  QuotationDraft,
+  QuotationDraftSummary,
   QuotationError,
   QuotationInputClientData,
   QuotationLineItem,
@@ -28,18 +30,22 @@ import {
   TcsDto,
 } from "@/types/quotations.types";
 import { Quotation_type } from "@prisma/client";
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setUnits } from "@/redux/slices/units.slice";
 import { setCurrencies } from "@/redux/slices/currencies.slice";
 import { Currency2 } from "@/types/currency.types";
 import { getTimeNum } from "@/utils/time";
 import {
   verifyClientInfo,
+  verifyClientInfoOnDraft,
   verifyLineItems,
   verifyTcs,
 } from "./create-quotation-methods";
 import QuotationErrors from "./quotation-errors";
 import { toast } from "react-toastify";
+import { saveQuotationDraft } from "@/redux/slices/quotation.slice";
+import { useSearchParams } from "next/navigation";
+import ClearListDialog from "./clear-list-dialog";
 
 const MyDivider = styled(Divider)(({ theme }) => ({
   background: theme.palette.mode === "dark" ? "#b8b8b8" : "#dadada",
@@ -71,10 +77,18 @@ const blankLineItem = (id: number): QuotationLineItem => ({
 });
 
 const CreateQuotation = ({ baseData }: Props) => {
+  const { quotations: draftQuotations } = useAppSelector(
+    (state) => state.quotations
+  );
   const dispatch = useAppDispatch();
-  const date = new Date();
-  const quotationId = getTimeNum(date);
+  const searchParams = useSearchParams();
+  const selectedDraftParams = searchParams.get("draft");
+  const quotationDate = new Date();
   const { company, quotationTypes, tcs, units, currencies } = baseData;
+
+  const [quotationId, setQuotationId] = useState<number>(
+    getTimeNum(quotationDate)
+  );
   const [editTcs, setEditTcs] = useState<boolean>(false);
   const [selectedQuoteType, setSelectedQuoteType] = useState<Quotation_type>(
     quotationTypes[0]
@@ -97,6 +111,7 @@ const CreateQuotation = ({ baseData }: Props) => {
   const [excludeVat, setExcludeVat] = useState<boolean>(false);
   const [quotationErrors, setQuotationErrors] = useState<QuotationError[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [openResetFields, setOpenResetField] = useState<boolean>(false);
 
   const calculatePrices = () => {
     startCalculation(() => {
@@ -114,6 +129,53 @@ const CreateQuotation = ({ baseData }: Props) => {
     });
   };
 
+  const resetQuotation = () => {
+    if (isFetching) return;
+    setQuotationErrors([]);
+    setSelectedQuoteType(quotationTypes[0]);
+    setEditTcs(false);
+    setSelectedTcs(tcs[0]);
+    setSelectedCurrency(currencies[0]);
+    setClientData(blankClientData);
+    setExcludeVat(false);
+    setLineItems([blankLineItem(quotationId)]);
+  };
+
+  const setSelectedDraftHandler = () => {
+    try {
+      if (!selectedDraftParams) return;
+      if (!draftQuotations || draftQuotations.length < 1) return;
+
+      const draftQuotationId = parseInt(selectedDraftParams, 10);
+
+      const selectedDraft = draftQuotations.find(
+        (item) => item.quotationId === draftQuotationId
+      );
+
+      if (!selectedDraft) return;
+
+      setQuotationErrors([]);
+      setSelectedQuoteType(selectedDraft.type);
+      setQuotationId(selectedDraft.quotationId);
+      setEditTcs(selectedDraft.tcsEdited);
+      setSelectedTcs(selectedDraft.tcs);
+      setSelectedCurrency(selectedDraft.currency);
+      setClientData(selectedDraft.clientData);
+      setExcludeVat(selectedDraft.vatExcluded);
+      setLineItems(selectedDraft.lineItems);
+
+      toast("Quotation Draft Opened Successfully", {
+        type: "success",
+      });
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    setSelectedDraftHandler();
+  }, [selectedDraftParams]);
+
   useEffect(() => {
     calculatePrices();
   }, [lineItems, excludeVat]);
@@ -128,6 +190,8 @@ const CreateQuotation = ({ baseData }: Props) => {
   };
 
   const submitQuotation = () => {
+    if (isFetching) return;
+
     resetErrors();
 
     const errArr: QuotationError[] = [];
@@ -155,7 +219,67 @@ const CreateQuotation = ({ baseData }: Props) => {
       return;
     }
 
+    const newQuotation = {
+      quotationId: quotationId,
+      time: getTimeNum(quotationDate),
+      type: selectedQuoteType,
+      tcsEdited: editTcs,
+      vatExcluded: excludeVat,
+      tcs: selectedTcs,
+      clientData: clientData,
+      lineItems: lineItems,
+    };
+
     // setIsFetching(true);
+  };
+
+  const saveQuotationDraftHandler = () => {
+    if (draftQuotations.length >= 5) {
+      toast(
+        "Your draft box is full. You can only keep a max of 5 quotation drafts.",
+        {
+          type: "warning",
+        }
+      );
+
+      return;
+    }
+    setQuotationErrors([]);
+    const errArr: QuotationError[] = [];
+
+    const clientInfoCheckRes = verifyClientInfoOnDraft(clientData);
+
+    typeof clientInfoCheckRes !== "boolean" &&
+      errArr.push(...clientInfoCheckRes);
+
+    if (errArr.length > 0) {
+      toast(
+        "Your quotation has issues. Please resolve them to save as a draft",
+        {
+          type: "error",
+        }
+      );
+      setQuotationErrors(errArr);
+      return;
+    }
+
+    const quotationDraft: QuotationDraft = {
+      quotationId: quotationId,
+      time: getTimeNum(quotationDate),
+      type: selectedQuoteType,
+      tcsEdited: editTcs,
+      vatExcluded: excludeVat,
+      tcs: selectedTcs,
+      currency: selectedCurrency,
+      clientData: clientData,
+      lineItems: lineItems,
+    };
+
+    dispatch(saveQuotationDraft(quotationDraft));
+
+    toast("Quotation Draft Saved Successfully", {
+      type: "success",
+    });
   };
 
   // useEffect(() => {
@@ -179,7 +303,7 @@ const CreateQuotation = ({ baseData }: Props) => {
             tcs={tcs}
             editTcs={editTcs}
             setEditTcs={setEditTcs}
-            date={date}
+            date={quotationDate}
             selectedCurrency={selectedCurrency}
             setSelectedCurrency={setSelectedCurrency}
           />
@@ -231,7 +355,11 @@ const CreateQuotation = ({ baseData }: Props) => {
       >
         <Stack>
           <Tooltip title="Save As Draft" arrow>
-            <IconButton color="secondary" size="large">
+            <IconButton
+              color="secondary"
+              size="large"
+              onClick={saveQuotationDraftHandler}
+            >
               <Save />
             </IconButton>
           </Tooltip>
@@ -240,8 +368,13 @@ const CreateQuotation = ({ baseData }: Props) => {
           </Button> */}
         </Stack>
         <Stack direction="row" spacing={2}>
-          <Button color="error" variant="outlined">
-            Cancel
+          <Button
+            color="error"
+            variant="outlined"
+            disabled={isFetching}
+            onClick={() => setOpenResetField(true)}
+          >
+            Reset Quotation
           </Button>
           <Button
             color="primary"
@@ -253,6 +386,14 @@ const CreateQuotation = ({ baseData }: Props) => {
           </Button>
         </Stack>
       </CardActions>
+      {openResetFields && (
+        <ClearListDialog
+          open={openResetFields}
+          setOpen={setOpenResetField}
+          clearListFn={resetQuotation}
+          isResetFields
+        />
+      )}
     </Card>
   );
 };

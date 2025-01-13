@@ -248,3 +248,38 @@ export const verifyLineItems = (
 
   return errArr.length > 0 ? errArr : true;
 };
+
+export const verifyClientInfoOnDraft = (
+  clientData: QuotationInputClientData
+): boolean | QuotationError[] => {
+  const errArr: QuotationError[] = [];
+  let atLeastNameOrContactPerson = false;
+
+  Object.keys(clientData).forEach((_key) => {
+    const key = _key as keyof QuotationClientData;
+    const value = clientData[key];
+    try {
+      if (
+        (key === "name" && value && String(value).length > 5) ||
+        (key === "contactPerson" && value && String(value).length > 5)
+      ) {
+        atLeastNameOrContactPerson = true;
+      }
+    } catch (err) {
+      console.log(err);
+      errArr.push({
+        message: `Invalid inputs on field ${capitalizeFirstLetter(key)}`,
+        origin: "Client Info",
+      });
+    }
+  });
+
+  if (!atLeastNameOrContactPerson) {
+    errArr.push({
+      message: `At least the client name or contact person must be provided, with at least 5 characters.`,
+      origin: "Client Info",
+    });
+  }
+
+  return errArr.length > 0 ? errArr : true;
+};
