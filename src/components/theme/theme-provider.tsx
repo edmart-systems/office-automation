@@ -9,7 +9,7 @@ import { createTheme } from "@/styles/theme/create-theme";
 import { useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { setThemeMode } from "@/redux/slices/theme.slice";
-import ScreenLoader from "../errors/screen-loading";
+import ScreenLoader from "../common/screen-loading";
 import nProgress from "nprogress";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";

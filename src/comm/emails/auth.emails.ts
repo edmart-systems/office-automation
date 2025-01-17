@@ -1,8 +1,8 @@
 "use server";
 import { UserRegInfo } from "@/types/user.types";
 import { emailVerCodeOtpEmailTemplate } from "./templates/email-verification-otp-mail-template";
-import { SendEmailDto } from "@/types/comm.types";
-import { systemEmailSender } from "@/utils/comm.utils";
+import { SendEmailDto } from "@/types/communication.types";
+import { systemEmailSender } from "@/utils/communication.utils";
 import { sendEmail } from "@/comm/emails/emails.config";
 
 export const sendEmailVerificationOtp = async ({

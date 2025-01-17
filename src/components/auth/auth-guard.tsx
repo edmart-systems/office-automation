@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { paths } from "@/utils/paths.utils";
 import { logger } from "@/logger/default-logger";
 import { signOut, useSession } from "next-auth/react";
-import ScreenLoader from "../errors/screen-loading";
+import ScreenLoader from "../common/screen-loading";
 import nProgress from "nprogress";
 import { toast } from "react-toastify";
 

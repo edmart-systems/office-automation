@@ -1,6 +1,6 @@
 "use server";
 
-import { SendSmsDto } from "@/types/comm.types";
+import { SendSmsDto } from "@/types/communication.types";
 import { sendSms } from "./sms.config";
 
 export const sendSmsVerificationOtp = async ({

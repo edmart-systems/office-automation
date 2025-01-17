@@ -1,5 +1,6 @@
 "use client";
 
+import { isDateExpired } from "@/utils/time";
 import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import React, { Fragment, ReactNode, useEffect } from "react";
@@ -12,9 +13,7 @@ const timeInterval = 0.8 * 60 * 1000; // 0.8 of a Minute
 
 const checkIsSessionExpired = (session: Session): boolean => {
   const { expires } = session;
-  const now = new Date().getTime();
-  const expiry = new Date(expires).getTime();
-  return expiry < now; // True if Expired
+  return isDateExpired(expires); // True if Expired
 };
 
 export const checkSessionExpiration = async (

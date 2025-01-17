@@ -399,19 +399,14 @@ export class UserService {
   }): Promise<string> => {
     try {
       const date = new Date();
-      const mmStr = `${date.getMonth() + 1}`;
-      const _mmStr = mmStr.length === 1 ? `0${mmStr}` : `${mmStr}`;
-      const yy = `${date.getFullYear()}`.substring(2);
+      const mmStr = String(date.getMonth() + 1).padStart(2, "0");
+      const yy = String(date.getFullYear()).substring(2);
       const firstPart = firstTime ? "TEMP" : "ESUL";
-      const secondPart = _mmStr + yy;
+      const secondPart = mmStr + yy;
       const newUserNumber: number =
         (await this.userRepo.countExistingUsers(firstPart + secondPart)) + 1;
-      const thirdPart =
-        newUserNumber < 10
-          ? `00${newUserNumber}`
-          : newUserNumber < 100
-          ? `0${newUserNumber}`
-          : `${newUserNumber}`;
+      const thirdPart = String(newUserNumber).padStart(3, "0");
+
       const newUserId = firstPart + secondPart + thirdPart;
       return Promise.resolve(newUserId);
     } catch (err) {

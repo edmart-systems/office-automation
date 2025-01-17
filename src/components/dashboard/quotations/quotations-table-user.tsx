@@ -6,13 +6,18 @@ import UserAvatar from "../nav-bar/user-avatar";
 import { userNameFormatter } from "@/utils/formatters.util";
 
 type Props = {
+  userName: string;
+  quotationId: string;
+  profilePic: string | null;
   openQuotation: () => void;
 };
 
-const QuotationTableUser = ({ openQuotation }: Props) => {
-  const userName = userNameFormatter("Nkangi", "Usaama");
-  const profilePic = "";
-
+const QuotationTableUser = ({
+  openQuotation,
+  quotationId,
+  userName,
+  profilePic,
+}: Props) => {
   const theme = useTheme();
 
   return (
@@ -36,7 +41,7 @@ const QuotationTableUser = ({ openQuotation }: Props) => {
           }}
           onClick={openQuotation}
         >
-          Q250111002
+          {quotationId}
         </Typography>
         <Typography variant="caption">{userName}</Typography>
       </Stack>

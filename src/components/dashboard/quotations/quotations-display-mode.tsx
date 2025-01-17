@@ -40,7 +40,7 @@ const QuotationsDisplayMode = () => {
     <Card sx={{ padding: "2px 10px" }}>
       <Tooltip title="Grouped" arrow>
         <IconButton
-          color={!viewParams || viewParams == "group" ? "primary" : undefined}
+          color={viewParams == "group" ? "primary" : undefined}
           onClick={() => setParams(1)}
         >
           <Rows />
@@ -48,7 +48,7 @@ const QuotationsDisplayMode = () => {
       </Tooltip>
       <Tooltip title="List" arrow>
         <IconButton
-          color={viewParams == "list" ? "primary" : undefined}
+          color={!viewParams || viewParams == "list" ? "primary" : undefined}
           onClick={() => setParams(0)}
         >
           <List />

@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
 
-import { persistReducer } from "redux-persist";
+import { PersistConfig, persistReducer } from "redux-persist";
 // import storage from "redux-persist/lib/storage";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { themeReducer } from "./slices/theme.slice";
@@ -10,6 +10,7 @@ import { notificationsReducer } from "./slices/notifications.slice";
 import { unitsReducer } from "./slices/units.slice";
 import { currenciesReducer } from "./slices/currencies.slice";
 import { quotationsReducer } from "./slices/quotation.slice";
+import { quotationSearchReducer } from "./slices/quotation-search.slice";
 
 const createNoopStorage = () => {
   return {
@@ -60,6 +61,12 @@ const quotationsPersistConfig = {
   storage: fixedStorage,
 };
 
+const quotationSearchPersistConfig = {
+  key: "quotationSearch",
+  storage: fixedStorage,
+  blacklist: ["params"],
+};
+
 const rootReducer = combineReducers({
   theme: persistReducer(themePersistConfig, themeReducer),
   app: persistReducer(appSlicePersistConfig, appReducer),
@@ -70,6 +77,10 @@ const rootReducer = combineReducers({
   units: persistReducer(unitsPersistConfig, unitsReducer),
   currencies: persistReducer(currenciesPersistConfig, currenciesReducer),
   quotations: persistReducer(quotationsPersistConfig, quotationsReducer),
+  quotationSearch: persistReducer(
+    quotationSearchPersistConfig,
+    quotationSearchReducer
+  ),
 });
 
 export const store = configureStore({

@@ -14,26 +14,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import {
-  compareFilters,
-  Quotation_Status,
-  QuotationFilterKeys,
-  QuotationFilters,
-} from "@/types/quotations.types";
+import { Quotation_Status, QuotationFilters } from "@/types/quotations.types";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
-import { useRouter, useSearchParams } from "next/navigation";
-import { paths } from "@/utils/paths.utils";
-import nProgress from "nprogress";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import {
+  clearQuotationSearchParams,
+  updateQuotationSearchParams,
+} from "@/redux/slices/quotation-search.slice";
 
 type Props = {
   closeHandler?: () => void;
 };
 
 const statuses: Quotation_Status[] = [
-  "all",
   "sent",
   "accepted",
   "rejected",
@@ -42,61 +38,58 @@ const statuses: Quotation_Status[] = [
 
 const today = (): string => {
   const date = new Date();
-  return `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
+  // return `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 };
 
-const initParamsState: QuotationFilters = {
+const initState: QuotationFilters = {
   id: "",
-  status: "all",
-  user: "You",
-  start: "01-01-2024",
+  status: "",
+  user: "",
+  client: "",
+  dataAltered: false,
+  start: "2024-01-01",
   end: today(),
 };
 
+const initStateStr = JSON.stringify(initState);
+
 const QuotationsFilterCard = ({ closeHandler }: Props) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [paramsSet, setParamsSet] = useState<boolean>(false);
-  const [prevParams, setPrevParams] =
-    useState<QuotationFilters>(initParamsState);
+  const { params: oldParams, isSearching } = useAppSelector(
+    (state) => state.quotationSearch
+  );
+  const dispatch = useAppDispatch();
+  const [newParams, setNewParams] = useState<QuotationFilters>(initState);
+  const [dateEdited, setDateEdited] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const [newParams, setNewParams] = useState<QuotationFilters>(initParamsState);
-
-  const onSubmit = () => {
-    const currentParams = new URLSearchParams(searchParams as any);
-    let somethingChanged = false;
-
-    const entries = Object.entries(newParams);
-
-    for (let i = 0; i < entries.length; i++) {
-      const [key, value] = entries[i];
-      const _key = key as QuotationFilterKeys;
-      if (!value) continue;
-      // if (prevParams[_key] === value) continue;
-      if (_key === "user" && value.length < 3) continue;
-      if (_key === "id" && value.length < 3) continue;
-
-      currentParams.delete(_key);
-      currentParams.append(_key, value);
-      somethingChanged = true;
-    }
-
-    if (!somethingChanged) return;
-
-    setParamsSet(true);
-
-    nProgress.start();
-    router.push(
-      paths.dashboard.quotations.main + `?${currentParams.toString()}`
-    );
+  const inputHandler = (target: keyof QuotationFilters, value: string) => {
+    isSubmitted && setIsSubmitted(false);
+    setNewParams((prev) => ({ ...prev, [target]: value }));
   };
 
-  const applyButtonNotReady: boolean = useMemo(() => {
-    paramsSet && setParamsSet(false);
-    return compareFilters(initParamsState, newParams);
-  }, [newParams, prevParams]);
+  const onSubmit = () => {
+    if (isSearching) return;
+    const structured: QuotationFilters = {
+      id: newParams.id,
+      status: newParams.status,
+      user: newParams.user,
+      client: newParams.client,
+      dataAltered: dateEdited,
+      start: newParams.start,
+      end: newParams.end,
+    };
+    const oldParamsStr = JSON.stringify(oldParams);
+    const newParamsStr = JSON.stringify(structured);
 
-  const setDate = (dayJsObj: Dayjs | null, target: string) => {
+    if (oldParamsStr === newParamsStr || newParamsStr === initStateStr) return;
+
+    dispatch(updateQuotationSearchParams(structured));
+    setIsSubmitted(true);
+    setDateEdited(false);
+  };
+
+  const setDate = (dayJsObj: Dayjs | null, target: "start" | "end") => {
     try {
       if (!dayJsObj) return;
 
@@ -108,33 +101,52 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
         throw new Error("Invalid date selection");
       }
 
-      if (target === "start") {
-        setNewParams((prev) => ({ ...prev, start: `${mm + 1}-${dd}-${yy}` }));
-      } else if (target === "end") {
-        setNewParams((prev) => ({ ...prev, end: `${mm + 1}-${dd}-${yy}` }));
-      }
+      const dateStr = `${yy}-${mm + 1}-${dd}`;
+      inputHandler(target, dateStr);
+
+      setDateEdited(true);
     } catch (err) {
       console.log(err);
     }
   };
 
   const onReset = () => {
-    const currentParams = new URLSearchParams(searchParams as any);
-
-    const entries = Object.entries(initParamsState);
-
-    for (let i = 0; i < entries.length; i++) {
-      const [key, value] = entries[i];
-      currentParams.delete(key);
-    }
-
-    router.push(
-      paths.dashboard.quotations.main + `?${currentParams.toString()}`
-    );
-    setPrevParams(initParamsState);
-    setNewParams(initParamsState);
+    setNewParams(initState);
+    setIsSubmitted(false);
+    setDateEdited(false);
+    dispatch(clearQuotationSearchParams());
     // closeHandler && closeHandler();
   };
+
+  useEffect(() => {
+    if (!oldParams) return;
+    // setNewParams(oldParams);
+    dispatch(clearQuotationSearchParams());
+  }, []);
+
+  useEffect(() => {
+    if (!oldParams) {
+      setNewParams(initState);
+      setIsSubmitted(false);
+    }
+  }, [oldParams]);
+
+  const applyBtnDisabled: boolean = useMemo(() => {
+    const structuredStr = JSON.stringify({
+      id: newParams.id,
+      status: newParams.status,
+      user: newParams.user,
+      client: newParams.client,
+      dataAltered: dateEdited,
+      start: newParams.start,
+      end: newParams.end,
+    });
+
+    return (
+      structuredStr === initStateStr &&
+      structuredStr === JSON.stringify(oldParams)
+    );
+  }, [newParams]);
 
   return (
     <Card sx={{ height: "fit-content" }}>
@@ -158,23 +170,33 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
         <Stack spacing={3}>
           <TextField
             label="Quotation Id"
+            placeholder="Q250116957"
             value={newParams.id}
-            onChange={(evt) =>
-              setNewParams((prev) => ({ ...prev, id: evt.target.value }))
-            }
+            disabled={isSearching}
+            // onChange={(evt) =>
+            //   setNewParams((prev) => ({ ...prev, id: evt.target.value }))
+            // }
+            onChange={(evt) => inputHandler("id", evt.target.value)}
           />
           <FormControl fullWidth>
             <InputLabel id="status-select-label">Status</InputLabel>
             <Select
               label="Status"
               value={newParams.status}
+              disabled={isSearching}
+              // onChange={(evt) =>
+              //   setNewParams((prev) => ({
+              //     ...prev,
+              //     status: evt.target.value as Quotation_Status,
+              //   }))
+              // }
               onChange={(evt) =>
-                setNewParams((prev) => ({
-                  ...prev,
-                  status: evt.target.value as Quotation_Status,
-                }))
+                inputHandler("status", evt.target.value as Quotation_Status)
               }
             >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
               {statuses.map((item, index) => {
                 return (
                   <MenuItem value={item} key={item + index}>
@@ -185,41 +207,48 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
             </Select>
           </FormControl>
           <TextField
-            label="User Name"
+            label="User First Name"
             value={newParams.user}
-            onChange={(evt) =>
-              setNewParams((prev) => ({ ...prev, user: evt.target.value }))
-            }
+            disabled={isSearching}
+            placeholder="First Name"
+            onChange={(evt) => inputHandler("user", evt.target.value)}
+          />
+          <TextField
+            label="Client"
+            value={newParams.client}
+            disabled={isSearching}
+            onChange={(evt) => inputHandler("client", evt.target.value)}
           />
           <DatePicker
             label="Start"
             disableFuture
             value={dayjs(newParams.start)}
+            disabled={isSearching}
             onChange={(date) => setDate(date, "start")}
           />
-
           <DatePicker
             label="End"
             disableFuture
             value={dayjs(newParams.end)}
+            disabled={isSearching}
             onChange={(date) => setDate(date, "end")}
           />
-
           <Stack spacing={1}>
             <Button
               variant="contained"
               size="large"
               onClick={onSubmit}
-              disabled={applyButtonNotReady || paramsSet}
+              // disabled={isSearching || applyBtnDisabled}
             >
               Apply
             </Button>
 
-            {paramsSet && (
+            {isSubmitted && (
               <Button
                 variant="outlined"
                 color="primary"
                 size="large"
+                disabled={isSearching}
                 onClick={onReset}
               >
                 Clear

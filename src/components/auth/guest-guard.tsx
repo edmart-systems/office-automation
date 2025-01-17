@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { paths } from "@/utils/paths.utils";
 import { signOut, useSession } from "next-auth/react";
-import ScreenLoader from "../errors/screen-loading";
+import ScreenLoader from "../common/screen-loading";
 import { toast } from "react-toastify";
 import nProgress from "nprogress";
 

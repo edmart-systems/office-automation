@@ -1,7 +1,7 @@
 "use server";
 
 import { UserRegInfo } from "@/types/user.types";
-import { SendSmsDto } from "@/types/comm.types";
+import { SendSmsDto } from "@/types/communication.types";
 import {
   codeGenerator,
   validateEmailAddress,

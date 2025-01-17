@@ -1,20 +1,17 @@
+import { getQuotationsSums } from "@/actions/quotations-actions/quotations.actions";
+import MyCircularProgress from "@/components/common/my-circular-progress";
 import FilterQuotationsDialog from "@/components/dashboard/quotations/filter-quotations-dialog";
 import QuotationsDisplayMode from "@/components/dashboard/quotations/quotations-display-mode";
+import QuotationsFetchingProgress from "@/components/dashboard/quotations/quotations-fetching-progress";
 import QuotationsFilterCard from "@/components/dashboard/quotations/quotations-filter-card";
 import QuotationsPageAnalytics from "@/components/dashboard/quotations/quotations-page-analytics";
 import QuotationsSortByTime from "@/components/dashboard/quotations/quotations-sort-by-time";
 import QuotationsTableContainer from "@/components/dashboard/quotations/quotations-table-container";
-import { QuotationsAnalyticSummary } from "@/types/quotations.types";
+import { ActionResponse } from "@/types/actions-response.types";
+import { QuotationStatusCounts } from "@/types/quotations.types";
 import { paths } from "@/utils/paths.utils";
-import { Add, AddCircle } from "@mui/icons-material";
-import {
-  Button,
-  Card,
-  CircularProgress,
-  Grid2 as Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { AddCircle } from "@mui/icons-material";
+import { Button, Grid2 as Grid, Stack, Typography } from "@mui/material";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -24,25 +21,32 @@ export const metadata: Metadata = {
   description: "Office Automation System",
 };
 
-const QuotationsPage = () => {
-  const quotationsSummary: QuotationsAnalyticSummary = {
-    sent: {
-      count: 40,
-      total: 2000000,
-    },
-    accepted: {
-      count: 8,
-      total: 400000,
-    },
-    rejected: {
-      count: 12,
-      total: 800000,
-    },
-    expired: {
-      count: 20,
-      total: 800000,
-    },
+const getSummaryData = async (): Promise<QuotationStatusCounts | null> => {
+  const res: ActionResponse = await getQuotationsSums();
+
+  if (!res.status) {
+    console.log(res.message);
+    return Promise.resolve(null);
+  }
+
+  const summaryData = res.data as QuotationStatusCounts;
+  return Promise.resolve(summaryData);
+};
+
+const blankCount = {
+  count: 0,
+  sum: 0,
+};
+
+const QuotationsPage = async () => {
+  const quotationsSummary = (await getSummaryData()) ?? {
+    sent: blankCount,
+    accepted: blankCount,
+    rejected: blankCount,
+    expired: blankCount,
+    all: blankCount,
   };
+
   return (
     <Stack spacing={3}>
       <Stack
@@ -63,16 +67,22 @@ const QuotationsPage = () => {
         </Button>
       </Stack>
       <QuotationsPageAnalytics quotationsSummary={quotationsSummary} />
-      <Stack spacing={3} direction="row" justifyContent="flex-end">
+      <Stack
+        spacing={3}
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="center"
+      >
+        <QuotationsFetchingProgress />
         <Stack
           sx={{ display: { xl: "none", lg: "flex", md: "flex", sm: "flex" } }}
         >
           <FilterQuotationsDialog />
         </Stack>
-        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+        {/* <Suspense fallback={<MyCircularProgress />}>
           <QuotationsSortByTime />
-        </Suspense>
-        <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+        </Suspense> */}
+        <Suspense fallback={<MyCircularProgress />}>
           <QuotationsDisplayMode />
         </Suspense>
       </Stack>
@@ -89,13 +99,11 @@ const QuotationsPage = () => {
             },
           }}
         >
-          <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
-            <QuotationsFilterCard />
-          </Suspense>
+          <QuotationsFilterCard />
         </Grid>
         <Grid size={{ xl: 9, lg: 12, md: 12, sm: 12 }}>
-          <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
-            <QuotationsTableContainer />
+          <Suspense fallback={<MyCircularProgress />}>
+            <QuotationsTableContainer quotationsSummary={quotationsSummary} />
           </Suspense>
         </Grid>
       </Grid>

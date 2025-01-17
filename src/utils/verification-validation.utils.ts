@@ -1,3 +1,5 @@
+import { ItemRange } from "@/types/other.types";
+
 export const codeGenerator = (length: number) => {
   try {
     const x = parseInt(`9`.repeat(length), 10);
@@ -95,4 +97,8 @@ export const validateCompanyId = (id: string): boolean => {
     console.log(err);
     return false;
   }
+};
+
+export const isWithinRange = (value: number, range: ItemRange): boolean => {
+  return value >= range.min && value <= range.max;
 };

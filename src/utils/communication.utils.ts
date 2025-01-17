@@ -1,7 +1,7 @@
 import Mail from "nodemailer/lib/mailer";
 
 export const systemEmailSender: Mail.Address = {
-  name: "Ofice Automata - Auth",
+  name: "Office Automata - Auth",
   address: "ofiiceautomata@edmartsystems.com",
 };
 

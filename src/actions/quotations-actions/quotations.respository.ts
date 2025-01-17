@@ -1,7 +1,29 @@
 import { logger } from "@/logger/default-logger";
 import { Currency2 } from "@/types/currency.types";
-import { TcsDto, Unit2 } from "@/types/quotations.types";
-import { PrismaClient, Quotation_type, Unit } from "@prisma/client";
+import {
+  NewRawQuotation,
+  PaginatedQuotations,
+  PaginatedQuotationsParameter,
+  QuotationFilters,
+  QuotationStatus,
+  QuotationStatusCounts,
+  SummarizedQuotation,
+  TcsDto,
+  Unit2,
+} from "@/types/quotations.types";
+import { convertDaysToMilliseconds } from "@/utils/converters";
+import { userNameFormatter } from "@/utils/formatters.util";
+import { getPaginationData } from "@/utils/pagination.utils";
+import { isDateExpired } from "@/utils/time";
+import {
+  Prisma,
+  PrismaClient,
+  Quotation,
+  Quotation_client_data,
+  Quotation_items,
+  Quotation_type,
+  Unit,
+} from "@prisma/client";
 
 export class QuotationsRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -84,5 +106,297 @@ export class QuotationsRepository {
       logger.error(err);
       return Promise.reject(err);
     }
+  };
+
+  countExistingMonthQuotations = async (startTime: number): Promise<number> => {
+    try {
+      const quotationsCount = await this.prisma.quotation.count({
+        where: {
+          time: {
+            gte: BigInt(startTime),
+          },
+        },
+      });
+
+      return Promise.resolve(quotationsCount);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  recordNewQuotation = async ({
+    clientData,
+    quotationData,
+    lineItems,
+  }: NewRawQuotation): Promise<Quotation> => {
+    try {
+      const createdQuotation: Quotation = await this.prisma.$transaction(
+        async (txn): Promise<Quotation> => {
+          const client = await txn.quotation_client_data.create({
+            data: clientData,
+          });
+
+          const quotation: Quotation = await txn.quotation.create({
+            data: { ...quotationData, client_data_id: client.client_id },
+          });
+
+          const formattedItems = lineItems.map((item) => ({
+            ...item,
+            quot_id: quotation.id,
+          }));
+
+          const items = await txn.quotation_items.createMany({
+            data: formattedItems,
+          });
+
+          return Promise.resolve(quotation);
+        }
+      );
+      return Promise.resolve(createdQuotation);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchQuotationStatusCount = async ({
+    isAdmin,
+    userId,
+  }: {
+    isAdmin: boolean;
+    userId: string;
+  }): Promise<QuotationStatusCounts> => {
+    try {
+      const counts = await this.prisma.$queryRaw<
+        {
+          status: QuotationStatus;
+          count: number;
+          sum: number;
+        }[]
+      >`
+  SELECT quotation_status.status, COALESCE(COUNT(quotation.status_id), 0) AS count, COALESCE(SUM(quotation.grand_total), 0) AS sum 
+  FROM quotation_status LEFT JOIN quotation ON quotation.status_id = quotation_status.status_id 
+  WHERE quotation_status.status 
+  IN ('sent', 'accepted', 'rejected', 'expired') 
+  GROUP BY quotation_status.status 
+  order by quotation_status.status asc;
+      `;
+
+      const blankCount = {
+        count: 0,
+        sum: 0,
+      };
+
+      const statusCount: QuotationStatusCounts = {
+        accepted: blankCount,
+        rejected: blankCount,
+        expired: blankCount,
+        sent: blankCount,
+        all: blankCount,
+      };
+
+      counts.forEach(({ status, count, sum }) => {
+        const _count = parseInt(String(count), 10);
+        const _sum = parseInt(String(sum), 10);
+        statusCount[status] = { count: _count, sum: _sum };
+        statusCount["all"] = {
+          count: statusCount.all.count + _count,
+          sum: statusCount.all.sum + _sum,
+        };
+      });
+      return Promise.resolve(statusCount);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchPaginatedQuotations = async ({
+    userId,
+    limit,
+    offset,
+    filterParams,
+  }: PaginatedQuotationsParameter): Promise<PaginatedQuotations> => {
+    try {
+      const rawQuotations = await this.prisma.quotation.findMany({
+        take: limit,
+        skip: offset,
+        select: {
+          id: true,
+          time: true,
+          quotation_id: true,
+          grand_total: true,
+          sub_total: true,
+          vat: true,
+          vat_excluded: true,
+          validity_days: true,
+          status_id: true,
+
+          client_data: {
+            select: {
+              name: true,
+              contact_person: true,
+              external_ref: true,
+            },
+          },
+          quotationStatus: {
+            select: {
+              status: true,
+              status_id: true,
+            },
+          },
+          currency: {
+            select: {
+              currency_code: true,
+            },
+          },
+          user: {
+            select: {
+              co_user_id: true,
+              firstName: true,
+              lastName: true,
+              profile_picture: true,
+            },
+          },
+        },
+        orderBy: {
+          id: "desc",
+        },
+        where:
+          filterParams && this.checkQuotationFilterParams(filterParams)
+            ? this.processQuotationFilterParams(filterParams)
+            : {},
+      });
+
+      const count = await this.prisma.quotation.count({
+        where:
+          filterParams && this.checkQuotationFilterParams(filterParams)
+            ? this.processQuotationFilterParams(filterParams)
+            : {},
+      });
+
+      const formattedQuotations: SummarizedQuotation[] = [];
+
+      for (const quot of rawQuotations) {
+        const createdAt = parseInt(String(quot.time), 10);
+        const expiryTime =
+          createdAt + convertDaysToMilliseconds(quot.validity_days);
+        const isExpired = isDateExpired(expiryTime);
+
+        const formatted: SummarizedQuotation = {
+          id: quot.id,
+          quotationId: quot.quotation_id,
+          time: createdAt,
+          status_id: quot.status_id,
+          status: quot.quotationStatus.status,
+          external_ref: quot.client_data.external_ref,
+          grandTotal: quot.grand_total,
+          subtotal: quot.sub_total,
+          vat: quot.vat,
+          vatExcluded: quot.vat_excluded,
+          validityDays: quot.validity_days,
+          clientName: quot.client_data.name,
+          contactPerson: quot.client_data.contact_person,
+          currency: quot.currency.currency_code,
+          userId: quot.user.co_user_id,
+          userName: userNameFormatter(quot.user.firstName, quot.user.lastName),
+          expiryTime: expiryTime,
+          isExpired: isExpired,
+          profilePic: quot.user.profile_picture,
+        };
+
+        formattedQuotations.push(formatted);
+      }
+
+      const paginationData = getPaginationData(offset, limit, count);
+
+      return Promise.resolve({
+        quotations: formattedQuotations,
+        pagination: paginationData,
+      });
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  private processQuotationFilterParams = (
+    params: QuotationFilters
+  ): Prisma.QuotationWhereInput => {
+    const searchObj: Prisma.QuotationWhereInput = {};
+    if (params.id) {
+      searchObj["quotation_id"] = {
+        contains: params.id,
+        // mode: "insensitive",
+      };
+    }
+    if (params.user) {
+      searchObj["user"] = {
+        firstName: {
+          contains: params.user,
+        },
+      };
+    }
+    if (params.client) {
+      searchObj["OR"] = [
+        {
+          client_data: {
+            name: {
+              contains: params.client,
+            },
+          },
+        },
+        {
+          client_data: {
+            contact_person: {
+              contains: params.client,
+            },
+          },
+        },
+      ];
+    }
+    if (params.status) {
+      searchObj["quotationStatus"] = {
+        status: {
+          contains: params.status,
+        },
+      };
+    }
+    if (params.dataAltered) {
+      const startTime = new Date(params.start).getTime();
+      const endTime = new Date(params.end).getTime();
+      searchObj["time"] = {
+        gte: BigInt(startTime),
+        lte: BigInt(endTime),
+      };
+    }
+
+    return searchObj;
+  };
+
+  private checkQuotationFilterParams = (
+    filterParams: QuotationFilters
+  ): boolean => {
+    const { start, end, ...rest } = filterParams;
+    let someValueExists = false;
+    const keys = Object.keys(rest);
+
+    for (const _key of keys) {
+      const key = _key as keyof Omit<QuotationFilters, "start" | "end">;
+      const value = rest[key];
+
+      if (key === "dataAltered" && value) {
+        someValueExists = true;
+        break;
+      }
+
+      if (typeof value !== "boolean" && value && value.length > 2) {
+        someValueExists = true;
+        break;
+      }
+    }
+
+    return someValueExists;
   };
 }

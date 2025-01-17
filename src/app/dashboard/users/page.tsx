@@ -1,3 +1,4 @@
+import MyCircularProgress from "@/components/common/my-circular-progress";
 import UsersTable from "@/components/dashboard/users/users-table";
 import { CircularProgress, Stack, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -14,7 +15,7 @@ const UsersPage = () => {
       <Stack spacing={1} sx={{ flex: "1 1 auto" }}>
         <Typography variant="h4">Users</Typography>
       </Stack>
-      <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+      <Suspense fallback={<MyCircularProgress />}>
         <UsersTable />
       </Suspense>
     </Stack>

@@ -22,7 +22,6 @@ import { Save } from "@mui/icons-material";
 import {
   CreateQuotationPageData,
   NewQuotation,
-  QuotationDraftSummary,
   QuotationError,
   QuotationInputClientData,
   QuotationLineItem,
@@ -43,9 +42,16 @@ import {
 } from "./create-quotation-methods";
 import QuotationErrors from "./quotation-errors";
 import { toast } from "react-toastify";
-import { saveQuotationDraft } from "@/redux/slices/quotation.slice";
-import { useSearchParams } from "next/navigation";
+import {
+  removeQuotationDraft,
+  saveQuotationDraft,
+} from "@/redux/slices/quotation.slice";
+import { useRouter, useSearchParams } from "next/navigation";
 import ClearListDialog from "./clear-list-dialog";
+import LoadingBackdrop from "@/components/common/loading-backdrop";
+import { createNewQuotation } from "@/actions/quotations-actions/quotations.actions";
+import { ActionResponse } from "@/types/actions-response.types";
+import { paths } from "@/utils/paths.utils";
 
 const MyDivider = styled(Divider)(({ theme }) => ({
   background: theme.palette.mode === "dark" ? "#b8b8b8" : "#dadada",
@@ -76,6 +82,14 @@ const blankLineItem = (id: number): QuotationLineItem => ({
   units: "",
 });
 
+const submitNewQuotation = async (
+  quotation: NewQuotation
+): Promise<ActionResponse> => {
+  const res: ActionResponse = await createNewQuotation(quotation);
+
+  return Promise.resolve(res);
+};
+
 const CreateQuotation = ({ baseData }: Props) => {
   const { quotations: draftQuotations } = useAppSelector(
     (state) => state.quotations
@@ -83,6 +97,7 @@ const CreateQuotation = ({ baseData }: Props) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const selectedDraftParams = searchParams.get("draft");
+  const router = useRouter();
   const quotationDate = new Date();
   const { company, quotationTypes, tcs, units, currencies } = baseData;
 
@@ -111,6 +126,7 @@ const CreateQuotation = ({ baseData }: Props) => {
   const [excludeVat, setExcludeVat] = useState<boolean>(false);
   const [quotationErrors, setQuotationErrors] = useState<QuotationError[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isCreated, setIsCreated] = useState<boolean>(false);
   const [openResetFields, setOpenResetField] = useState<boolean>(false);
 
   const calculatePrices = () => {
@@ -189,11 +205,11 @@ const CreateQuotation = ({ baseData }: Props) => {
     setQuotationErrors([]);
   };
 
-  const submitQuotation = () => {
+  const submitQuotation = async () => {
     if (isFetching) return;
 
     resetErrors();
-
+    setIsCreated(false);
     const errArr: QuotationError[] = [];
 
     const tcsCheckRes = verifyTcs({
@@ -219,18 +235,46 @@ const CreateQuotation = ({ baseData }: Props) => {
       return;
     }
 
-    const newQuotation = {
+    const newQuotation: NewQuotation = {
       quotationId: quotationId,
       time: getTimeNum(quotationDate),
       type: selectedQuoteType,
       tcsEdited: editTcs,
       vatExcluded: excludeVat,
       tcs: selectedTcs,
+      currency: selectedCurrency,
       clientData: clientData,
       lineItems: lineItems,
     };
 
-    // setIsFetching(true);
+    setIsFetching(true);
+
+    const res = await submitNewQuotation(newQuotation);
+
+    setIsFetching(false);
+
+    if (!res.status) {
+      toast("Failed to create the quotation.", {
+        type: "error",
+      });
+      setQuotationErrors([
+        {
+          message: res.message,
+          origin: "Root",
+        },
+      ]);
+      return;
+    }
+
+    toast("Quotation created successfully.", {
+      type: "success",
+    });
+
+    resetQuotation();
+    dispatch(removeQuotationDraft(quotationId));
+    setIsCreated(true);
+    const createdQuotationId = res.data as string;
+    router.push(paths.dashboard.quotations.single(createdQuotationId));
   };
 
   const saveQuotationDraftHandler = () => {
@@ -394,6 +438,8 @@ const CreateQuotation = ({ baseData }: Props) => {
           isResetFields
         />
       )}
+
+      <LoadingBackdrop open={isFetching || isCreated} />
     </Card>
   );
 };

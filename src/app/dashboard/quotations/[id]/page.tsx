@@ -41,7 +41,10 @@ const SingleQuotationPage = async ({ params }: Props) => {
   return (
     <Stack spacing={3}>
       <Stack>
-        <PageGoBack backName="Quotations" />
+        <PageGoBack
+          backName="Quotations"
+          link={paths.dashboard.quotations.main}
+        />
       </Stack>
       <Stack direction="row" justifyContent="space-between" flexWrap="wrap">
         <QuotationPageHead />

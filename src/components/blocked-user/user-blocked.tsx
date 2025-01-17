@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { paths } from "@/utils/paths.utils";
 import { signOut, useSession } from "next-auth/react";
-import ScreenLoader from "../errors/screen-loading";
+import ScreenLoader from "../common/screen-loading";
 import { useRouter } from "next/navigation";
 import nProgress from "nprogress";
 

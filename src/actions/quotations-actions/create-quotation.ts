@@ -1,8 +1,10 @@
+import { logger } from "@/logger/default-logger";
+import { ObjectVerifyResponse } from "@/types/other.types";
 import {
   QuotationClientData,
-  QuotationError,
   QuotationInputClientData,
   QuotationLineItem,
+  RawQuotationLineItem,
   TcsDto,
 } from "@/types/quotations.types";
 import {
@@ -10,6 +12,7 @@ import {
   quotationGraceDaysRange,
   quotationValidityRange,
 } from "@/utils/constants.utils";
+import { ERROR_MESSAGES } from "@/utils/error.utils";
 import {
   capitalizeFirstLetter,
   formatPhoneNumber,
@@ -30,12 +33,13 @@ export const verifyTcs = ({
   selectedTcs: TcsDto;
   quotationType: Quotation_type;
   editTcs: boolean;
-}): boolean | QuotationError[] => {
+}): ObjectVerifyResponse => {
   if (!editTcs) {
-    return true;
+    return { valid: true };
   }
 
-  const errArr: QuotationError[] = [];
+  let isOkay = true;
+  const errArr: string[] = [];
 
   const {
     edited_validity_days,
@@ -49,20 +53,16 @@ export const verifyTcs = ({
     !edited_validity_days ||
     !isWithinRange(edited_validity_days, quotationValidityRange)
   ) {
-    errArr.push({
-      message: `Validity out of range ${quotationValidityRange.min}-${quotationValidityRange.max} days`,
-      origin: "TCs",
-    });
+    isOkay = false;
+    errArr.push(ERROR_MESSAGES.INVALID_VALIDITY);
   }
 
   if (
     !edited_delivery_days ||
     !isWithinRange(edited_delivery_days, quotationDeliveryDaysRange)
   ) {
-    errArr.push({
-      message: `Delivery days out of range ${quotationDeliveryDaysRange.min}-${quotationDeliveryDaysRange.max} days`,
-      origin: "TCs",
-    });
+    isOkay = false;
+    errArr.push(ERROR_MESSAGES.INVALID_DELIVERY);
   }
 
   if (quotationType.type_id == 1) {
@@ -71,10 +71,8 @@ export const verifyTcs = ({
       !edited_payment_grace_days ||
       !isWithinRange(edited_payment_grace_days, quotationGraceDaysRange)
     ) {
-      errArr.push({
-        message: `Grace period out of range ${quotationGraceDaysRange.min}-${quotationGraceDaysRange.max} days`,
-        origin: "TCs",
-      });
+      isOkay = false;
+      errArr.push(ERROR_MESSAGES.INVALID_GRACE);
     }
   } else {
     if (
@@ -82,24 +80,24 @@ export const verifyTcs = ({
       !edited_last_payment_percentage ||
       edited_initial_payment_percentage + edited_last_payment_percentage !== 100
     ) {
-      errArr.push({
-        message: `Payment percentages not tallying.`,
-        origin: "TCs",
-      });
+      isOkay = false;
+      errArr.push(ERROR_MESSAGES.INVALID_PERCENTAGES);
     }
   }
 
-  return errArr.length > 0 ? errArr : true;
+  return { valid: isOkay, errors: errArr };
 };
 
 export const verifyClientInfo = (
   clientData: QuotationInputClientData
-): boolean | QuotationError[] => {
-  const errArr: QuotationError[] = [];
+): ObjectVerifyResponse => {
+  const errArr: string[] = [];
   let atLeastNameOrContactPerson = false;
 
-  Object.keys(clientData).forEach((_key) => {
-    const key = _key as keyof QuotationClientData;
+  const keys = Object.keys(clientData) as (keyof QuotationClientData)[];
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
     const value = clientData[key];
     try {
       if (
@@ -110,12 +108,11 @@ export const verifyClientInfo = (
       }
 
       if (String(value).length > 64) {
-        errArr.push({
-          message: `${capitalizeFirstLetter(
+        errArr.push(
+          `${capitalizeFirstLetter(
             key
-          )} field is too long. Reduce to a max of 64 Characters`,
-          origin: "Client Info",
-        });
+          )} field is too long. Reduce to a max of 64 Characters`
+        );
       }
 
       if (
@@ -123,57 +120,41 @@ export const verifyClientInfo = (
         value &&
         !validateEmailAddress(String(value ?? ""))
       ) {
-        errArr.push({
-          message: `Invalid email address. Correct or remove it.`,
-          origin: "Client Info",
-        });
+        errArr.push(`Invalid email address.`);
       }
 
       if (key == "phone" && value) {
         try {
           const formattedPhone = formatPhoneNumber(String(value));
           if (!validatePhoneNumber(formattedPhone)) {
-            errArr.push({
-              message: `Invalid phone number. Correct or remove it.`,
-              origin: "Client Info",
-            });
+            errArr.push(`Invalid phone number.`);
           }
         } catch (err) {
-          errArr.push({
-            message: `Invalid phone number. Correct or remove it.`,
-            origin: "Client Info",
-          });
+          errArr.push(`Invalid phone number.`);
         }
       }
     } catch (err) {
-      console.log(err);
-      errArr.push({
-        message: `Invalid inputs on field ${capitalizeFirstLetter(key)}`,
-        origin: "Client Info",
-      });
+      logger.error(err);
+      errArr.push(`Invalid inputs on field ${capitalizeFirstLetter(key)}`);
     }
-  });
-
-  if (!atLeastNameOrContactPerson) {
-    errArr.push({
-      message: `At least the client name or contact person must be provided, with at least 5 characters.`,
-      origin: "Client Info",
-    });
   }
 
-  return errArr.length > 0 ? errArr : true;
+  if (!atLeastNameOrContactPerson) {
+    errArr.push(
+      `At least the client name or contact person must be provided, with at least 5 characters.`
+    );
+  }
+
+  return errArr.length > 0 ? { valid: false, errors: errArr } : { valid: true };
 };
 
 export const verifyLineItems = (
   lineItems: QuotationLineItem[]
-): boolean | QuotationError[] => {
-  const errArr: QuotationError[] = [];
+): ObjectVerifyResponse => {
+  const errArr: string[] = [];
 
   if (lineItems.length < 1) {
-    errArr.push({
-      message: `No items provided.`,
-      origin: "Line Items",
-    });
+    errArr.push(`No items provided.`);
   }
 
   lineItems.forEach((item, index) => {
@@ -226,47 +207,49 @@ export const verifyLineItems = (
 
     if (missing.length > 0 || tooLong.length > 0 || invalid.length > 0) {
       errorMessage += " Correct or remove item.";
-      errArr.push({
-        message: errorMessage,
-        origin: "Line Items",
-      });
+      errArr.push(errorMessage);
     }
   });
 
-  return errArr.length > 0 ? errArr : true;
+  return errArr.length > 0 ? { valid: false, errors: errArr } : { valid: true };
 };
 
-export const verifyClientInfoOnDraft = (
-  clientData: QuotationInputClientData
-): boolean | QuotationError[] => {
-  const errArr: QuotationError[] = [];
-  let atLeastNameOrContactPerson = false;
+export const processQuotationLineItems = (
+  lineItems: QuotationLineItem[],
+  excludeVat: boolean,
+  tcs: TcsDto
+): {
+  lineItems: RawQuotationLineItem[];
+  vat: number;
+  sub_total: number;
+  grand_total: number;
+} => {
+  let subtotal = 0;
+  const _lineItems: RawQuotationLineItem[] = [];
+  for (let i = 0; i < lineItems.length; i++) {
+    const item = lineItems[i];
+    const qty = item.quantity;
+    const price = item.unitPrice;
+    if (!qty || !price) continue;
 
-  Object.keys(clientData).forEach((_key) => {
-    const key = _key as keyof QuotationClientData;
-    const value = clientData[key];
-    try {
-      if (
-        (key === "name" && value && String(value).length > 5) ||
-        (key === "contactPerson" && value && String(value).length > 5)
-      ) {
-        atLeastNameOrContactPerson = true;
-      }
-    } catch (err) {
-      console.log(err);
-      errArr.push({
-        message: `Invalid inputs on field ${capitalizeFirstLetter(key)}`,
-        origin: "Client Info",
-      });
-    }
-  });
+    subtotal += qty * price;
 
-  if (!atLeastNameOrContactPerson) {
-    errArr.push({
-      message: `At least the client name or contact person must be provided, with at least 5 characters.`,
-      origin: "Client Info",
+    _lineItems.push({
+      name: item.name!,
+      description: item.description ? item.description : null,
+      quantity: qty,
+      unitPrice: price,
+      units: item.units!,
     });
   }
 
-  return errArr.length > 0 ? errArr : true;
+  const vat = excludeVat ? 0 : (subtotal * tcs.vat_percentage) / 100;
+  const grandTotal = subtotal + vat;
+
+  return {
+    grand_total: grandTotal,
+    sub_total: subtotal,
+    vat: vat,
+    lineItems: _lineItems,
+  };
 };

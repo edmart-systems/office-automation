@@ -1,7 +1,7 @@
 "use server";
 
 import { logger } from "@/logger/default-logger";
-import { SendSmsDto, SmsDualResponseDto } from "@/types/comm.types";
+import { SendSmsDto, SmsDualResponseDto } from "@/types/communication.types";
 
 export const sendSms = async (sms: SendSmsDto): Promise<boolean> => {
   try {

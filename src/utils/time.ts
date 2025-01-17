@@ -31,3 +31,9 @@ export const fToNow = (date: FormatDateParam): string => {
 export const getTimeNum = (date?: FormatDateParam): number => {
   return date ? new Date(date).getTime() : new Date().getTime();
 };
+
+export const isDateExpired = (date: FormatDateParam): boolean => {
+  const now = new Date().getTime();
+  const expiry = new Date(date).getTime();
+  return expiry < now;
+};

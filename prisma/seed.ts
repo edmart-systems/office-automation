@@ -180,6 +180,27 @@ const main = async () => {
       ],
     });
 
+  const quotationStatusTable: Prisma.BatchPayload =
+    await prisma.quotation_status.createMany({
+      data: [
+        {
+          status_id: 1,
+          status: "sent",
+        },
+        {
+          status_id: 2,
+          status: "accepted",
+        },
+        {
+          status_id: 3,
+          status: "rejected",
+        },
+        {
+          status_id: 4,
+          status: "expired",
+        },
+      ],
+    });
   //Edmart Specific Data
 
   const companyTable: Prisma.BatchPayload = await prisma.company.createMany({

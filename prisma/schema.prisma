@@ -169,31 +169,106 @@ model Quotation_tcs {
 
   quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
   bank          Bank           @relation(fields: [bank_id], references: [bank_id])
+  quotations    Quotation[]
 
   @@map("quotation_tcs")
 }
 
+// model QuotationX {
+//   quotation_id      Int      @id @default(autoincrement())
+//   quotation_number  String   @db.VarChar(12)
+//   quotation_type_id Int
+//   co_user_id        String   @db.VarChar(20)
+//   date              BigInt
+//   client_name       String   @db.VarChar(60)
+//   contact_email     String   @db.VarChar(60)
+//   contact_person    String   @db.VarChar(60)
+//   contact_phone     String   @db.VarChar(16)
+//   currency_id       Int      @default(1)
+//   sub_total         Float
+//   vat               Float
+//   grand_total       Float
+//   day_to_expire     Int
+//   created_at        DateTime @default(now())
+//   updated_at        DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+//   quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
+//   currency      Currency       @relation(fields: [currency_id], references: [currency_id])
+//   user          User           @relation(fields: [co_user_id], references: [co_user_id])
+
+//   @@map("quotation")
+// }
+
+model Quotation_status {
+  status_id Int    @id @default(autoincrement())
+  status    String @db.VarChar(12)
+
+  quotations Quotation[]
+
+  @@map("quotation_status")
+}
+
 model Quotation {
-  quotation_id      Int      @id @default(autoincrement())
-  quotation_number  String   @db.VarChar(12)
-  quotation_type_id Int
-  co_user_id        String   @db.VarChar(20)
-  date              BigInt
-  client_name       String   @db.VarChar(60)
-  contact_email     String   @db.VarChar(60)
-  contact_person    String   @db.VarChar(60)
-  contact_phone     String   @db.VarChar(16)
-  currency_id       Int      @default(1)
-  sub_total         Float
-  vat               Float
-  grand_total       Float
-  day_to_expire     Int
-  created_at        DateTime @default(now())
-  updated_at        DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+  id                         Int      @id @default(autoincrement())
+  quotation_id               String   @unique @db.VarChar(12)
+  status_id                  Int      @default(1)
+  co_user_id                 String   @db.VarChar(20)
+  time                       BigInt
+  quotation_type_id          Int
+  tcs_edited                 Int      @default(0)
+  vat_excluded               Int      @default(0)
+  tcs_id                     Int
+  currency_id                Int
+  client_data_id             Int
+  sub_total                  Float
+  vat                        Float
+  grand_total                Float
+  validity_days              Int
+  payment_grace_days         Int?
+  initial_payment_percentage Int?
+  last_payment_percentage    Int?
+  created_at                 DateTime @default(now())
+  updated_at                 DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 
-  quotationType Quotation_type @relation(fields: [quotation_type_id], references: [type_id])
-  currency      Currency       @relation(fields: [currency_id], references: [currency_id])
-  user          User           @relation(fields: [co_user_id], references: [co_user_id])
+  quotationStatus Quotation_status      @relation(fields: [status_id], references: [status_id])
+  quotationType   Quotation_type        @relation(fields: [quotation_type_id], references: [type_id])
+  currency        Currency              @relation(fields: [currency_id], references: [currency_id])
+  user            User                  @relation(fields: [co_user_id], references: [co_user_id])
+  client_data     Quotation_client_data @relation(fields: [client_data_id], references: [client_id])
+  lineItems       Quotation_items[]
+  tcs             Quotation_tcs         @relation(fields: [tcs_id], references: [tc_id])
 
+  @@index([quotation_id], map: "idx_quotation_quotation_id")
   @@map("quotation")
+}
+
+model Quotation_client_data {
+  client_id      Int     @id @default(autoincrement())
+  name           String?
+  external_ref   String?
+  contact_person String?
+  email          String?
+  phone          String?
+  box_number     Int?
+  country        String?
+  city           String?
+  address_Line_1 String?
+
+  quotations Quotation[]
+
+  @@map("quotation_client_data")
+}
+
+model Quotation_items {
+  item_id     Int     @id @default(autoincrement())
+  quot_id     Int
+  name        String
+  description String?
+  quantity    Float
+  units       String
+  unitPrice   Float
+
+  quotation Quotation @relation(fields: [quot_id], references: [id])
+
+  @@map("quotation_items")
 }

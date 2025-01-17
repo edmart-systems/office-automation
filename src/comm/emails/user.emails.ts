@@ -2,10 +2,10 @@
 
 import { User } from "@prisma/client";
 import { newAccountEmailTemplate } from "./templates/new-account-mail-template";
-import { systemEmailSender } from "@/utils/comm.utils";
+import { systemEmailSender } from "@/utils/communication.utils";
 import { sendEmail } from "@/comm/emails/emails.config";
 import { approvedAccountEmailTemplate } from "./templates/approved-account-mail-template";
-import { SendEmailDto } from "@/types/comm.types";
+import { SendEmailDto } from "@/types/communication.types";
 
 export const sendNewAccountEmail = async (user: User): Promise<boolean> => {
   try {

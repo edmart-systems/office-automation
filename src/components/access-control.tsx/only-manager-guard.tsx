@@ -4,7 +4,7 @@ import { paths } from "@/utils/paths.utils";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
-import ScreenLoader from "../errors/screen-loading";
+import ScreenLoader from "../common/screen-loading";
 import nProgress from "nprogress";
 
 type Props = {

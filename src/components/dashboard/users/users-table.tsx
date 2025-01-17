@@ -25,7 +25,6 @@ import {
   Button,
   Card,
   CardContent,
-  CircularProgress,
   Divider,
   Skeleton,
   Stack,
@@ -57,6 +56,7 @@ import UserTableEmailFilter from "./user-table-email-filter";
 import UserTablePhoneFilter from "./user-table-phone-filter";
 import { useSession } from "next-auth/react";
 import nProgress from "nprogress";
+import MyCircularProgress from "@/components/common/my-circular-progress";
 
 interface Data {
   name: string;
@@ -332,7 +332,7 @@ const UsersTable = () => {
 
   return (
     <Card>
-      <Suspense fallback={<CircularProgress color="primary" size="30px" />}>
+      <Suspense fallback={<MyCircularProgress />}>
         <UserTableTabs
           statusCounts={statusCounts}
           selectedTab={selectedStatusTab}
@@ -343,19 +343,13 @@ const UsersTable = () => {
       <CardContent>
         <Stack direction="row" justifyContent="space-between">
           <Stack spacing={2} direction="row">
-            <Suspense
-              fallback={<CircularProgress color="primary" size="30px" />}
-            >
+            <Suspense fallback={<MyCircularProgress />}>
               <UserTableNameFilter />
             </Suspense>
-            <Suspense
-              fallback={<CircularProgress color="primary" size="30px" />}
-            >
+            <Suspense fallback={<MyCircularProgress />}>
               <UserTableEmailFilter />
             </Suspense>
-            <Suspense
-              fallback={<CircularProgress color="primary" size="30px" />}
-            >
+            <Suspense fallback={<MyCircularProgress />}>
               <UserTablePhoneFilter />
             </Suspense>
             {inSearchMode && (
@@ -371,7 +365,7 @@ const UsersTable = () => {
           </Stack>
 
           {isFetching ? (
-            <CircularProgress color="primary" size="30px" />
+            <MyCircularProgress />
           ) : (
             <Tooltip title="Refresh">
               <IconButton size="small" onClick={refreshHandler} color="primary">

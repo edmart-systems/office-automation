@@ -24,21 +24,20 @@ import { useRouter } from "next/navigation";
 import { fDate, fDateTime12, fToNow } from "@/utils/time";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
 import QuotationStatusChip from "./quotation/quotation-status-chip";
+import { QuotationStatus, SummarizedQuotation } from "@/types/quotations.types";
 
 type Props = {
-  num: number;
+  isFetching: boolean;
+  visibleRows: SummarizedQuotation[];
 };
 
-const QuotationsTable = ({ num }: Props) => {
+const QuotationsTable = ({ isFetching, visibleRows }: Props) => {
   const { data: sessionData } = useSession();
   const router = useRouter();
   const dense = false;
-  const isFetching = false;
-  const visibleRows = Array.from(Array(num));
   const emptyRows = 0;
   // const emptyRows =
   //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
-
   return (
     <Card>
       <Box sx={{ width: "100%" }}>
@@ -53,7 +52,9 @@ const QuotationsTable = ({ num }: Props) => {
                 {visibleRows.map((row, index) => {
                   const openQuotation = () => {
                     nProgress.start();
-                    router.push(paths.dashboard.quotations.single("Na"));
+                    router.push(
+                      paths.dashboard.quotations.single(row.quotationId)
+                    );
                   };
 
                   return (
@@ -64,7 +65,12 @@ const QuotationsTable = ({ num }: Props) => {
                       sx={{ cursor: "pointer" }}
                     >
                       <TableCell>
-                        <QuotationTableUser openQuotation={openQuotation} />
+                        <QuotationTableUser
+                          userName={row.userName}
+                          quotationId={row.quotationId}
+                          profilePic={row.profilePic}
+                          openQuotation={openQuotation}
+                        />
                       </TableCell>
                       <TableCell>
                         <Stack>
@@ -76,7 +82,13 @@ const QuotationsTable = ({ num }: Props) => {
                             Client
                           </Typography>
                           <Typography variant="body2" color="textSecondary">
-                            Uzima Chicken
+                            {row.clientName
+                              ? `${row.clientName}${
+                                  row.contactPerson
+                                    ? ` (${row.contactPerson})`
+                                    : ""
+                                }`
+                              : row.contactPerson || "Unknown"}
                           </Typography>
                         </Stack>
                       </TableCell>
@@ -86,14 +98,14 @@ const QuotationsTable = ({ num }: Props) => {
                           variant="body2"
                           alignItems="center"
                         >
-                          UGX 20,000,000
+                          {row.currency} {row.grandTotal.toLocaleString()}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Tooltip
                           title={`${fDateTime12(
-                            "12-12-2024"
-                          )} (${capitalizeFirstLetter(fToNow("12-12-2024"))})`}
+                            row.time
+                          )} (${capitalizeFirstLetter(fToNow(row.time))})`}
                         >
                           <Stack>
                             <Typography
@@ -104,7 +116,7 @@ const QuotationsTable = ({ num }: Props) => {
                               Issued
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
-                              {fDate("12-12-2024")}
+                              {fDate(row.time)}
                             </Typography>
                           </Stack>
                         </Tooltip>
@@ -112,8 +124,10 @@ const QuotationsTable = ({ num }: Props) => {
                       <TableCell>
                         <Tooltip
                           title={`${fDateTime12(
-                            "12-30-2024"
-                          )} (${capitalizeFirstLetter(fToNow("12-30-2024"))})`}
+                            row.expiryTime
+                          )} (${capitalizeFirstLetter(
+                            fToNow(row.expiryTime)
+                          )})`}
                         >
                           <Stack>
                             <Typography
@@ -124,13 +138,19 @@ const QuotationsTable = ({ num }: Props) => {
                               Due
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
-                              {fDate("12-30-2024")}
+                              {fDate(row.expiryTime)}
                             </Typography>
                           </Stack>
                         </Tooltip>
                       </TableCell>
                       <TableCell>
-                        <QuotationStatusChip status="rejected" />
+                        <QuotationStatusChip
+                          status={
+                            row.isExpired
+                              ? "expired"
+                              : (row.status as QuotationStatus)
+                          }
+                        />
                       </TableCell>
                       <TableCell>
                         <Tooltip title="Open">

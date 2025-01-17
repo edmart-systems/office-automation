@@ -2,7 +2,7 @@
 
 import nodemailer, { createTransport } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { SendEmailDto } from "../../types/comm.types";
+import { SendEmailDto } from "../../types/communication.types";
 
 const transport = createTransport({
   host: process.env.MAIL_HOST,

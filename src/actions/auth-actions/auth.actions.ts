@@ -17,7 +17,7 @@ const login = async (
 ): Promise<SimpleUserDtoType> => {
   try {
     const user: User | null = await userService.getUserByEmail(
-      credentials.email
+      credentials.email ?? ""
     );
 
     if (!user) throw new Error("Wrong credentials!");
