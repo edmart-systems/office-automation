@@ -28,7 +28,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { QuotationLineItem } from "@/types/quotations.types";
+import { QuotationInputLineItem } from "@/types/quotations.types";
 import { getTimeNum } from "@/utils/time";
 import Draggable from "react-draggable";
 
@@ -58,10 +58,10 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mode: "new" | "update";
-  addFn?: (item: QuotationLineItem) => void;
-  updateFn?: (updatedItem: QuotationLineItem) => void;
+  addFn?: (item: QuotationInputLineItem) => void;
+  updateFn?: (updatedItem: QuotationInputLineItem) => void;
   itemNumber: number;
-  originalItem?: QuotationLineItem;
+  originalItem?: QuotationInputLineItem;
   selectedCurrency: Currency2;
 };
 
@@ -76,7 +76,7 @@ const LineItemDialog = ({
   selectedCurrency,
 }: Props) => {
   const { units } = useAppSelector((state) => state.units);
-  const [lineItem, setLineItem] = useState<QuotationLineItem>(
+  const [lineItem, setLineItem] = useState<QuotationInputLineItem>(
     originalItem || { id: getTimeNum() }
   );
 
@@ -98,11 +98,14 @@ const LineItemDialog = ({
     handleClose();
   };
 
-  const updateLineItem = (field: keyof QuotationLineItem, value: any) => {
+  const updateLineItem = (field: keyof QuotationInputLineItem, value: any) => {
     setLineItem((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFieldChange = (field: keyof QuotationLineItem, value: any) => {
+  const handleFieldChange = (
+    field: keyof QuotationInputLineItem,
+    value: any
+  ) => {
     try {
       if (field === "quantity" || field === "unitPrice") {
         const str = String(value);

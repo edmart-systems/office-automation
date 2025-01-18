@@ -17,7 +17,10 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import { Quotation_Status, QuotationFilters } from "@/types/quotations.types";
+import {
+  QuotationStatusKeysAndNull,
+  QuotationFilters,
+} from "@/types/quotations.types";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
@@ -29,7 +32,7 @@ type Props = {
   closeHandler?: () => void;
 };
 
-const statuses: Quotation_Status[] = [
+const statuses: QuotationStatusKeysAndNull[] = [
   "sent",
   "accepted",
   "rejected",
@@ -191,7 +194,10 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
               //   }))
               // }
               onChange={(evt) =>
-                inputHandler("status", evt.target.value as Quotation_Status)
+                inputHandler(
+                  "status",
+                  evt.target.value as QuotationStatusKeysAndNull
+                )
               }
             >
               <MenuItem value="">

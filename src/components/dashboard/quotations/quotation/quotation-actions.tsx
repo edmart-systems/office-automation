@@ -6,8 +6,15 @@ import { Download } from "@phosphor-icons/react";
 import React from "react";
 import { toast } from "react-toastify";
 import QuotationStatusActions from "./quotation-status-actions";
+import { FullQuotation } from "@/types/quotations.types";
+import { useSession } from "next-auth/react";
 
-const QuotationActions = () => {
+type Props = {
+  quotation: FullQuotation;
+};
+
+const QuotationActions = ({ quotation }: Props) => {
+  const { data: sessionData } = useSession();
   const toastUnderDev = (item: string) => {
     toast(item + " functionality under development", {
       type: "info",
@@ -45,9 +52,11 @@ const QuotationActions = () => {
           Reuse
         </Button>
       </Box>
-      <Box>
-        <QuotationStatusActions status="sent" />
-      </Box>
+      {sessionData?.user.co_user_id === quotation.user.co_user_id && (
+        <Box>
+          <QuotationStatusActions status="sent" />
+        </Box>
+      )}
     </Stack>
   );
 };

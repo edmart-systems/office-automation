@@ -1,7 +1,9 @@
+import { fetchSingleQuotation } from "@/actions/quotations-actions/quotations.actions";
 import PageGoBack from "@/components/dashboard/common/page-go-back";
 import DisplayQuotation from "@/components/dashboard/quotations/quotation/display-quotation/display-quotation";
 import QuotationActions from "@/components/dashboard/quotations/quotation/quotation-actions";
 import QuotationPageHead from "@/components/dashboard/quotations/quotation/quotation-page-header";
+import { FullQuotation } from "@/types/quotations.types";
 import { paths } from "@/utils/paths.utils";
 import { Stack } from "@mui/material";
 import { Metadata } from "next";
@@ -13,25 +15,27 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-const getThisQuotation = async (quotationId: string): Promise<any> => {
+const getThisQuotation = async (
+  quotationId: string
+): Promise<FullQuotation | null> => {
   try {
-    // const res = await fetchSingleUser(userId);
+    const res = await fetchSingleQuotation(quotationId);
 
-    // if (res.status) {
-    //   return Promise.resolve(res.data);
-    // }
+    if (res.status && res.data) {
+      return Promise.resolve(res.data as FullQuotation);
+    }
 
-    return Promise.resolve(quotationId);
+    return Promise.resolve(null);
   } catch (err) {
     return Promise.resolve(null);
   }
 };
 
 const SingleQuotationPage = async ({ params }: Props) => {
-  const { id } = params;
+  const { id } = await params;
   const quotation = await getThisQuotation(id);
 
   if (!quotation) {
@@ -47,10 +51,17 @@ const SingleQuotationPage = async ({ params }: Props) => {
         />
       </Stack>
       <Stack direction="row" justifyContent="space-between" flexWrap="wrap">
-        <QuotationPageHead />
-        <QuotationActions />
+        <QuotationPageHead
+          quotationId={quotation.quotationId}
+          userId={quotation.user.co_user_id}
+          firstName={quotation.user.firstName}
+          lastName={quotation.user.lastName}
+          status={quotation.status}
+          isExpired={quotation.isExpired}
+        />
+        <QuotationActions quotation={quotation} />
       </Stack>
-      <DisplayQuotation />
+      <DisplayQuotation quotation={quotation} />
     </Stack>
   );
 };

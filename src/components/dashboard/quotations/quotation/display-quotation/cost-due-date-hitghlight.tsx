@@ -2,6 +2,8 @@ import { fDate } from "@/utils/time";
 import { Typography } from "@mui/material";
 import React from "react";
 
+type Props = {};
+
 const CostDueDateHighlight = () => {
   return (
     <Typography variant="body1" fontSize="larger" fontWeight={600}>

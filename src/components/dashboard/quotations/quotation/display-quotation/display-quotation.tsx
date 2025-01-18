@@ -14,8 +14,13 @@ import ToAddress from "./to-address";
 import AmountSummary from "./amount-summary";
 import QuotationTcs from "./quotation-tcs";
 import CostDueDateHighlight from "./cost-due-date-hitghlight";
+import { FullQuotation } from "@/types/quotations.types";
 
-const DisplayQuotation = () => {
+type Props = {
+  quotation: FullQuotation;
+};
+
+const DisplayQuotation = ({ quotation }: Props) => {
   return (
     <Card sx={{ p: 5 }}>
       <CardContent>
@@ -24,7 +29,7 @@ const DisplayQuotation = () => {
             <Typography variant="h4">Quotation</Typography>
             <Logo color="dark" height={70} width={220} />
           </Stack>
-          <QuotationDetails />
+          <QuotationDetails quotation={quotation} />
           <Grid container spacing={2}>
             <Grid size={{ sm: 6, xs: 12 }}>
               <FromAddress />

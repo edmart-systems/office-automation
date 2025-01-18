@@ -19,7 +19,7 @@ import { useSearchParams } from "next/navigation";
 import {
   PaginatedQuotations,
   QuotationFilters,
-  QuotationStatus,
+  QuotationStatusKeys,
   QuotationStatusCounts,
   SummarizedQuotation,
 } from "@/types/quotations.types";
@@ -39,10 +39,10 @@ type Props = {
 
 const groupQuotations = (
   quotations: SummarizedQuotation[]
-): Record<QuotationStatus, SummarizedQuotation[]> => {
-  return quotations.reduce<Record<QuotationStatus, SummarizedQuotation[]>>(
+): Record<QuotationStatusKeys, SummarizedQuotation[]> => {
+  return quotations.reduce<Record<QuotationStatusKeys, SummarizedQuotation[]>>(
     (groupsAcc, item) => {
-      const status = item.status as QuotationStatus;
+      const status = item.status as QuotationStatusKeys;
 
       if (!groupsAcc[status]) {
         groupsAcc[status] = [];

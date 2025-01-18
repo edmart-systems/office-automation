@@ -30,7 +30,7 @@ const getThisUser = async (userId: string): Promise<FullUser | null> => {
   try {
     const res = await fetchSingleUser(userId);
 
-    if (res.status) {
+    if (res.status && res.data) {
       return Promise.resolve(res.data as FullUser);
     }
 

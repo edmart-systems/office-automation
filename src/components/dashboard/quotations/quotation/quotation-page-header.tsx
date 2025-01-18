@@ -5,10 +5,26 @@ import React from "react";
 import { userNameFormatter } from "@/utils/formatters.util";
 import { useSession } from "next-auth/react";
 import QuotationStatusChip from "./quotation-status-chip";
+import { QuotationStatusKeys } from "@/types/quotations.types";
+import { Quotation_status } from "@prisma/client";
 
-type Props = {};
+type Props = {
+  quotationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  status: Quotation_status;
+  isExpired: boolean;
+};
 
-const QuotationPageHead = ({}: Props) => {
+const QuotationPageHead = ({
+  quotationId,
+  userId,
+  firstName,
+  lastName,
+  status,
+  isExpired,
+}: Props) => {
   const { data: sessionData } = useSession();
 
   return (
@@ -25,11 +41,16 @@ const QuotationPageHead = ({}: Props) => {
           // fontSize="24px"
           alignItems="center"
         >
-          {`Q250111002`}&ensp;
-          <QuotationStatusChip status="accepted" />
+          {quotationId}&ensp;
+          <QuotationStatusChip
+            status={
+              isExpired ? "expired" : (status.status as QuotationStatusKeys)
+            }
+          />
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          &ensp;By {userNameFormatter("Nkangi", "Usaama")}
+          &ensp;By {userNameFormatter(firstName, lastName)}{" "}
+          {sessionData?.user.co_user_id === userId && "(You)"}
         </Typography>
       </Stack>
     </Stack>

@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/redux/store";
 import { Currency2 } from "@/types/currency.types";
-import { QuotationLineItem } from "@/types/quotations.types";
+import { QuotationInputLineItem } from "@/types/quotations.types";
 import { checkDigits } from "@/utils/verification-validation.utils";
 import { DeleteForever } from "@mui/icons-material";
 import {
@@ -19,12 +19,16 @@ import LineItemDialog from "./line-item-dialog";
 
 type Props = {
   num: number;
-  lineItem: QuotationLineItem;
+  lineItem: QuotationInputLineItem;
   deleteFn: () => void;
-  updateFn: (id: number, field: keyof QuotationLineItem, value: any) => void;
+  updateFn: (
+    id: number,
+    field: keyof QuotationInputLineItem,
+    value: any
+  ) => void;
   selectedCurrency: Currency2;
   itemsLength: number;
-  updateFullItem: (updatedItem: QuotationLineItem) => void;
+  updateFullItem: (updatedItem: QuotationInputLineItem) => void;
 };
 
 const QuotationListItem = ({
@@ -51,7 +55,10 @@ const QuotationListItem = ({
     setOpenNewItem(true);
   };
 
-  const handleFieldChange = (field: keyof QuotationLineItem, value: any) => {
+  const handleFieldChange = (
+    field: keyof QuotationInputLineItem,
+    value: any
+  ) => {
     try {
       if (field === "quantity" || field === "unitPrice") {
         const str = String(value);

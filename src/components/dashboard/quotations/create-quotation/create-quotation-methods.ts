@@ -2,7 +2,7 @@ import {
   QuotationClientData,
   QuotationError,
   QuotationInputClientData,
-  QuotationLineItem,
+  QuotationInputLineItem,
   TcsDto,
 } from "@/types/quotations.types";
 import {
@@ -165,7 +165,7 @@ export const verifyClientInfo = (
 };
 
 export const verifyLineItems = (
-  lineItems: QuotationLineItem[]
+  lineItems: QuotationInputLineItem[]
 ): boolean | QuotationError[] => {
   const errArr: QuotationError[] = [];
 
@@ -182,7 +182,7 @@ export const verifyLineItems = (
     const invalid: string[] = [];
 
     Object.keys(item).forEach((_key) => {
-      const key = _key as keyof QuotationLineItem;
+      const key = _key as keyof QuotationInputLineItem;
       const value = item[key];
 
       if (key !== "description") {

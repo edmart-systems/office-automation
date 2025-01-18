@@ -99,6 +99,28 @@ export const validateCompanyId = (id: string): boolean => {
   }
 };
 
+export const verifyQuotationId = (quotationId: string): boolean => {
+  if (!quotationId.startsWith("Q")) {
+    return false;
+  }
+
+  if (quotationId.length !== 10 && quotationId.length !== 11) {
+    return false;
+  }
+
+  const numericPart = quotationId.slice(1);
+
+  try {
+    if (Number.isNaN(parseInt(numericPart, 10))) {
+      return false;
+    }
+  } catch (err) {
+    return false;
+  }
+
+  return true;
+};
+
 export const isWithinRange = (value: number, range: ItemRange): boolean => {
   return value >= range.min && value <= range.max;
 };

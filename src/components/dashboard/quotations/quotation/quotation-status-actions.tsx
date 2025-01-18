@@ -13,7 +13,7 @@ import { ActionResponse } from "@/types/actions-response.types";
 import { useRouter } from "next/navigation";
 import nProgress from "nprogress";
 import {
-  QuotationStatus,
+  QuotationStatusKeys,
   QuotationStatusAction,
   QuotationStatusActionType,
 } from "@/types/quotations.types";
@@ -63,7 +63,7 @@ const actions: QuotationStatusAction = {
 };
 
 type Props = {
-  status: QuotationStatus;
+  status: QuotationStatusKeys;
 };
 
 const QuotationStatusActions = ({ status }: Props) => {

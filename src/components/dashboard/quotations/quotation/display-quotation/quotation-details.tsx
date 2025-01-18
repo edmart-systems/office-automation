@@ -1,3 +1,4 @@
+import { FullQuotation } from "@/types/quotations.types";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
 import { fDateTime12, fToNow } from "@/utils/time";
 import { Box, Stack, Typography } from "@mui/material";
@@ -21,25 +22,33 @@ const IntroItem = ({ title, content }: IntroItemProps) => {
   );
 };
 
-const QuotationDetails = () => {
+type Props = {
+  quotation: FullQuotation;
+};
+
+const QuotationDetails = ({ quotation }: Props) => {
   return (
     <Stack spacing={1} justifyContent="flex-start">
-      <IntroItem title="Number" content="Q250111002" />
-      <IntroItem title="Currency" content="UGX" />
+      <IntroItem title="Number" content={quotation.quotationId} />
+      <IntroItem title="Type" content={quotation.type.name} />
+      <IntroItem title="Currency" content={quotation.currency.currency_code} />
       <IntroItem
         title="Issue Date"
-        content={`${fDateTime12("12-12-2024")} (${capitalizeFirstLetter(
-          fToNow("12-12-2024")
+        content={`${fDateTime12(quotation.time)} (${capitalizeFirstLetter(
+          fToNow(quotation.time)
         )})`}
       />
       <IntroItem
         title="Due Date"
-        content={`${fDateTime12("12-30-2024")} (${capitalizeFirstLetter(
-          fToNow("12-30-2024")
+        content={`${fDateTime12(quotation.expiryTime)} (${capitalizeFirstLetter(
+          fToNow(quotation.expiryTime)
         )})`}
       />
-      <IntroItem title="Validity" content="20 days" />
-      <IntroItem title="TIN" content="11002332453" />
+      <IntroItem
+        title="Validity"
+        content={`${quotation.tcs.validity_days} days`}
+      />
+      <IntroItem title="TIN" content={"11002332453"} />
     </Stack>
   );
 };

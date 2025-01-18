@@ -9,6 +9,7 @@ import {
   TcsDto,
   Unit2,
   PaginatedQuotations,
+  FullQuotation,
 } from "@/types/quotations.types";
 import prisma from "../../../db/db";
 import { QuotationsRepository } from "./quotations.respository";
@@ -25,6 +26,7 @@ import {
   verifyTcs,
 } from "./create-quotation";
 import { SessionUser } from "../auth-actions/auth.actions";
+import { verifyQuotationId } from "@/utils/verification-validation.utils";
 
 export class QuotationsService {
   private readonly quotationsRepo = new QuotationsRepository(prisma);
@@ -177,6 +179,38 @@ export class QuotationsService {
         data: createdQuotation.quotation_id,
       };
       return Promise.resolve(res);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  getSingleFullQuotation = async (
+    quotationId: string
+  ): Promise<ActionResponse> => {
+    try {
+      if (!verifyQuotationId(quotationId)) {
+        return Promise.resolve({
+          status: false,
+          message: "Bad request",
+        });
+      }
+
+      const quotation: FullQuotation | null =
+        await this.quotationsRepo.fetchSingleFullQuotation(quotationId);
+
+      if (!quotation) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
+
+      return Promise.resolve({
+        status: true,
+        message: "Successful",
+        data: quotation,
+      });
     } catch (err) {
       logger.error(err);
       return Promise.reject(err);

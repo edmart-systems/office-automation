@@ -4,19 +4,19 @@ import { AddCircleOutline, Clear } from "@mui/icons-material";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import QuotationListItem from "./quotation-line-item";
-import { QuotationLineItem } from "@/types/quotations.types";
+import { QuotationInputLineItem } from "@/types/quotations.types";
 import { Currency2 } from "@/types/currency.types";
 import LineItemDialog from "./line-item-dialog";
 import { getTimeNum } from "@/utils/time";
 import ClearListDialog from "./clear-list-dialog";
 
 type Props = {
-  lineItems: QuotationLineItem[];
-  setLineItems: Dispatch<SetStateAction<QuotationLineItem[]>>;
+  lineItems: QuotationInputLineItem[];
+  setLineItems: Dispatch<SetStateAction<QuotationInputLineItem[]>>;
   selectedCurrency: Currency2;
 };
 
-const blankLineItem = (id: number): QuotationLineItem => ({
+const blankLineItem = (id: number): QuotationInputLineItem => ({
   id: id,
   description: "",
   name: "",
@@ -42,7 +42,7 @@ const QuotationListItems = ({
     setLineItems((prev) => [...prev, blankLineItem(getTimeNum())]);
   };
 
-  const addFullItem = (item: QuotationLineItem) => {
+  const addFullItem = (item: QuotationInputLineItem) => {
     setLineItems((prev) => [...prev, item]);
   };
 
@@ -52,7 +52,7 @@ const QuotationListItems = ({
 
   const updateLineItem = (
     id: number,
-    field: keyof QuotationLineItem,
+    field: keyof QuotationInputLineItem,
     value: any
   ) => {
     setLineItems((prev) =>
@@ -62,7 +62,7 @@ const QuotationListItems = ({
     );
   };
 
-  const updateFullItem = (updatedItem: QuotationLineItem) => {
+  const updateFullItem = (updatedItem: QuotationInputLineItem) => {
     setLineItems((prev) =>
       prev.map((item) => {
         return item.id === updatedItem.id ? updatedItem : item;

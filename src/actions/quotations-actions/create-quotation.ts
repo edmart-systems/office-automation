@@ -3,7 +3,7 @@ import { ObjectVerifyResponse } from "@/types/other.types";
 import {
   QuotationClientData,
   QuotationInputClientData,
-  QuotationLineItem,
+  QuotationInputLineItem,
   RawQuotationLineItem,
   TcsDto,
 } from "@/types/quotations.types";
@@ -149,7 +149,7 @@ export const verifyClientInfo = (
 };
 
 export const verifyLineItems = (
-  lineItems: QuotationLineItem[]
+  lineItems: QuotationInputLineItem[]
 ): ObjectVerifyResponse => {
   const errArr: string[] = [];
 
@@ -163,7 +163,7 @@ export const verifyLineItems = (
     const invalid: string[] = [];
 
     Object.keys(item).forEach((_key) => {
-      const key = _key as keyof QuotationLineItem;
+      const key = _key as keyof QuotationInputLineItem;
       const value = item[key];
 
       if (key !== "description") {
@@ -215,7 +215,7 @@ export const verifyLineItems = (
 };
 
 export const processQuotationLineItems = (
-  lineItems: QuotationLineItem[],
+  lineItems: QuotationInputLineItem[],
   excludeVat: boolean,
   tcs: TcsDto
 ): {

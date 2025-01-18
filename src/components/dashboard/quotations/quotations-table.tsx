@@ -24,7 +24,10 @@ import { useRouter } from "next/navigation";
 import { fDate, fDateTime12, fToNow } from "@/utils/time";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
 import QuotationStatusChip from "./quotation/quotation-status-chip";
-import { QuotationStatus, SummarizedQuotation } from "@/types/quotations.types";
+import {
+  QuotationStatusKeys,
+  SummarizedQuotation,
+} from "@/types/quotations.types";
 
 type Props = {
   isFetching: boolean;
@@ -148,7 +151,7 @@ const QuotationsTable = ({ isFetching, visibleRows }: Props) => {
                           status={
                             row.isExpired
                               ? "expired"
-                              : (row.status as QuotationStatus)
+                              : (row.status as QuotationStatusKeys)
                           }
                         />
                       </TableCell>

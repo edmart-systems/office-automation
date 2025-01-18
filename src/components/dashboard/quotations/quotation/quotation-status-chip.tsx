@@ -7,10 +7,10 @@ import {
   HighlightOff,
 } from "@mui/icons-material";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
-import { QuotationStatus } from "@/types/quotations.types";
+import { QuotationStatusKeys } from "@/types/quotations.types";
 
 const statusConfig: {
-  [key in QuotationStatus]: {
+  [key in QuotationStatusKeys]: {
     icon: ReactElement;
   };
 } = {
@@ -29,7 +29,7 @@ const statusConfig: {
 };
 
 type Props = {
-  status: QuotationStatus;
+  status: QuotationStatusKeys;
 };
 
 const QuotationStatusChip = ({ status }: Props) => {

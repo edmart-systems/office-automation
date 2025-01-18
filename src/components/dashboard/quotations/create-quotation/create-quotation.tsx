@@ -24,7 +24,7 @@ import {
   NewQuotation,
   QuotationError,
   QuotationInputClientData,
-  QuotationLineItem,
+  QuotationInputLineItem,
   QuotationPriceSummary,
   TcsDto,
 } from "@/types/quotations.types";
@@ -73,7 +73,7 @@ const blankClientData: QuotationInputClientData = {
   addressLine1: "",
 };
 
-const blankLineItem = (id: number): QuotationLineItem => ({
+const blankLineItem = (id: number): QuotationInputLineItem => ({
   id: id,
   description: "",
   name: "",
@@ -114,7 +114,7 @@ const CreateQuotation = ({ baseData }: Props) => {
   );
   const [clientData, setClientData] =
     useState<QuotationInputClientData>(blankClientData);
-  const [lineItems, setLineItems] = useState<QuotationLineItem[]>([
+  const [lineItems, setLineItems] = useState<QuotationInputLineItem[]>([
     blankLineItem(quotationId),
   ]);
   const [priceSummary, setPriceSummary] = useState<QuotationPriceSummary>({

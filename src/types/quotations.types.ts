@@ -2,16 +2,18 @@ import {
   Quotation,
   Quotation_client_data,
   Quotation_items,
+  Quotation_status,
   Quotation_tcs,
   Quotation_type,
   Unit,
+  User,
 } from "@prisma/client";
 import { ReactElement } from "react";
 import { BankDto, CompanyDto } from "./company.types";
 import { Currency2 } from "./currency.types";
 import { PaginationData } from "./other.types";
 
-export type QuotationStatus = "sent" | "accepted" | "rejected" | "expired";
+export type QuotationStatusKeys = "sent" | "accepted" | "rejected" | "expired";
 
 export type QuotationFilterKeys =
   | "id"
@@ -31,7 +33,7 @@ export type QuotationFilters = {
   dataAltered: boolean;
 };
 
-export type Quotation_Status = QuotationStatus | "";
+export type QuotationStatusKeysAndNull = QuotationStatusKeys | "";
 
 // export const compareFilters = (
 //   prev: QuotationFilters,
@@ -56,7 +58,7 @@ export type Quotation_Status = QuotationStatus | "";
 export type QuotationStatusActionType = "setAccepted" | "setRejected";
 
 export type QuotationStatusAction = {
-  [key in QuotationStatus]: {
+  [key in QuotationStatusKeys]: {
     name: QuotationStatusActionType;
     label: string;
     desc: string;
@@ -117,13 +119,22 @@ export type QuotationClientData = {
   addressLine1: string | null;
 };
 
-export type QuotationLineItem = {
+export type QuotationInputLineItem = {
   id: number;
   name?: string | null;
   description?: string | null;
   quantity?: number | null;
   units?: string | null;
   unitPrice?: number | null;
+};
+
+export type QuotationOutputLineItem = {
+  id: number;
+  name: string;
+  description?: string | null;
+  quantity: number;
+  units: string;
+  unitPrice: number;
 };
 
 export type QuotationPriceSummary = {
@@ -147,7 +158,7 @@ export type NewQuotation = {
   tcs: TcsDto;
   currency: Currency2;
   clientData: QuotationInputClientData;
-  lineItems: QuotationLineItem[];
+  lineItems: QuotationInputLineItem[];
 };
 
 export type QuotationDraftSummary = {
@@ -181,7 +192,7 @@ export type NewRawQuotation = {
 };
 
 export type QuotationStatusCounts = {
-  [keys in QuotationStatus | "all"]: {
+  [keys in QuotationStatusKeys | "all"]: {
     count: number;
     sum: number;
   };
@@ -219,4 +230,23 @@ export type SummarizedQuotation = {
 export type PaginatedQuotations = {
   quotations: SummarizedQuotation[];
   pagination: PaginationData;
+};
+
+export type FullQuotation = {
+  quotationId: string;
+  time: number;
+  type: Quotation_type;
+  tcsEdited: boolean;
+  vatExcluded: boolean;
+  tcs: TcsDto;
+  currency: Currency2;
+  clientData: QuotationInputClientData;
+  lineItems: QuotationOutputLineItem[];
+  user: Pick<User, "co_user_id" | "firstName" | "lastName" | "profile_picture">;
+  status: Quotation_status;
+  expiryTime: number;
+  isExpired: boolean;
+  subTotal: number;
+  vat: number;
+  grandTotal: number;
 };

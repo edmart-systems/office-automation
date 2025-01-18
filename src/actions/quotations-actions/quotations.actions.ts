@@ -126,3 +126,29 @@ export const getPaginatedQuotation = async (
     });
   }
 };
+
+export const fetchSingleQuotation = async (
+  quotationId: string
+): Promise<ActionResponse> => {
+  try {
+    const session = await getAuthSession();
+
+    if (!(await sessionService.checkIsUserSessionOk(session))) {
+      return Promise.resolve({
+        status: false,
+        message: "Not Authorized",
+      });
+    }
+
+    const userData: ActionResponse =
+      await quotationsService.getSingleFullQuotation(quotationId);
+
+    return Promise.resolve(userData);
+  } catch (err) {
+    logger.error(err);
+    return Promise.resolve({
+      status: false,
+      message: "Something went wrong",
+    });
+  }
+};
