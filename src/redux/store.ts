@@ -59,6 +59,7 @@ const currenciesPersistConfig = {
 const quotationsPersistConfig = {
   key: "quotations",
   storage: fixedStorage,
+  blacklist: ["reuse"],
 };
 
 const quotationSearchPersistConfig = {

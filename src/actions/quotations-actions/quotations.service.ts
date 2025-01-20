@@ -10,6 +10,7 @@ import {
   Unit2,
   PaginatedQuotations,
   FullQuotation,
+  SingleQuotationPageData,
 } from "@/types/quotations.types";
 import prisma from "../../../db/db";
 import { QuotationsRepository } from "./quotations.respository";
@@ -147,8 +148,8 @@ export class QuotationsService {
         currency_id: currency.currency_id,
         quotation_id: quotationId,
         validity_days:
-          tcsEdited && tcs.edited_delivery_days
-            ? tcs.edited_delivery_days
+          tcsEdited && tcs.edited_validity_days
+            ? tcs.edited_validity_days
             : tcs.validity_days,
         payment_grace_days:
           tcsEdited && tcs.edited_payment_grace_days
@@ -185,7 +186,7 @@ export class QuotationsService {
     }
   };
 
-  getSingleFullQuotation = async (
+  getSingleQuotationPageData = async (
     quotationId: string
   ): Promise<ActionResponse> => {
     try {
@@ -195,6 +196,8 @@ export class QuotationsService {
           message: "Bad request",
         });
       }
+
+      const company: CompanyDto = await this.companyService.getCompanyDetails();
 
       const quotation: FullQuotation | null =
         await this.quotationsRepo.fetchSingleFullQuotation(quotationId);
@@ -206,10 +209,15 @@ export class QuotationsService {
         });
       }
 
+      const pageData: SingleQuotationPageData = {
+        quotation: quotation,
+        company: company,
+      };
+
       return Promise.resolve({
         status: true,
         message: "Successful",
-        data: quotation,
+        data: pageData,
       });
     } catch (err) {
       logger.error(err);

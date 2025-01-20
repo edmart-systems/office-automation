@@ -141,7 +141,7 @@ export const fetchSingleQuotation = async (
     }
 
     const userData: ActionResponse =
-      await quotationsService.getSingleFullQuotation(quotationId);
+      await quotationsService.getSingleQuotationPageData(quotationId);
 
     return Promise.resolve(userData);
   } catch (err) {

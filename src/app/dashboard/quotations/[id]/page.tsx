@@ -3,7 +3,10 @@ import PageGoBack from "@/components/dashboard/common/page-go-back";
 import DisplayQuotation from "@/components/dashboard/quotations/quotation/display-quotation/display-quotation";
 import QuotationActions from "@/components/dashboard/quotations/quotation/quotation-actions";
 import QuotationPageHead from "@/components/dashboard/quotations/quotation/quotation-page-header";
-import { FullQuotation } from "@/types/quotations.types";
+import {
+  FullQuotation,
+  SingleQuotationPageData,
+} from "@/types/quotations.types";
 import { paths } from "@/utils/paths.utils";
 import { Stack } from "@mui/material";
 import { Metadata } from "next";
@@ -18,14 +21,14 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-const getThisQuotation = async (
+const getData = async (
   quotationId: string
-): Promise<FullQuotation | null> => {
+): Promise<SingleQuotationPageData | null> => {
   try {
     const res = await fetchSingleQuotation(quotationId);
 
     if (res.status && res.data) {
-      return Promise.resolve(res.data as FullQuotation);
+      return Promise.resolve(res.data as SingleQuotationPageData);
     }
 
     return Promise.resolve(null);
@@ -36,11 +39,14 @@ const getThisQuotation = async (
 
 const SingleQuotationPage = async ({ params }: Props) => {
   const { id } = await params;
-  const quotation = await getThisQuotation(id);
+  const pageData = await getData(id);
 
-  if (!quotation) {
+  if (!pageData) {
     return redirect(paths.errors.notFound);
   }
+
+  const quotation = pageData.quotation;
+  const company = pageData.company;
 
   return (
     <Stack spacing={3}>
@@ -59,9 +65,9 @@ const SingleQuotationPage = async ({ params }: Props) => {
           status={quotation.status}
           isExpired={quotation.isExpired}
         />
-        <QuotationActions quotation={quotation} />
+        <QuotationActions quotation={quotation} company={company} />
       </Stack>
-      <DisplayQuotation quotation={quotation} />
+      <DisplayQuotation quotation={quotation} company={company} />
     </Stack>
   );
 };

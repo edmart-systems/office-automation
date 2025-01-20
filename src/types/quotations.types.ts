@@ -250,3 +250,8 @@ export type FullQuotation = {
   vat: number;
   grandTotal: number;
 };
+
+export type SingleQuotationPageData = {
+  company: CompanyDto;
+  quotation: FullQuotation;
+};

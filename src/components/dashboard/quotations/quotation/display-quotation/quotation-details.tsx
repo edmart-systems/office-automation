@@ -1,4 +1,5 @@
-import { FullQuotation } from "@/types/quotations.types";
+"use client";
+import { Currency2 } from "@/types/currency.types";
 import { capitalizeFirstLetter } from "@/utils/formatters.util";
 import { fDateTime12, fToNow } from "@/utils/time";
 import { Box, Stack, Typography } from "@mui/material";
@@ -10,7 +11,7 @@ type IntroItemProps = {
 
 const IntroItem = ({ title, content }: IntroItemProps) => {
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={2} sx={{ cursor: "pointer" }}>
       <Typography flex={1} variant="body1">
         {title}:
       </Typography>
@@ -23,32 +24,49 @@ const IntroItem = ({ title, content }: IntroItemProps) => {
 };
 
 type Props = {
-  quotation: FullQuotation;
+  quotationId: string;
+  tin: string | null;
+  quotationType: string;
+  currency: Currency2;
+  createdAt: number;
+  expiringAt: number;
+  validityDays: number;
+  _ref: string | null;
 };
 
-const QuotationDetails = ({ quotation }: Props) => {
+const QuotationDetails = ({
+  quotationId,
+  quotationType,
+  tin,
+  createdAt,
+  currency,
+  expiringAt,
+  validityDays,
+  _ref,
+}: Props) => {
   return (
     <Stack spacing={1} justifyContent="flex-start">
-      <IntroItem title="Number" content={quotation.quotationId} />
-      <IntroItem title="Type" content={quotation.type.name} />
-      <IntroItem title="Currency" content={quotation.currency.currency_code} />
+      <IntroItem title="Number" content={quotationId} />
+      <IntroItem title="Type" content={quotationType} />
+      <IntroItem
+        title="Currency"
+        content={`${currency.currency_name}, ${currency.currency_code}`}
+      />
       <IntroItem
         title="Issue Date"
-        content={`${fDateTime12(quotation.time)} (${capitalizeFirstLetter(
-          fToNow(quotation.time)
+        content={`${fDateTime12(createdAt)} (${capitalizeFirstLetter(
+          fToNow(createdAt)
         )})`}
       />
       <IntroItem
         title="Due Date"
-        content={`${fDateTime12(quotation.expiryTime)} (${capitalizeFirstLetter(
-          fToNow(quotation.expiryTime)
+        content={`${fDateTime12(expiringAt)} (${capitalizeFirstLetter(
+          fToNow(expiringAt)
         )})`}
       />
-      <IntroItem
-        title="Validity"
-        content={`${quotation.tcs.validity_days} days`}
-      />
-      <IntroItem title="TIN" content={"11002332453"} />
+      {_ref && <IntroItem title="External Ref" content={_ref} />}
+      <IntroItem title="Validity" content={`${validityDays} days`} />
+      <IntroItem title="TIN" content={tin ?? "N/A"} />
     </Stack>
   );
 };

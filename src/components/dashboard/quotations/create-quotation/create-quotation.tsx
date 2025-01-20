@@ -43,6 +43,7 @@ import {
 import QuotationErrors from "./quotation-errors";
 import { toast } from "react-toastify";
 import {
+  clearReuseQuotations,
   removeQuotationDraft,
   saveQuotationDraft,
 } from "@/redux/slices/quotation.slice";
@@ -91,7 +92,7 @@ const submitNewQuotation = async (
 };
 
 const CreateQuotation = ({ baseData }: Props) => {
-  const { quotations: draftQuotations } = useAppSelector(
+  const { quotations: draftQuotations, reuse: reuseQuotation } = useAppSelector(
     (state) => state.quotations
   );
   const dispatch = useAppDispatch();
@@ -188,9 +189,34 @@ const CreateQuotation = ({ baseData }: Props) => {
     }
   };
 
+  const setReuseQuotationHandler = () => {
+    try {
+      if (!reuseQuotation) return;
+
+      setQuotationErrors([]);
+      setSelectedQuoteType(reuseQuotation.type);
+      setQuotationId(reuseQuotation.quotationId);
+      setEditTcs(reuseQuotation.tcsEdited);
+      setSelectedTcs(reuseQuotation.tcs);
+      setSelectedCurrency(reuseQuotation.currency);
+      setClientData(reuseQuotation.clientData);
+      setExcludeVat(reuseQuotation.vatExcluded);
+      setLineItems(reuseQuotation.lineItems);
+
+      dispatch(clearReuseQuotations());
+
+      toast("Quotation ready to reuse", {
+        type: "success",
+      });
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
   useEffect(() => {
     setSelectedDraftHandler();
-  }, [selectedDraftParams]);
+    setReuseQuotationHandler();
+  }, [selectedDraftParams, reuseQuotation]);
 
   useEffect(() => {
     calculatePrices();

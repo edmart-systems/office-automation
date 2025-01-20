@@ -173,7 +173,7 @@ export class QuotationsRepository {
       const clientData: QuotationInputClientData = {
         name: quotation.client_data.name,
         ref: quotation.client_data.external_ref,
-        contactPerson: quotation.client_data.external_ref,
+        contactPerson: quotation.client_data.contact_person,
         email: quotation.client_data.email,
         phone: quotation.client_data.phone,
         boxNumber: quotation.client_data.box_number,

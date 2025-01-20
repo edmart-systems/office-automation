@@ -1,35 +1,60 @@
+"use client";
+import { TcsDto } from "@/types/quotations.types";
 import { Stack, Typography } from "@mui/material";
+import { Quotation_type } from "@prisma/client";
+import {
+  generatePaymentStr,
+  generateValidityStr,
+} from "../../create-quotation/new-quotation-tsc-info";
+import BankDetails from "../bank-details";
 
-const QuotationTcs = () => {
+type Props = {
+  selectedTcs: TcsDto;
+  quotationType: Quotation_type;
+  tcsEdited: boolean;
+};
+
+const QuotationTcs = ({ selectedTcs, quotationType, tcsEdited }: Props) => {
+  const displayTxt = {
+    paymentStr: generatePaymentStr({
+      selectedTcs: selectedTcs,
+      selectedQuoteType: quotationType,
+      editTcs: tcsEdited,
+    }),
+    validityStr: generateValidityStr({
+      selectedTcs: selectedTcs,
+      editTcs: tcsEdited,
+    }),
+  };
+
   return (
-    <Stack flex={1} spacing={1}>
-      <Typography variant="body1" fontWeight={600}>
-        Terms And Conditions
-      </Typography>
+    <Stack spacing={2}>
+      <Stack direction="row" spacing={1}>
+        <Typography variant="body1" fontWeight={600}>
+          Terms And Conditions
+        </Typography>
+        {tcsEdited && <Typography color="error">(Customized)</Typography>}
+      </Stack>
       <Stack spacing={1} justifyContent="flex-end" width={{ xl: "100%" }}>
         <Stack direction="row" spacing={2}>
           <Typography flex={1} variant="body1">
             Validity:
           </Typography>
-          <Typography flex={6} variant="body1">
-            20 Days
-          </Typography>
+          <Stack flex={6} direction="row" alignItems="center" spacing={5}>
+            <Typography variant="body1">{displayTxt.validityStr}</Typography>
+          </Stack>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Typography flex={1} variant="body1">
             Payment:
           </Typography>
           <Stack flex={6}>
+            <Typography variant="body1">{displayTxt.paymentStr}</Typography>
             <Typography variant="body1">
-              30 days after delivery of the items and presentation of a tax
-              invoice
-            </Typography>
-            <Typography variant="body1">
-              The payment shall be by Cheque, EFT or RTGS to our account with
-              the following details
+              {selectedTcs.payment_method_words}
             </Typography>
             <br />
-            <BankDetails />
+            <BankDetails bank={selectedTcs.bank} />
           </Stack>
         </Stack>
       </Stack>
@@ -37,42 +62,4 @@ const QuotationTcs = () => {
   );
 };
 
-const BankDetails = () => {
-  return (
-    <Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Title:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          Edmart Systems Uganda Limited
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          A/C No:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          3443634564562356
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Bank:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          Stanbic Bank
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Branch:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          Garden City
-        </Typography>
-      </Stack>
-    </Stack>
-  );
-};
 export default QuotationTcs;

@@ -1,10 +1,11 @@
-import { BankDto } from "@/types/company.types";
+"use client";
 import { TcsDto } from "@/types/quotations.types";
 import { Edit, RestartAlt } from "@mui/icons-material";
 import { Button, Grid2 as Grid, Stack, Typography } from "@mui/material";
 import { Quotation_type } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EditTcsDialog from "./edit-tcs-dialog";
+import BankDetails from "../quotation/bank-details";
 
 type Props = {
   selectedTcs: TcsDto;
@@ -15,7 +16,7 @@ type Props = {
   setEditTcs: Dispatch<SetStateAction<boolean>>;
 };
 
-const generatePaymentStr = ({
+export const generatePaymentStr = ({
   selectedQuoteType,
   selectedTcs,
   editTcs,
@@ -54,7 +55,7 @@ const generatePaymentStr = ({
   return paymentStr ?? "";
 };
 
-const generateValidityStr = ({
+export const generateValidityStr = ({
   selectedTcs,
   editTcs,
 }: Omit<
@@ -247,42 +248,4 @@ const NewQuotationTscInfo = ({
   );
 };
 
-const BankDetails = ({ bank }: { bank: BankDto }) => {
-  return (
-    <Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Title:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          {bank.ac_title}
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          A/C No:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          {bank.ac_number}
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Bank:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          {bank.name}
-        </Typography>
-      </Stack>
-      <Stack direction="row">
-        <Typography variant="body1" fontWeight={600} flex={1}>
-          Branch:
-        </Typography>
-        <Typography variant="body1" flex={5}>
-          {bank.branch_name}
-        </Typography>
-      </Stack>
-    </Stack>
-  );
-};
 export default NewQuotationTscInfo;

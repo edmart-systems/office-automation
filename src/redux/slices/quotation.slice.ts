@@ -1,18 +1,16 @@
-import {
-  NewQuotation,
-  QuotationDraftSummary,
-  Unit2,
-} from "@/types/quotations.types";
+import { NewQuotation, QuotationDraftSummary } from "@/types/quotations.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface QuotationState {
   quotations: NewQuotation[];
   summary: QuotationDraftSummary[];
+  reuse: NewQuotation | null;
 }
 
 const initialState: QuotationState = {
   quotations: [],
   summary: [],
+  reuse: null,
 };
 
 const createSummary = (draft: NewQuotation): QuotationDraftSummary => {
@@ -68,6 +66,12 @@ const quotationsSlice = createSlice({
       state.quotations = [];
       state.summary = [];
     },
+    setReuseQuotations: (state, action: PayloadAction<NewQuotation>) => {
+      state.reuse = action.payload;
+    },
+    clearReuseQuotations: (state) => {
+      state.reuse = null;
+    },
   },
 });
 
@@ -75,5 +79,7 @@ export const {
   saveQuotationDraft,
   clearQuotationDrafts,
   removeQuotationDraft,
+  setReuseQuotations,
+  clearReuseQuotations,
 } = quotationsSlice.actions;
 export const quotationsReducer = quotationsSlice.reducer;

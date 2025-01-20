@@ -90,6 +90,7 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
     dispatch(updateQuotationSearchParams(structured));
     setIsSubmitted(true);
     setDateEdited(false);
+    closeHandler && closeHandler();
   };
 
   const setDate = (dayJsObj: Dayjs | null, target: "start" | "end") => {
@@ -118,7 +119,7 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
     setIsSubmitted(false);
     setDateEdited(false);
     dispatch(clearQuotationSearchParams());
-    // closeHandler && closeHandler();
+    closeHandler && closeHandler();
   };
 
   useEffect(() => {
@@ -213,17 +214,17 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
             </Select>
           </FormControl>
           <TextField
-            label="User First Name"
-            value={newParams.user}
-            disabled={isSearching}
-            placeholder="First Name"
-            onChange={(evt) => inputHandler("user", evt.target.value)}
-          />
-          <TextField
             label="Client"
             value={newParams.client}
             disabled={isSearching}
             onChange={(evt) => inputHandler("client", evt.target.value)}
+          />
+          <TextField
+            label="User (first name)"
+            value={newParams.user}
+            disabled={isSearching}
+            placeholder="First name"
+            onChange={(evt) => inputHandler("user", evt.target.value)}
           />
           <DatePicker
             label="Start"

@@ -8,11 +8,11 @@ import { CreateQuotationPageData } from "@/types/quotations.types";
 import { getCreateNewQuotationsPageData } from "@/actions/quotations-actions/quotations.actions";
 import { paths } from "@/utils/paths.utils";
 import { redirect } from "next/navigation";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import QuotationDraftsMenu from "@/components/dashboard/quotations/create-quotation/quotation-drafts-menu";
 import MyCircularProgress from "@/components/common/my-circular-progress";
 
-export const getData = async (): Promise<CreateQuotationPageData | null> => {
+const getData = async (): Promise<CreateQuotationPageData | null> => {
   const res = await getCreateNewQuotationsPageData();
   const { message, status, data } = res;
 
@@ -28,7 +28,7 @@ const CreateQuotationPage = async () => {
   const data: CreateQuotationPageData | null = await getData();
 
   if (!data) {
-    toast("Failed to fetch required data", { type: "error" });
+    // toast("Failed to fetch required data", { type: "error" });
     return redirect(paths.dashboard.quotations.main);
   }
 

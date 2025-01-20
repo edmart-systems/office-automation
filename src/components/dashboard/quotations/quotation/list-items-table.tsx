@@ -6,219 +6,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { Card, Stack, Typography, useTheme } from "@mui/material";
+import { QuotationOutputLineItem } from "@/types/quotations.types";
+import { Currency2 } from "@/types/currency.types";
 
-const createData = (
-  name: string,
-  desc: string,
-  unitAmount: number,
-  qty: number,
-  units: string
-) => {
-  return { name, desc, unitAmount, qty, units };
+type Props = {
+  listItems: QuotationOutputLineItem[];
+  currency: Currency2;
 };
 
-const rows = [
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4 Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4 Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4 Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-  createData(
-    "Lenovo ThinkPad T14 Laptop",
-    "Intel 11th Gen Core i5-1135G7, 512 GB SSD, 8GB DDR4",
-    6156000,
-    1,
-    "Piece(s)"
-  ),
-];
-
-const ListItemsTable = () => {
+const ListItemsTable = ({ listItems, currency }: Props) => {
   const theme = useTheme();
 
   return (
@@ -233,15 +30,19 @@ const ListItemsTable = () => {
               S/N
             </TableCell>
             <TableCell sx={{ fontWeight: 600 }}>Description</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Unit Amount (UGX)</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Qty</TableCell>
-            <TableCell sx={{ fontWeight: 600 }}>Amount (UGX)</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Quantity</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>
+              Unit Price ({currency.currency_code})
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>
+              Total ({currency.currency_code})
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
+          {listItems.map((row, index) => (
             <TableRow
-              key={index * row.qty + row.unitAmount}
+              key={row.id + "-" + row.quantity}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell align="center">{index + 1}</TableCell>
@@ -249,16 +50,17 @@ const ListItemsTable = () => {
                 <Stack>
                   <Typography>{row.name}</Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {row.desc}
+                    {row.description}
                   </Typography>
                 </Stack>
               </TableCell>
-              <TableCell>{row.unitAmount.toLocaleString()}</TableCell>
+
               <TableCell>
-                {row.qty} {row.units}
+                {row.quantity} {row.units}
               </TableCell>
+              <TableCell>{row.unitPrice.toLocaleString()}</TableCell>
               <TableCell>
-                {(row.qty * row.unitAmount).toLocaleString()}
+                {(row.quantity * row.unitPrice).toLocaleString()}
               </TableCell>
             </TableRow>
           ))}
