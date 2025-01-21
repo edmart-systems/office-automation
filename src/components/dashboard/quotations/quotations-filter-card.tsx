@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -90,7 +90,17 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
     dispatch(updateQuotationSearchParams(structured));
     setIsSubmitted(true);
     setDateEdited(false);
-    closeHandler && closeHandler();
+    if (closeHandler) {
+      closeHandler();
+    }
+  };
+
+  const keyBoardPressedHandler = (evt: KeyboardEvent<HTMLDivElement>) => {
+    const key = evt.key;
+    if (key === "Enter") {
+      onSubmit();
+      return;
+    }
   };
 
   const setDate = (dayJsObj: Dayjs | null, target: "start" | "end") => {
@@ -159,6 +169,8 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
+          style={closeHandler ? { cursor: "move" } : {}}
+          id={closeHandler ? "draggable-dialog-title" : ""}
         >
           <Typography variant="h6" fontWeight={600}>
             Filters
@@ -181,6 +193,7 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
             //   setNewParams((prev) => ({ ...prev, id: evt.target.value }))
             // }
             onChange={(evt) => inputHandler("id", evt.target.value)}
+            onKeyDown={keyBoardPressedHandler}
           />
           <FormControl fullWidth>
             <InputLabel id="status-select-label">Status</InputLabel>
@@ -218,6 +231,7 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
             value={newParams.client}
             disabled={isSearching}
             onChange={(evt) => inputHandler("client", evt.target.value)}
+            onKeyDown={keyBoardPressedHandler}
           />
           <TextField
             label="User (first name)"
@@ -225,6 +239,7 @@ const QuotationsFilterCard = ({ closeHandler }: Props) => {
             disabled={isSearching}
             placeholder="First name"
             onChange={(evt) => inputHandler("user", evt.target.value)}
+            onKeyDown={keyBoardPressedHandler}
           />
           <DatePicker
             label="Start"

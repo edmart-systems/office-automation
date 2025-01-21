@@ -205,7 +205,7 @@ const CreateQuotation = ({ baseData }: Props) => {
 
       dispatch(clearReuseQuotations());
 
-      toast("Quotation ready to reuse", {
+      toast("Quotation ready to be reused", {
         type: "success",
       });
     } catch (err) {
