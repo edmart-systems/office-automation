@@ -2,39 +2,83 @@ import { usePDF } from "@react-pdf/renderer";
 import React, { Fragment } from "react";
 import QuotationPdfDoc from "./quotation-pdf-doc";
 import Link from "next/link";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import { Download } from "@phosphor-icons/react";
 import MyCircularProgress from "@/components/common/my-circular-progress";
+import { OpenInNew } from "@mui/icons-material";
+import { FullQuotation } from "@/types/quotations.types";
+import { CompanyDto } from "@/types/company.types";
 
-const QuotationDownloadButton = () => {
+type Props = {
+  openPdfHandler: () => void;
+  quotation: FullQuotation;
+  company: CompanyDto;
+};
+
+const QuotationDownloadButtons = ({
+  openPdfHandler,
+  company,
+  quotation,
+}: Props) => {
   const [instance, updateInstance] = usePDF({
-    document: <QuotationPdfDoc />,
+    document: <QuotationPdfDoc quotation={quotation} company={company} />,
   });
 
   return (
     <Fragment>
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Stack direction="row" alignItems="center" spacing={2}>
         {instance.error && <Typography>{instance.error}</Typography>}
         {instance.loading ? (
-          <MyCircularProgress />
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Tooltip title="Loading Document" arrow>
+              <Skeleton
+                variant="rounded"
+                width={120}
+                height={40}
+                sx={{ cursor: "pointer" }}
+              />
+            </Tooltip>
+            <Tooltip title="Loading Document" arrow>
+              <Skeleton
+                variant="rounded"
+                width={120}
+                height={40}
+                sx={{ cursor: "pointer" }}
+              />
+            </Tooltip>
+          </Stack>
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<Download />}
-            LinkComponent={Link}
-            href={instance.url ?? ""}
-            target="_blank"
-            rel="no-referrer"
-            download="quotation1.pdf"
-            disabled={instance.error ? true : false}
-          >
-            Download
-          </Button>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<Download />}
+              LinkComponent={Link}
+              href={instance.url ?? ""}
+              target="_blank"
+              rel="no-referrer"
+              download={`Quotation-${(
+                quotation.clientData.name ??
+                quotation.clientData.contactPerson ??
+                ""
+              ).replace(/ /g, "_")}-${quotation.quotationId}`}
+              disabled={instance.error ? true : false}
+            >
+              Download
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<OpenInNew />}
+              onClick={openPdfHandler}
+            >
+              Preview
+            </Button>
+          </Stack>
         )}
       </Stack>
     </Fragment>
   );
 };
 
-export default QuotationDownloadButton;
+export default QuotationDownloadButtons;

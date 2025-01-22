@@ -7,6 +7,7 @@ import {
   generateValidityStr,
 } from "../../create-quotation/new-quotation-tsc-info";
 import BankDetails from "../bank-details";
+import QuotationQr from "./quotation-qr";
 
 type Props = {
   selectedTcs: TcsDto;
@@ -35,28 +36,46 @@ const QuotationTcs = ({ selectedTcs, quotationType, tcsEdited }: Props) => {
         </Typography>
         {tcsEdited && <Typography color="error">(Customized)</Typography>}
       </Stack>
-      <Stack spacing={1} justifyContent="flex-end" width={{ xl: "100%" }}>
-        <Stack direction="row" spacing={2}>
-          <Typography flex={1} variant="body1">
-            Validity:
-          </Typography>
-          <Stack flex={6} direction="row" alignItems="center" spacing={5}>
-            <Typography variant="body1">{displayTxt.validityStr}</Typography>
-          </Stack>
-        </Stack>
-        <Stack direction="row" spacing={2}>
-          <Typography flex={1} variant="body1">
-            Payment:
-          </Typography>
-          <Stack flex={6}>
-            <Typography variant="body1">{displayTxt.paymentStr}</Typography>
-            <Typography variant="body1">
-              {selectedTcs.payment_method_words}
+      <Stack
+        spacing={1}
+        // justifyContent="space-between"
+        alignContent="center"
+        justifyContent={{
+          xl: "space-between",
+          lg: "space-between",
+          md: "center",
+        }}
+        direction={{ xl: "row", lg: "row", md: "column" }}
+        width={{ xl: "100%" }}
+      >
+        <Stack spacing={1} justifyContent="flex-end">
+          <Stack direction="row" spacing={2}>
+            <Typography flex={1} variant="body1">
+              Validity:
             </Typography>
-            <br />
-            <BankDetails bank={selectedTcs.bank} />
+            <Stack flex={6} direction="row" alignItems="center" spacing={5}>
+              <Typography variant="body1">{displayTxt.validityStr}</Typography>
+            </Stack>
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Typography flex={1} variant="body1">
+              Payment:
+            </Typography>
+            <Stack flex={6}>
+              <Typography variant="body1">{displayTxt.paymentStr}</Typography>
+              <Typography variant="body1">
+                {selectedTcs.payment_method_words}
+              </Typography>
+              <br />
+              <BankDetails bank={selectedTcs.bank} />
+            </Stack>
           </Stack>
         </Stack>
+        <QuotationQr
+          width={200}
+          length={200}
+          quotationKey="#Usaama@Usaama#Usaama$Usaama%Usaama^Usaama&Usaama*Usaama(Usaama)Usaama_Usaama+Usaama`Usaama!"
+        />
       </Stack>
     </Stack>
   );

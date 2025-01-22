@@ -22,6 +22,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import { PDFViewer } from "@react-pdf/renderer";
 import QuotationPdfDoc from "./quotation-pdf-doc";
 import { Close } from "@mui/icons-material";
+import { FullQuotation } from "@/types/quotations.types";
+import { CompanyDto } from "@/types/company.types";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,9 +50,11 @@ const PaperComponent = (props: PaperProps) => {
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  quotation: FullQuotation;
+  company: CompanyDto;
 };
 
-const QuotationViewDialog = ({ open, setOpen }: Props) => {
+const QuotationViewDialog = ({ open, setOpen, company, quotation }: Props) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -73,7 +77,7 @@ const QuotationViewDialog = ({ open, setOpen }: Props) => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography>Quotation PDF</Typography>
+            <Typography>Quotation {quotation.quotationId}</Typography>
             <IconButton onClick={handleClose}>
               <Close />
             </IconButton>
@@ -81,7 +85,7 @@ const QuotationViewDialog = ({ open, setOpen }: Props) => {
         </DialogTitle>
         <DialogContent sx={{ height: "85vh" }}>
           <PDFViewer showToolbar width="100%" height="99%">
-            <QuotationPdfDoc />
+            <QuotationPdfDoc quotation={quotation} company={company} />
           </PDFViewer>
         </DialogContent>
       </Dialog>

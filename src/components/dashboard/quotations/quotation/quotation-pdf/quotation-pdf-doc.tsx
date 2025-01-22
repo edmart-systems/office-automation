@@ -1,170 +1,87 @@
 import React from "react";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-  Font,
-} from "@react-pdf/renderer";
+import { Page, View, Document, StyleSheet, Font } from "@react-pdf/renderer";
 import DocHeader from "./doc-components/doc-header";
 import DocTitle from "./doc-components/doc-title";
 import DocFooter from "./doc-components/doc-footer";
 import DocAboutUs from "./doc-components/doc-about-us";
 import DocDetails from "./doc-components/doc-details";
-import DocCUrrency from "./doc-components/doc-currency";
+import DocCurrency from "./doc-components/doc-currency";
+import DocTable from "./doc-components/doc-table";
+import DocTcs from "./doc-components/doc-tcs";
+import DocLastTxt from "./doc-components/doc-last-txt";
+import DocCreator from "./doc-components/doc-creator";
+import { FullQuotation } from "@/types/quotations.types";
+import { CompanyDto } from "@/types/company.types";
+import { userNameFormatter } from "@/utils/formatters.util";
+import DocQr from "./doc-components/doc-qr";
 
 Font.register({
   family: "Comic Sans MS",
   src: "/assets/fonts/ComicSansMS.ttf",
 });
 
-const QuotationPdfDoc = () => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <DocHeader />
-      <View style={styles.mainContainer}>
-        <DocTitle />
-        <DocDetails />
-        <DocAboutUs />
-        <DocCUrrency />
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
+type Props = {
+  quotation: FullQuotation;
+  company: CompanyDto;
+};
 
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
+const QuotationPdfDoc = ({ company, quotation }: Props) => {
+  const date = new Date(quotation.time);
 
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-
-        <Text style={styles.sam}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam et
-          vitae impedit dicta exercitationem officia amet pariatur quis harum
-          inventore excepturi, facilis tenetur dignissimos reiciendis ex
-          sapiente, eligendi aliquid eius!
-        </Text>
-      </View>
-      <DocFooter />
-    </Page>
-  </Document>
-);
+  return (
+    <Document
+      title={`Quotation-${(
+        quotation.clientData.name ??
+        quotation.clientData.contactPerson ??
+        ""
+      ).replace(/ /g, "_")}-${quotation.quotationId}`}
+      creator={company.legal_name ?? company.business_name}
+      author={userNameFormatter(
+        quotation.user.firstName,
+        quotation.user.lastName
+      )}
+      subject={quotation.type.name}
+      language="En"
+      creationDate={date}
+    >
+      <Page size="A4" style={styles.page}>
+        <DocHeader />
+        <DocQr />
+        <View style={styles.mainContainer}>
+          <DocTitle companyName={company.legal_name ?? company.business_name} />
+          <DocDetails
+            quotationId={quotation.quotationId}
+            tin={company.tin}
+            time={quotation.time}
+            client={quotation.clientData}
+          />
+          <DocAboutUs />
+          <DocCurrency currency={quotation.currency} />
+          <DocTable
+            lineItems={quotation.lineItems}
+            grandTotal={quotation.grandTotal}
+            subtotal={quotation.subTotal}
+            vat={quotation.vat}
+            vatPercentage={quotation.tcs.vat_percentage}
+            vatExcluded={quotation.vatExcluded}
+          />
+          <DocTcs
+            tcsEdited={quotation.tcsEdited}
+            quotationType={quotation.type}
+            selectedTcs={quotation.tcs}
+          />
+          <DocCreator
+            firstName={quotation.user.firstName}
+            lastName={quotation.user.lastName}
+            companyName={company.legal_name ?? company.business_name}
+          />
+          <DocLastTxt />
+        </View>
+        <DocFooter company={company} />
+      </Page>
+    </Document>
+  );
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -172,7 +89,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingBottom: "90px",
+    paddingBottom: "100px",
     // justifyContent: "center",
   },
   mainContainer: {

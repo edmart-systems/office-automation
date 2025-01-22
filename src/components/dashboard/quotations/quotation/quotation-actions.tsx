@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { paths } from "@/utils/paths.utils";
 import nProgress from "nprogress";
 import QuotationViewDialog from "./quotation-pdf/quotation-view-dialog";
-import QuotationDownloadButton from "./quotation-pdf/quotation-download-button";
+import QuotationDownloadButtons from "./quotation-pdf/quotation-download-button";
 
 type Props = {
   quotation: FullQuotation;
@@ -28,12 +28,6 @@ const QuotationActions = ({ quotation, company }: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [openPdf, setOpenPdf] = useState<boolean>(false);
-
-  const toastUnderDev = (item: string) => {
-    toast(item + " functionality under development", {
-      type: "info",
-    });
-  };
 
   const reuseQuotationHandler = () => {
     const date = new Date();
@@ -62,17 +56,11 @@ const QuotationActions = ({ quotation, company }: Props) => {
   return (
     <Stack direction="row" spacing={2} flexWrap="wrap">
       <Box>
-        <QuotationDownloadButton />
-      </Box>
-      <Box>
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<OpenInNew />}
-          onClick={openPdfHandler}
-        >
-          Preview
-        </Button>
+        <QuotationDownloadButtons
+          openPdfHandler={openPdfHandler}
+          quotation={quotation}
+          company={company}
+        />
       </Box>
       <Box>
         <Button
@@ -89,7 +77,12 @@ const QuotationActions = ({ quotation, company }: Props) => {
           <QuotationStatusActions status="sent" />
         </Box>
       )}
-      <QuotationViewDialog open={openPdf} setOpen={setOpenPdf} />
+      <QuotationViewDialog
+        open={openPdf}
+        setOpen={setOpenPdf}
+        quotation={quotation}
+        company={company}
+      />
     </Stack>
   );
 };
