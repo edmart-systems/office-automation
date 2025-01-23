@@ -73,6 +73,7 @@ const DisplayQuotation = ({ quotation, company }: Props) => {
             />
           </Stack>
           <QuotationTcs
+            quotationId={quotation.quotationId}
             tcsEdited={quotation.tcsEdited}
             quotationType={quotation.type}
             selectedTcs={quotation.tcs}

@@ -5,7 +5,7 @@ const DocHeader = () => {
   return (
     <Fragment>
       <View fixed style={styles.container}>
-        <Image style={styles.logo} src="/assets/edmrt-01-300x88.png" />
+        <Image style={styles.logo} src="/assets/edmrt-at10.png" />
       </View>
     </Fragment>
   );
@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    height: "70px",
-    width: "260px",
+    height: "55px",
+    width: "220px",
     marginTop: "14px",
     // padding: "20px",
   },

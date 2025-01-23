@@ -10,12 +10,18 @@ import BankDetails from "../bank-details";
 import QuotationQr from "./quotation-qr";
 
 type Props = {
+  quotationId: string;
   selectedTcs: TcsDto;
   quotationType: Quotation_type;
   tcsEdited: boolean;
 };
 
-const QuotationTcs = ({ selectedTcs, quotationType, tcsEdited }: Props) => {
+const QuotationTcs = ({
+  quotationId,
+  selectedTcs,
+  quotationType,
+  tcsEdited,
+}: Props) => {
   const displayTxt = {
     paymentStr: generatePaymentStr({
       selectedTcs: selectedTcs,
@@ -71,11 +77,7 @@ const QuotationTcs = ({ selectedTcs, quotationType, tcsEdited }: Props) => {
             </Stack>
           </Stack>
         </Stack>
-        <QuotationQr
-          width={200}
-          length={200}
-          quotationKey="#Usaama@Usaama#Usaama$Usaama%Usaama^Usaama&Usaama*Usaama(Usaama)Usaama_Usaama+Usaama`Usaama!"
-        />
+        <QuotationQr width={200} length={200} quotationId={quotationId} />
       </Stack>
     </Stack>
   );

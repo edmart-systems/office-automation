@@ -17,9 +17,9 @@ export const sendSms = async (sms: SendSmsDto): Promise<boolean> => {
       108 => Message(s) Sent
 */
 
-    const sender = process.env.SMSDUAL_FROM;
-    const userName = process.env.SMSDUAL_USERNAME;
-    const pass = process.env.SMSDUAL_PASS;
+    const sender = process.env.NEXT_PUBLIC_SMSDUAL_FROM;
+    const userName = process.env.NEXT_PUBLIC_SMSDUAL_USERNAME;
+    const pass = process.env.NEXT_PUBLIC_SMSDUAL_PASS;
 
     if (!userName || !pass || !sender) {
       throw new Error("Missing sms credentials");

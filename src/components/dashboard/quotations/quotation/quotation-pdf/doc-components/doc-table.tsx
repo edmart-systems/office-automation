@@ -45,6 +45,7 @@ const DocTable = ({
         {lineItems.map((item, index) => {
           return (
             <View
+              key={item.id + "-" + index}
               style={{
                 ...styles.tableRow,
                 // ...(index === 19 ? { borderBottom: "none" } : {}),
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   specialRow: {
     width: "100%",
     borderBottom: "1px solid black",
-    backgroundColor: "#0505052b",
+    backgroundColor: "#b3b0b01a",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -173,14 +174,14 @@ const styles = StyleSheet.create({
   tableCellContent: {
     width: "100%",
     // height: "100%",
-    fontSize: "12px",
+    // fontSize: "12px",
     textAlign: "left",
   },
   bold: {
     fontWeight: 700,
   },
   special: {
-    backgroundColor: "#0505052b",
+    backgroundColor: "#b3b0b01a",
   },
 });
 

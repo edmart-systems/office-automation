@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import Image from "next/image";
 import { Skeleton, Stack } from "@mui/material";
+import { encryptMessage } from "@/utils/crypto.utils";
 
 type Props = {
-  quotationKey: string;
+  quotationId: string;
   width?: number;
   length?: number;
 };
@@ -15,18 +16,25 @@ export const generateQrBase64 = async (key: string): Promise<string> => {
   return Promise.resolve(qr);
 };
 
-const QuotationQr = ({ quotationKey, length, width }: Props) => {
+const QuotationQr = ({ quotationId, length, width }: Props) => {
   const [qrSrc, setQrSrc] = useState<string>();
 
   const qrHandler = async () => {
-    if (qrSrc) return;
-    const qr = await generateQrBase64(quotationKey);
+    const key = process.env.NEXT_PUBLIC_QUOTATION_QR_URL_KEY;
+    console.log(key);
+    if (qrSrc || !key) return;
+
+    const qrUrl = `https://edmartsystems.com/verify/doc/quotation/${encryptMessage(
+      quotationId,
+      key
+    )}`;
+    const qr = await generateQrBase64(qrUrl);
     setQrSrc(qr);
   };
 
   useEffect(() => {
     qrHandler();
-  }, [quotationKey]);
+  }, [quotationId]);
 
   return (
     <Stack position="relative">
@@ -39,13 +47,11 @@ const QuotationQr = ({ quotationKey, length, width }: Props) => {
           style={{ zIndex: 0 }}
         />
       ) : (
-        <>
-          <Skeleton
-            variant="rounded"
-            width={width ? width : 160}
-            height={length ? length : 160}
-          />
-        </>
+        <Skeleton
+          variant="rounded"
+          width={width ? width : 160}
+          height={length ? length : 160}
+        />
       )}
       <div
         style={{

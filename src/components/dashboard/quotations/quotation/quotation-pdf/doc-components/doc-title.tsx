@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "6px",
+    marginTop: "8px",
+    gap: "5px",
   },
   companyNameContainer: {
     width: "100%",
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   companyName: {
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: 700,
     textAlign: "center",
   },
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: "5px",
   },
   docName: {
-    fontSize: "16px",
+    fontSize: "15px",
     fontWeight: 700,
     textAlign: "center",
     color: "#fff",

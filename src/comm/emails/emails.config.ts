@@ -5,12 +5,12 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { SendEmailDto } from "../../types/communication.types";
 
 const transport = createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  host: process.env.NEXT_PUBLIC_MAIL_HOST,
+  port: process.env.NEXT_PUBLIC_MAIL_PORT,
   secure: true,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_USER_PASS,
+    user: process.env.NEXT_PUBLIC_MAIL_USER,
+    pass: process.env.NEXT_PUBLIC_MAIL_USER_PASS,
   },
 } as SMTPTransport.Options);
 

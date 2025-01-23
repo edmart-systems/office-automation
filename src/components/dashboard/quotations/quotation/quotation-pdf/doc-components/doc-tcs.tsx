@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
   tcsHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: "5px",
+    marginVertical: "2px",
   },
   tcsTitle: {
-    fontSize: "13px",
+    fontSize: "12px",
     fontWeight: "bold",
     textShadow: "0.9px 0px #000",
   },
@@ -74,20 +74,20 @@ const styles = StyleSheet.create({
   },
   tcsDetailsRow: {
     flexDirection: "row",
-    marginBottom: "3px",
+    marginBottom: "1px",
   },
   label: {
     fontWeight: "bold",
     width: "20%",
-    fontSize: "12px",
+    // fontSize: "12px",
   },
   value: {
     width: "80%",
-    fontSize: "12px",
+    // fontSize: "12px",
   },
   valueColumn: {
     width: "80%",
-    fontSize: "12px",
+    // fontSize: "12px",
     flexDirection: "column",
   },
 });

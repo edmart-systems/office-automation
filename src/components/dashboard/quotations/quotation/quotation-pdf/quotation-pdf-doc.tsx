@@ -46,7 +46,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
     >
       <Page size="A4" style={styles.page}>
         <DocHeader />
-        <DocQr />
+        <DocQr quotationId={quotation.quotationId} />
         <View style={styles.mainContainer}>
           <DocTitle companyName={company.legal_name ?? company.business_name} />
           <DocDetails
@@ -86,6 +86,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Comic Sans MS",
+    fontSize: "11px",
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
@@ -96,12 +97,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: "40px",
     display: "flex",
-    gap: "6px",
-  },
-
-  sam: {
-    fontSize: "12px",
-    textAlign: "justify",
+    gap: "5px",
   },
 });
 

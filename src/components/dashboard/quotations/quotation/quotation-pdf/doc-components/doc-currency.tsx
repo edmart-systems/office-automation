@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   currencyTxt: {
     width: "100%",
-    fontSize: "12px",
+    // fontSize: "12px",
     textAlign: "right",
     // marginRight: "10px",
   },

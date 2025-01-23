@@ -1,17 +1,28 @@
 import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
 import React, { Fragment } from "react";
 import { generateQrBase64 } from "../../display-quotation/quotation-qr";
-// import QuotationQr from "../../display-quotation/quotation-qr";
+import { encryptMessage } from "@/utils/crypto.utils";
 
-const DocQr = () => {
+type Props = {
+  quotationId: string;
+};
+
+const DocQr = ({ quotationId }: Props) => {
+  const key = process.env.NEXT_PUBLIC_QUOTATION_QR_URL_KEY;
+
+  if (!key) {
+    return <Fragment></Fragment>;
+  }
+
+  const qrUrl = `https://edmartsystems.com/verify/doc/quotation/${encryptMessage(
+    quotationId,
+    key
+  )}`;
+
   return (
     <Fragment>
       <View fixed style={styles.qrContainer}>
-        <Image
-          src={generateQrBase64(
-            "Hooray#Usaama@Usaama#Usaama$Usaama%Usaama^Usaama&Usaama*Usaama(Usaama)Usaama_Usaama+Usaama`Usaama!"
-          )}
-        />
+        <Image src={generateQrBase64(qrUrl)} />
         {/* <QuotationQr
           width={200}
           length={200}

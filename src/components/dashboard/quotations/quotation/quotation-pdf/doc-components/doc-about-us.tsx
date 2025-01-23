@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   aboutTxt: {
     width: "100%",
-    fontSize: "12px",
+    // fontSize: "12px",
     textAlign: "justify",
   },
 });

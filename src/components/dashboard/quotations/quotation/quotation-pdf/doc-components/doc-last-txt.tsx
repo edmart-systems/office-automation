@@ -14,7 +14,7 @@ const DocLastTxt = () => {
 
 const styles = StyleSheet.create({
   txt1: {
-    fontSize: "12px",
+    // fontSize: "12px",
   },
   txt2: {
     fontSize: "10px",
