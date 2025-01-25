@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   companyName: {
-    fontSize: "13px",
+    fontSize: "14px",
     fontWeight: 700,
     textAlign: "center",
   },

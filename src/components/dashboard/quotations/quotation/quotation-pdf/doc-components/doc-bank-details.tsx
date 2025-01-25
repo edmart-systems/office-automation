@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     // marginBottom: "px",
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: 700,
     width: "20%",
     // fontSize: "12px",
   },

@@ -66,8 +66,9 @@ const styles = StyleSheet.create({
   },
   tcsTitle: {
     fontSize: "12px",
-    fontWeight: "bold",
+    fontWeight: 700,
     textShadow: "0.9px 0px #000",
+    textDecoration: "underline",
   },
   tcsDetailsContainer: {
     marginTop: 0,
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: "1px",
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: 700,
     width: "20%",
     // fontSize: "12px",
   },

@@ -95,11 +95,13 @@ const styles = StyleSheet.create({
   },
   detailContent: {
     width: "100%",
+    fontWeight: 700,
     // fontSize: "12px",
     textAlign: "left",
   },
   linkDetailContent: {
     width: "100%",
+    fontWeight: 700,
     // fontSize: "12px",
     textAlign: "left",
     color: "#D98219",

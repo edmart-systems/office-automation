@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import Image from "next/image";
 import { Skeleton, Stack } from "@mui/material";
 import { encryptMessage } from "@/utils/crypto.utils";
+import Veil from "@/components/dashboard/common/veil";
 
 type Props = {
   quotationId: string;
@@ -53,17 +54,7 @@ const QuotationQr = ({ quotationId, length, width }: Props) => {
           height={length ? length : 160}
         />
       )}
-      <div
-        style={{
-          zIndex: 1,
-          position: "absolute",
-          left: 0,
-          right: 0,
-          width: "100%",
-          height: "100%",
-          // background: "#0000004b",
-        }}
-      ></div>
+      <Veil zIndex={1} />
     </Stack>
   );
 };

@@ -74,7 +74,7 @@ const DocTable = ({
           );
         })}
         <View style={styles.specialRow}>
-          <DocTableCell bold align="center" flex={8.4}>
+          <DocTableCell bold align="right" flex={8.4}>
             Sub Total
           </DocTableCell>
           <DocTableCell bold noBorder align="right" flex={2}>
@@ -83,7 +83,7 @@ const DocTable = ({
         </View>
         {!vatExcluded && (
           <View style={styles.specialRow}>
-            <DocTableCell bold align="center" flex={8.4}>
+            <DocTableCell bold align="right" flex={8.4}>
               VAT ({vatPercentage}%)
             </DocTableCell>
             <DocTableCell bold noBorder align="right" flex={2}>
@@ -92,7 +92,7 @@ const DocTable = ({
           </View>
         )}
         <View style={{ ...styles.specialRow, ...{ borderBottom: "none" } }}>
-          <DocTableCell bold align="center" flex={8.4}>
+          <DocTableCell bold align="right" flex={8.4}>
             Grand Total ({vatExcluded ? "VAT Exclusive" : "VAT Inclusive"})
           </DocTableCell>
           <DocTableCell bold noBorder align="right" flex={2}>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   specialRow: {
     width: "100%",
     borderBottom: "1px solid black",
-    backgroundColor: "#b3b0b01a",
+    backgroundColor: "#b3b0b022",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
   },
   special: {
-    backgroundColor: "#b3b0b01a",
+    backgroundColor: "#b3b0b022",
   },
 });
 

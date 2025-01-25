@@ -8,7 +8,7 @@ import { paths } from "@/utils/paths.utils";
 import { fDateTime12 } from "@/utils/time";
 import { DeleteForever, Drafts, Launch } from "@mui/icons-material";
 import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useRouter, useSearchParams } from "next/navigation";

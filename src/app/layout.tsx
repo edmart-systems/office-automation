@@ -28,6 +28,18 @@ type Props = Readonly<{
 const RootLayout = ({ children }: Props): JSX.Element => {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Style+Script&family=Borel&family=Yellowtail&family=Playwrite+IN:wght@100..400&family=Princess+Sofia&family=Send+Flowers&family=Vibur&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <NextTopLoader color="#D98219" height={4} />
         <AuthProvider>

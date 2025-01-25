@@ -37,10 +37,10 @@ const DocQr = ({ quotationId }: Props) => {
 const styles = StyleSheet.create({
   qrContainer: {
     position: "absolute",
-    right: "0px",
-    top: "0px",
-    width: "100px",
-    height: "100px",
+    right: "10px",
+    top: "10px",
+    width: "80px",
+    height: "80px",
   },
   qrImg: {
     width: "100%",

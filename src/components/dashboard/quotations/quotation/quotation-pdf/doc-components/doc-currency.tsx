@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     textAlign: "right",
     // marginRight: "10px",
   },
+  bold: {
+    fontWeight: 700,
+  },
 });
 
 export default DocCurrency;

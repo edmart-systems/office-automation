@@ -1,7 +1,7 @@
 "use server";
 
 import React, { Suspense } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import PageGoBack from "@/components/dashboard/common/page-go-back";
 import CreateQuotation from "@/components/dashboard/quotations/create-quotation/create-quotation";
 import { CreateQuotationPageData } from "@/types/quotations.types";
@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 // import { toast } from "react-toastify";
 import QuotationDraftsMenu from "@/components/dashboard/quotations/create-quotation/quotation-drafts-menu";
 import MyCircularProgress from "@/components/common/my-circular-progress";
+import UserSignatureButton from "@/components/dashboard/users/user/signature/user-signature-button";
 
 const getData = async (): Promise<CreateQuotationPageData | null> => {
   const res = await getCreateNewQuotationsPageData();
@@ -42,9 +43,12 @@ const CreateQuotationPage = async () => {
       </Stack>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4">Create Quotation</Typography>
-        <Suspense fallback={<MyCircularProgress />}>
-          <QuotationDraftsMenu />
-        </Suspense>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <UserSignatureButton />
+          <Suspense fallback={<MyCircularProgress />}>
+            <QuotationDraftsMenu />
+          </Suspense>
+        </Stack>
       </Stack>
       <Stack>
         <Suspense fallback={<MyCircularProgress />}>

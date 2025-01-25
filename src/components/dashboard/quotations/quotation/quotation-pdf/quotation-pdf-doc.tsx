@@ -17,7 +17,10 @@ import DocQr from "./doc-components/doc-qr";
 
 Font.register({
   family: "Comic Sans MS",
-  src: "/assets/fonts/ComicSansMS.ttf",
+  fonts: [
+    { src: "/assets/fonts/ComicSansMS.ttf" },
+    { src: "/assets/fonts/ComicSansMS_B.ttf", fontWeight: 700 },
+  ],
 });
 
 type Props = {
@@ -90,12 +93,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
+    paddingTop: "24px",
     paddingBottom: "100px",
     // justifyContent: "center",
   },
   mainContainer: {
     width: "100%",
-    paddingHorizontal: "40px",
+    paddingHorizontal: "50px",
     display: "flex",
     gap: "5px",
   },
