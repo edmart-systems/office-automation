@@ -100,7 +100,8 @@ const CreateQuotation = ({ baseData }: Props) => {
   const selectedDraftParams = searchParams.get("draft");
   const router = useRouter();
   const quotationDate = new Date();
-  const { company, quotationTypes, tcs, units, currencies } = baseData;
+  const { company, quotationTypes, tcs, units, currencies, userSignature } =
+    baseData;
 
   const [quotationId, setQuotationId] = useState<number>(
     getTimeNum(quotationDate)
@@ -233,8 +234,21 @@ const CreateQuotation = ({ baseData }: Props) => {
 
   const submitQuotation = async () => {
     if (isFetching) return;
-
     resetErrors();
+
+    if (!userSignature) {
+      toast("Your have no digital signature.", {
+        type: "warning",
+      });
+      setQuotationErrors([
+        {
+          message: "You have no signature, please create one to continue.",
+          origin: "Root",
+        },
+      ]);
+      return;
+    }
+
     setIsCreated(false);
     const errArr: QuotationError[] = [];
 

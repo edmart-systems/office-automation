@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { paths } from "@/utils/paths.utils";
 import nProgress from "nprogress";
 import QuotationViewDialog from "./quotation-pdf/quotation-view-dialog";
-import QuotationDownloadButtons from "./quotation-pdf/quotation-download-button";
+import QuotationDownloadButtons from "./quotation-pdf/quotation-download-buttons";
 
 type Props = {
   quotation: FullQuotation;

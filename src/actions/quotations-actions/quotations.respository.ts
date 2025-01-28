@@ -113,7 +113,7 @@ export class QuotationsRepository {
 
   fetchSingleFullQuotation = async (
     quotationId: string
-  ): Promise<FullQuotation | null> => {
+  ): Promise<Omit<FullQuotation, "signature"> | null> => {
     try {
       const quotation = await this.prisma.quotation.findUnique({
         where: {
@@ -202,7 +202,7 @@ export class QuotationsRepository {
         createdAt + convertDaysToMilliseconds(quotation.validity_days);
       const isExpired = isDateExpired(expiryTime);
 
-      const fullQuotation: FullQuotation = {
+      const fullQuotation: Omit<FullQuotation, "signature"> = {
         quotationId: quotation.quotation_id,
         time: createdAt,
         type: quotationType,

@@ -28,14 +28,19 @@ import {
 } from "./create-quotation";
 import { SessionUser } from "../auth-actions/auth.actions";
 import { verifyQuotationId } from "@/utils/verification-validation.utils";
+import { UserSignatureService } from "../user-actions/user-signature/user-signature.service";
+import { UserSignatureDto } from "@/types/user.types";
 
 export class QuotationsService {
   private readonly quotationsRepo = new QuotationsRepository(prisma);
   private readonly companyService = new CompanyService();
+  private readonly signatureService = new UserSignatureService();
 
   constructor() {}
 
-  getCreateQuotationPageData = async (): Promise<ActionResponse> => {
+  getCreateQuotationPageData = async (
+    userId: string
+  ): Promise<ActionResponse> => {
     try {
       const quotationTypes: Quotation_type[] =
         await this.quotationsRepo.fetchQuotationTypes();
@@ -49,12 +54,16 @@ export class QuotationsService {
       const currencies: Currency2[] =
         await this.quotationsRepo.fetchCurrencies2();
 
+      const userSignature: ActionResponse<UserSignatureDto> =
+        await this.signatureService.getUserSignature(userId);
+
       const pageData: CreateQuotationPageData = {
         quotationTypes: quotationTypes,
         company: company,
         tcs: tcs,
         units: units,
         currencies: currencies,
+        userSignature: userSignature.data ? userSignature.data : null,
       };
 
       return Promise.resolve({
@@ -199,7 +208,7 @@ export class QuotationsService {
 
       const company: CompanyDto = await this.companyService.getCompanyDetails();
 
-      const quotation: FullQuotation | null =
+      const quotation: Omit<FullQuotation, "signature"> | null =
         await this.quotationsRepo.fetchSingleFullQuotation(quotationId);
 
       if (!quotation) {
@@ -209,8 +218,18 @@ export class QuotationsService {
         });
       }
 
+      const userSignature: ActionResponse<UserSignatureDto> =
+        await this.signatureService.getUserSignature(quotation.user.co_user_id);
+
+      if (!userSignature.data) {
+        return Promise.resolve({
+          status: false,
+          message: "Signature Not Found",
+        });
+      }
+
       const pageData: SingleQuotationPageData = {
-        quotation: quotation,
+        quotation: { ...quotation, signature: userSignature.data },
         company: company,
       };
 

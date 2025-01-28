@@ -1,14 +1,16 @@
+import { UserSignatureDto } from "@/types/user.types";
 import { userNameFormatter } from "@/utils/formatters.util";
-import { StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
 import React, { Fragment } from "react";
 
 type Props = {
   firstName: string;
   lastName: string;
   companyName: string;
+  signature: UserSignatureDto;
 };
 
-const DocCreator = ({ firstName, lastName, companyName }: Props) => {
+const DocCreator = ({ firstName, lastName, companyName, signature }: Props) => {
   return (
     <Fragment>
       <View style={styles.detailsContainer}>
@@ -20,10 +22,14 @@ const DocCreator = ({ firstName, lastName, companyName }: Props) => {
           <DetailsItem title="On behalf of" content={companyName} />
         </View>
         <View style={styles.col2}>
-          <DetailsItem
-            title="Signature"
-            content={userNameFormatter(firstName, lastName).toLowerCase()}
-          />
+          <View style={styles.detailContainer}>
+            <View style={styles.detailTitleContainer}>
+              <Text style={styles.detailTitle}>Signature:</Text>
+            </View>
+            <View style={styles.detailSignatureContainer}>
+              <Image src={signature.dataUrl} style={styles.signatureImage} />
+            </View>
+          </View>
         </View>
       </View>
     </Fragment>
@@ -77,6 +83,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
   },
   detailTitleContainer: {
     width: "100%",
@@ -92,6 +99,15 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 3,
     display: "flex",
+  },
+  detailSignatureContainer: {
+    width: "100%",
+    flex: 3,
+    display: "flex",
+  },
+  signatureImage: {
+    maxWidth: "134px",
+    maxHeight: "80px",
   },
   detailContent: {
     width: "100%",

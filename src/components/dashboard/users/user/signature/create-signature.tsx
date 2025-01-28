@@ -182,7 +182,7 @@ const CreateSignature = ({
       >
         <SignaturePad
           penColor="#000"
-          dotSize={1}
+          dotSize={2}
           // backgroundColor="#b8b4b4"
           canvasProps={{ height: "300px" }}
           ref={sigPadRef}

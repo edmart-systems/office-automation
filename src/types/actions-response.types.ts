@@ -1,7 +1,7 @@
-export type ActionResponse = {
+export type ActionResponse<T = any> = {
   status: boolean;
   message: string;
-  data?: any;
+  data?: T;
 };
 
 export const isActionResponse = (obj: any): obj is ActionResponse => {

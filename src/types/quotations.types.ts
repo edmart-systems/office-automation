@@ -12,6 +12,7 @@ import { ReactElement } from "react";
 import { BankDto, CompanyDto } from "./company.types";
 import { Currency2 } from "./currency.types";
 import { PaginationData } from "./other.types";
+import { UserSignatureDto } from "./user.types";
 
 export type QuotationStatusKeys = "sent" | "accepted" | "rejected" | "expired";
 
@@ -93,6 +94,7 @@ export type CreateQuotationPageData = {
   tcs: TcsDto[];
   units: Unit2[];
   currencies: Currency2[];
+  userSignature: UserSignatureDto | null;
 };
 
 export type QuotationInputClientData = {
@@ -249,6 +251,7 @@ export type FullQuotation = {
   subTotal: number;
   vat: number;
   grandTotal: number;
+  signature: UserSignatureDto;
 };
 
 export type SingleQuotationPageData = {

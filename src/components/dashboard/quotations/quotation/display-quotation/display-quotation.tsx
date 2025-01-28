@@ -16,10 +16,21 @@ import QuotationTcs from "./quotation-tcs";
 import CostDueDateHighlight from "./cost-due-date-highlight";
 import { FullQuotation } from "@/types/quotations.types";
 import { CompanyDto } from "@/types/company.types";
+import { fDate } from "@/utils/time";
 
 type Props = {
   quotation: FullQuotation;
   company: CompanyDto;
+};
+
+export const generateQrKeyTemp = ({ quotation, company }: Props): string => {
+  return `${quotation.quotationId}#${(
+    company.legal_name ?? company.business_name
+  ).replace(/ /g, "-")}#To#${(
+    quotation.clientData.name ?? quotation.clientData.contactPerson
+  )?.replace(/ /g, "-")}#${fDate(quotation.time)
+    .replace(/ /g, "-")
+    .replace(/,/g, "")}`.toUpperCase();
 };
 
 const DisplayQuotation = ({ quotation, company }: Props) => {
@@ -77,6 +88,7 @@ const DisplayQuotation = ({ quotation, company }: Props) => {
             tcsEdited={quotation.tcsEdited}
             quotationType={quotation.type}
             selectedTcs={quotation.tcs}
+            qrKey={generateQrKeyTemp({ quotation, company })}
           />
         </Stack>
       </CardContent>

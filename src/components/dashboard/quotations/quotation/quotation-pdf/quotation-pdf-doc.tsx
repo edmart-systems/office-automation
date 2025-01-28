@@ -14,6 +14,7 @@ import { FullQuotation } from "@/types/quotations.types";
 import { CompanyDto } from "@/types/company.types";
 import { userNameFormatter } from "@/utils/formatters.util";
 import DocQr from "./doc-components/doc-qr";
+import { generateQrKeyTemp } from "../display-quotation/display-quotation";
 
 Font.register({
   family: "Comic Sans MS",
@@ -30,6 +31,7 @@ type Props = {
 
 const QuotationPdfDoc = ({ company, quotation }: Props) => {
   const date = new Date(quotation.time);
+  const qrKey = generateQrKeyTemp({ quotation, company });
 
   return (
     <Document
@@ -49,7 +51,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
     >
       <Page size="A4" style={styles.page}>
         <DocHeader />
-        <DocQr quotationId={quotation.quotationId} />
+        <DocQr quotationId={quotation.quotationId} qrKey={qrKey} />
         <View style={styles.mainContainer}>
           <DocTitle companyName={company.legal_name ?? company.business_name} />
           <DocDetails
@@ -77,6 +79,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
             firstName={quotation.user.firstName}
             lastName={quotation.user.lastName}
             companyName={company.legal_name ?? company.business_name}
+            signature={quotation.signature}
           />
           <DocLastTxt />
         </View>

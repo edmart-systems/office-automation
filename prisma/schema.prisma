@@ -46,14 +46,29 @@ model User {
   status_id       Int
   status_reason   String?  @db.VarChar(260)
   role_id         Int
+  signed          Int      @default(0)
   created_at      DateTime @default(now())
   updated_at      DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 
-  role       Role        @relation(fields: [role_id], references: [role_id])
-  status     Status      @relation(fields: [status_id], references: [status_id])
+  role       Role             @relation(fields: [role_id], references: [role_id])
+  status     Status           @relation(fields: [status_id], references: [status_id])
   quotations Quotation[]
+  signatures User_signature[]
 
   @@map("user")
+}
+
+model User_signature {
+  id         Int      @id @default(autoincrement())
+  co_user_id String   @unique
+  canUpdate  Int      @default(0)
+  dataUrl    String   @db.LongText
+  created_at DateTime @default(now())
+  updated_at DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
+
+  user User @relation(fields: [co_user_id], references: [co_user_id])
+
+  @@map("user_signature")
 }
 
 model Currency {

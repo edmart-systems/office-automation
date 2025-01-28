@@ -14,6 +14,7 @@ type Props = {
   selectedTcs: TcsDto;
   quotationType: Quotation_type;
   tcsEdited: boolean;
+  qrKey: string;
 };
 
 const QuotationTcs = ({
@@ -21,6 +22,7 @@ const QuotationTcs = ({
   selectedTcs,
   quotationType,
   tcsEdited,
+  qrKey,
 }: Props) => {
   const displayTxt = {
     paymentStr: generatePaymentStr({
@@ -77,7 +79,12 @@ const QuotationTcs = ({
             </Stack>
           </Stack>
         </Stack>
-        <QuotationQr width={200} length={200} quotationId={quotationId} />
+        <QuotationQr
+          width={200}
+          length={200}
+          quotationId={quotationId}
+          qrKey={qrKey}
+        />
       </Stack>
     </Stack>
   );

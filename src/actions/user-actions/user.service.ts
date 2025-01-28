@@ -119,6 +119,7 @@ export class UserService {
         phone_verified: phoneVerified ? 1 : 0,
         profile_picture: null,
         status_reason: null,
+        signed: 0,
       };
 
       const createdUser: User | null = await this.userRepo.createNewUser(
@@ -161,7 +162,14 @@ export class UserService {
           message: "Unknown User",
         });
       }
-      const user: FullUser = await this.userRepo.fetchUserById(userId);
+      const user: FullUser | null = await this.userRepo.fetchUserById(userId);
+
+      if (!user) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
 
       return Promise.resolve({
         status: true,
@@ -184,6 +192,13 @@ export class UserService {
       }
 
       const user = await this.userRepo.fetchUserById(userId);
+
+      if (!user) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
 
       if (user.status.status !== "pending") {
         return Promise.resolve({
@@ -224,6 +239,13 @@ export class UserService {
       }
 
       const user = await this.userRepo.fetchUserById(userId);
+
+      if (!user) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
 
       if (user.status.status === "active") {
         return Promise.resolve({
@@ -295,6 +317,13 @@ export class UserService {
 
       const user = await this.userRepo.fetchUserById(userId);
 
+      if (!user) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
+
       if (user.status.status !== "active") {
         return Promise.resolve({
           status: false,
@@ -338,6 +367,13 @@ export class UserService {
       }
 
       const user = await this.userRepo.fetchUserById(userId);
+
+      if (!user) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
 
       if (user.status.status !== "active" && user.status.status !== "blocked") {
         return Promise.resolve({

@@ -1,4 +1,4 @@
-import { Role, Status, User } from "@prisma/client";
+import { Role, Status, User, User_signature } from "@prisma/client";
 import { ReactElement } from "react";
 
 export type SimpleUserDtoType = {
@@ -86,4 +86,14 @@ export type UserStatusAction = {
 export type PendingUserActivationData = {
   old_co_user_id: string;
   co_user_id: string;
+};
+
+export type UserSignatureDto = Omit<
+  User_signature,
+  "created_at" | "updated_at"
+>;
+
+export type NewSignatureData = {
+  userId: string;
+  dataUrl: string;
 };

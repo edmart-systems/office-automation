@@ -30,7 +30,9 @@ export const getCreateNewQuotationsPageData =
       }
 
       const pageDataRes: ActionResponse =
-        await quotationsService.getCreateQuotationPageData();
+        await quotationsService.getCreateQuotationPageData(
+          session!.user.co_user_id
+        );
 
       return Promise.resolve(pageDataRes);
     } catch (err) {

@@ -5,9 +5,10 @@ import { encryptMessage } from "@/utils/crypto.utils";
 
 type Props = {
   quotationId: string;
+  qrKey: string;
 };
 
-const DocQr = ({ quotationId }: Props) => {
+const DocQr = ({ quotationId, qrKey }: Props) => {
   const key = process.env.NEXT_PUBLIC_QUOTATION_QR_URL_KEY;
 
   if (!key) {
@@ -22,13 +23,8 @@ const DocQr = ({ quotationId }: Props) => {
   return (
     <Fragment>
       <View fixed style={styles.qrContainer}>
-        <Image src={generateQrBase64(qrUrl)} />
-        {/* <QuotationQr
-          width={200}
-          length={200}
-          quotationKey="#Usaama@Usaama#Usaama$Usaama%Usaama^Usaama&Usaama*Usaama(Usaama)Usaama_Usaama+Usaama`Usaama!"
-        /> */}
-        {/* <Text>sasd</Text> */}
+        {/* <Image src={generateQrBase64(qrUrl)} /> */}
+        <Image src={generateQrBase64(qrKey)} />
       </View>
     </Fragment>
   );

@@ -10,6 +10,7 @@ type Props = {
   quotationId: string;
   width?: number;
   length?: number;
+  qrKey: string;
 };
 
 export const generateQrBase64 = async (key: string): Promise<string> => {
@@ -17,7 +18,7 @@ export const generateQrBase64 = async (key: string): Promise<string> => {
   return Promise.resolve(qr);
 };
 
-const QuotationQr = ({ quotationId, length, width }: Props) => {
+const QuotationQr = ({ quotationId, length, width, qrKey }: Props) => {
   const [qrSrc, setQrSrc] = useState<string>();
 
   const qrHandler = async () => {
@@ -29,7 +30,8 @@ const QuotationQr = ({ quotationId, length, width }: Props) => {
       quotationId,
       key
     )}`;
-    const qr = await generateQrBase64(qrUrl);
+    // const qr = await generateQrBase64(qrUrl);
+    const qr = await generateQrBase64(qrKey);
     setQrSrc(qr);
   };
 

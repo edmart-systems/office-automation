@@ -6,7 +6,8 @@
     "dev": "next dev -p 3765",
     "build": "next build",
     "start": "next start -p 3765",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prismaDev": "dotenv -e .env.local prisma migrate dev"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

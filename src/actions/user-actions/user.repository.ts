@@ -1,8 +1,10 @@
 import { logger } from "@/logger/default-logger";
 import {
   FullUser,
+  NewSignatureData,
   NewUser,
   PendingUserActivationData,
+  UserSignatureDto,
   UserStatus,
   UserStatusCounts,
 } from "@/types/user.types";
@@ -169,7 +171,7 @@ export class UserRepository {
     }
   };
 
-  fetchUserById = async (userId: string): Promise<FullUser> => {
+  fetchUserById = async (userId: string): Promise<FullUser | null> => {
     try {
       const user = await this.prisma.user.findUnique({
         include: {
@@ -182,7 +184,7 @@ export class UserRepository {
       });
 
       if (!user) {
-        return Promise.reject(`User ${userId} not found`);
+        return Promise.resolve(null);
       }
 
       const { role, status, ...rest } = user;
@@ -320,6 +322,106 @@ export class UserRepository {
       }
 
       return Promise.resolve(user);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  saveUserSignature = async ({
+    dataUrl,
+    userId,
+  }: NewSignatureData): Promise<UserSignatureDto> => {
+    try {
+      const signature = await this.prisma.$transaction(
+        async (txn): Promise<UserSignatureDto> => {
+          const signature = await txn.user_signature.create({
+            data: {
+              co_user_id: userId,
+              dataUrl: dataUrl,
+              canUpdate: 0,
+            },
+          });
+
+          const user = await txn.user.update({
+            data: {
+              signed: 1,
+            },
+            where: {
+              co_user_id: userId,
+            },
+          });
+
+          const { created_at, updated_at, ...rest } = signature;
+
+          return Promise.resolve(rest);
+        }
+      );
+
+      return Promise.resolve(signature);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  updateUserSignature = async ({
+    dataUrl,
+    userId,
+  }: NewSignatureData): Promise<UserSignatureDto | null> => {
+    try {
+      const signature = await this.prisma.user_signature.update({
+        where: {
+          co_user_id: userId,
+        },
+        data: {
+          canUpdate: 0,
+          dataUrl: dataUrl,
+        },
+      });
+
+      if (!signature) return Promise.resolve(null);
+
+      return Promise.resolve(signature);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  allowUserUpdateSignature = async (userId: string): Promise<boolean> => {
+    try {
+      const signature = await this.prisma.user_signature.update({
+        where: {
+          co_user_id: userId,
+        },
+        data: {
+          canUpdate: 1,
+        },
+      });
+
+      if (!signature) return Promise.resolve(false);
+
+      return Promise.resolve(true);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchUserSignature = async (
+    userId: string
+  ): Promise<UserSignatureDto | null> => {
+    try {
+      const signature = await this.prisma.user_signature.findUnique({
+        where: {
+          co_user_id: userId,
+        },
+      });
+
+      if (!signature) return Promise.resolve(null);
+
+      return Promise.resolve(signature);
     } catch (err) {
       logger.error(err);
       return Promise.reject(err);

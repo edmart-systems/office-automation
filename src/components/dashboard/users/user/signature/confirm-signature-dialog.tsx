@@ -1,23 +1,12 @@
-import React, {
-  Dispatch,
-  forwardRef,
-  Fragment,
-  ReactNode,
-  Ref,
-  SetStateAction,
-  useState,
-} from "react";
+import React, { Dispatch, forwardRef, Ref, SetStateAction } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import { signOut } from "next-auth/react";
-import { SignOut } from "@phosphor-icons/react";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import SignatureView from "./signature-view";
 
 const Transition = forwardRef(function Transition(
@@ -33,14 +22,21 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   dataUrl: string;
+  submitFn: () => void;
 };
 
-const ConfirmSignatureDialog = ({ dataUrl, open, setOpen }: Props) => {
+const ConfirmSignatureDialog = ({
+  dataUrl,
+  open,
+  setOpen,
+  submitFn,
+}: Props) => {
   const handleClose = () => {
     setOpen(false);
   };
 
   const confirmBtnHandler = () => {
+    submitFn();
     handleClose();
   };
 

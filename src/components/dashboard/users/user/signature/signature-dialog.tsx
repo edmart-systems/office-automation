@@ -29,6 +29,15 @@ import { SignatureMode } from "@/types/signature.types";
 import { toast } from "react-toastify";
 import { htmlToDatUrl } from "@/utils/html-base64-converter";
 import ConfirmSignatureDialog from "./confirm-signature-dialog";
+import { UserSignatureDto } from "@/types/user.types";
+import { ActionResponse } from "@/types/actions-response.types";
+import {
+  registerUserSignature,
+  updateUserSignature,
+} from "@/actions/user-actions/user-signature/user-signature.actions";
+import { useRouter } from "next/navigation";
+import nProgress from "nprogress";
+import LoadingBackdrop from "@/components/common/loading-backdrop";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -54,11 +63,22 @@ const PaperComponent = (props: PaperProps) => {
 
 type Props = {
   open: boolean;
+  userId: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  src: string | null;
+  userSignature: UserSignatureDto | null;
+  setUserSignature: Dispatch<SetStateAction<UserSignatureDto | null>>;
+  notFound: boolean;
 };
 
-const SignatureDialog = ({ open, setOpen, src }: Props) => {
+const SignatureDialog = ({
+  userId,
+  open,
+  setOpen,
+  userSignature,
+  setUserSignature,
+  notFound,
+}: Props) => {
+  const router = useRouter();
   const [createMode, setCreateMode] = useState<boolean>(false);
   const [signTxt, setSignTxt] = useState<string>("");
   const [trimmedDataURL, setTrimmedDataURL] = useState<string | null>(null);
@@ -77,7 +97,7 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
     }
   };
 
-  const closeHandler = () => {
+  const resetHandler = () => {
     setSignTxt("");
     setMode("type");
     setCreateMode(false);
@@ -85,6 +105,11 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
     setTrimmedDataURL(null);
     setOpenConfirm(false);
     setDataUrl("");
+  };
+
+  const closeHandler = () => {
+    if (isFetching) return;
+    resetHandler();
     setOpen(false);
   };
 
@@ -120,6 +145,34 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
     setOpenConfirm(true);
   };
 
+  const uploadSignatureHandler = async () => {
+    if (isFetching) return;
+    if (dataUrl.length < 10) return;
+
+    setIsFetching(true);
+
+    let res: ActionResponse<UserSignatureDto>;
+
+    if (userSignature) {
+      res = await updateUserSignature({ dataUrl: dataUrl, userId: userId });
+    } else {
+      res = await registerUserSignature({ dataUrl: dataUrl, userId: userId });
+    }
+
+    if (!res.status || !res.data) {
+      setIsFetching(false);
+      return toast(res.message, { type: "error" });
+    }
+
+    setUserSignature(res.data);
+    setIsFetching(false);
+
+    resetHandler();
+
+    nProgress.start();
+    router.refresh();
+  };
+
   return (
     <Dialog
       maxWidth="md"
@@ -144,7 +197,7 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
             <Typography variant="h6" fontWeight={600}>
               Your Signature
             </Typography>
-            <IconButton onClick={closeHandler}>
+            <IconButton onClick={closeHandler} disabled={isFetching}>
               <Close />
             </IconButton>
           </Stack>
@@ -162,7 +215,9 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
             />
           ) : (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              <SignatureView src={src} />
+              <SignatureView
+                src={userSignature ? userSignature.dataUrl : null}
+              />
             </Stack>
           )}
         </CardContent>
@@ -179,6 +234,7 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
                 color="inherit"
                 sx={{ width: "100px" }}
                 onClick={backHandler}
+                disabled={isFetching}
               >
                 Back
               </Button>
@@ -195,6 +251,7 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
                   variant="contained"
                   endIcon={<Signature />}
                   onClick={saveTypeSignatureHandler}
+                  disabled={isFetching}
                 >
                   Save Signature
                 </Button>
@@ -204,19 +261,33 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
                   variant="contained"
                   endIcon={<Signature />}
                   onClick={saveDrawSignatureHandler}
+                  disabled={isFetching}
                 >
                   Save Signature
                 </Button>
               )}
-              {!src && !createMode && (
+              {notFound && !createMode && (
                 <Button
                   variant="contained"
                   endIcon={<Signature />}
                   onClick={() => setCreateMode(true)}
+                  disabled={isFetching}
                 >
                   Create Signature
                 </Button>
               )}
+
+              {userSignature &&
+                Boolean(userSignature.canUpdate) &&
+                !createMode && (
+                  <Button
+                    variant="contained"
+                    endIcon={<Signature />}
+                    onClick={() => setCreateMode(true)}
+                  >
+                    Update Signature
+                  </Button>
+                )}
             </Stack>
           </Stack>
         </CardContent>
@@ -226,8 +297,10 @@ const SignatureDialog = ({ open, setOpen, src }: Props) => {
           open={openConfirm}
           setOpen={setOpenConfirm}
           dataUrl={dataUrl}
+          submitFn={uploadSignatureHandler}
         />
       )}
+      <LoadingBackdrop open={isFetching} />
     </Dialog>
   );
 };
