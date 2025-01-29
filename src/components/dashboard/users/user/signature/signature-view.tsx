@@ -51,7 +51,16 @@ const SignatureView = ({
           isTxt ? (
             <Typography
               fontFamily={fontFamily ?? "Playwrite IN"}
-              sx={isExport ? { color: "#000", paddingX: "1px" } : {}}
+              sx={
+                isExport
+                  ? {
+                      color: "#000",
+                      paddingX: "1px",
+                      fontSize: "26px",
+                      fontWeight: 700,
+                    }
+                  : {}
+              }
               variant="h6"
               id={isExport ? "sign-export-txt" : ""}
             >

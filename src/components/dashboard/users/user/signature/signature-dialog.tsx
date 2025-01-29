@@ -68,6 +68,7 @@ type Props = {
   userSignature: UserSignatureDto | null;
   setUserSignature: Dispatch<SetStateAction<UserSignatureDto | null>>;
   notFound: boolean;
+  setNotFound: Dispatch<SetStateAction<boolean>>;
 };
 
 const SignatureDialog = ({
@@ -77,6 +78,7 @@ const SignatureDialog = ({
   userSignature,
   setUserSignature,
   notFound,
+  setNotFound,
 }: Props) => {
   const router = useRouter();
   const [createMode, setCreateMode] = useState<boolean>(false);
@@ -164,6 +166,7 @@ const SignatureDialog = ({
       return toast(res.message, { type: "error" });
     }
 
+    setNotFound(false);
     setUserSignature(res.data);
     setIsFetching(false);
 

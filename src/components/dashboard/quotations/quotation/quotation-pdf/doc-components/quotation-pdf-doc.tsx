@@ -1,20 +1,21 @@
 import React from "react";
 import { Page, View, Document, StyleSheet, Font } from "@react-pdf/renderer";
-import DocHeader from "./doc-components/doc-header";
-import DocTitle from "./doc-components/doc-title";
-import DocFooter from "./doc-components/doc-footer";
-import DocAboutUs from "./doc-components/doc-about-us";
-import DocDetails from "./doc-components/doc-details";
-import DocCurrency from "./doc-components/doc-currency";
-import DocTable from "./doc-components/doc-table";
-import DocTcs from "./doc-components/doc-tcs";
-import DocLastTxt from "./doc-components/doc-last-txt";
-import DocCreator from "./doc-components/doc-creator";
+import DocHeader from "./doc-header";
+import DocTitle from "./doc-title";
+import DocFooter from "./doc-footer";
+import DocAboutUs from "./doc-about-us";
+import DocDetails from "./doc-details";
+import DocCurrency from "./doc-currency";
+import DocTable from "./doc-table";
+import DocTcs from "./doc-tcs";
+import DocLastTxt from "./doc-last-txt";
+import DocCreator from "./doc-creator";
 import { FullQuotation } from "@/types/quotations.types";
 import { CompanyDto } from "@/types/company.types";
 import { userNameFormatter } from "@/utils/formatters.util";
-import DocQr from "./doc-components/doc-qr";
-import { generateQrKeyTemp } from "../display-quotation/display-quotation";
+import DocQr from "./doc-qr";
+import { generateQrKeyTemp } from "../../display-quotation/display-quotation";
+import DocItPartnersLogos from "./doc-it-partners-logos";
 
 Font.register({
   family: "Comic Sans MS",
@@ -60,7 +61,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
             time={quotation.time}
             client={quotation.clientData}
           />
-          <DocAboutUs />
+          <DocAboutUs category={quotation.category} />
           <DocCurrency currency={quotation.currency} />
           <DocTable
             lineItems={quotation.lineItems}
@@ -82,6 +83,7 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
             signature={quotation.signature}
           />
           <DocLastTxt />
+          {/* {quotation.category.cat === "IT" && <DocItPartnersLogos />} */}
         </View>
         <DocFooter company={company} />
       </Page>

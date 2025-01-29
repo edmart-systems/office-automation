@@ -48,6 +48,7 @@ const DisplayQuotation = ({ quotation, company }: Props) => {
             expiringAt={quotation.expiryTime}
             quotationId={quotation.quotationId}
             quotationType={quotation.type.name}
+            quotationCategory={quotation.category.cat}
             tin={company.tin}
             validityDays={quotation.tcs.validity_days}
             _ref={quotation.clientData.ref}

@@ -20,7 +20,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TransitionProps } from "@mui/material/transitions";
 import { PDFViewer } from "@react-pdf/renderer";
-import QuotationPdfDoc from "./quotation-pdf-doc";
+import QuotationPdfDoc from "./doc-components/quotation-pdf-doc";
 import { Close } from "@mui/icons-material";
 import { FullQuotation } from "@/types/quotations.types";
 import { CompanyDto } from "@/types/company.types";

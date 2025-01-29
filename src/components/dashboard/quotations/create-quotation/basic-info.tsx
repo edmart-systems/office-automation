@@ -16,16 +16,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Quotation_type } from "@prisma/client";
+import { Quotation_category, Quotation_type } from "@prisma/client";
 import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 type Props = {
   tin: string;
   selectedTcs: TcsDto;
   selectedQuoteType: Quotation_type;
+  selectedCategory: Quotation_category;
   setSelectedQuoteType: Dispatch<SetStateAction<Quotation_type>>;
+  setSelectedCategory: Dispatch<SetStateAction<Quotation_category>>;
   setSelectedTcs: Dispatch<SetStateAction<TcsDto>>;
   quotationTypes: Quotation_type[];
+  quotationCategories: Quotation_category[];
   tcs: TcsDto[];
   editTcs: boolean;
   setEditTcs: Dispatch<SetStateAction<boolean>>;
@@ -47,6 +50,9 @@ const BasicInfo = ({
   date,
   selectedCurrency,
   setSelectedCurrency,
+  selectedCategory,
+  setSelectedCategory,
+  quotationCategories,
 }: Props) => {
   const { currencies } = useAppSelector((state) => state.currencies);
 
@@ -60,6 +66,13 @@ const BasicInfo = ({
     setSelectedQuoteType(selectedType);
     setSelectedTcs(newSelectedTc);
     setEditTcs(false);
+  };
+
+  const handleCategoryChange = (evt: SelectChangeEvent) => {
+    const selectedCat = quotationCategories.filter(
+      (item) => item.cat == evt.target.value
+    )[0];
+    setSelectedCategory(selectedCat);
   };
 
   const handleCurrencyChange = (evt: SelectChangeEvent) => {
@@ -228,6 +241,29 @@ const BasicInfo = ({
                 return (
                   <MenuItem key={item.type_id + "-" + index} value={item.name}>
                     {item.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Quotation Category
+            </InputLabel>
+            <Select
+              labelId="quote-cat-select-label"
+              id="quote-type-select"
+              value={selectedCategory.cat}
+              label="Quotation Category"
+              onChange={handleCategoryChange}
+              size="small"
+            >
+              {quotationCategories.map((item, index) => {
+                return (
+                  <MenuItem key={item.cat_id + "-" + index} value={item.cat}>
+                    {item.cat}
                   </MenuItem>
                 );
               })}

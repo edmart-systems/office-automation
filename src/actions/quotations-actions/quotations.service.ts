@@ -16,7 +16,7 @@ import prisma from "../../../db/db";
 import { QuotationsRepository } from "./quotations.respository";
 import { ActionResponse } from "@/types/actions-response.types";
 import { logger } from "@/logger/default-logger";
-import { Quotation_type } from "@prisma/client";
+import { Quotation_category, Quotation_type } from "@prisma/client";
 import { CompanyService } from "../company-actions/company.service";
 import { CompanyDto } from "@/types/company.types";
 import { Currency2 } from "@/types/currency.types";
@@ -45,6 +45,9 @@ export class QuotationsService {
       const quotationTypes: Quotation_type[] =
         await this.quotationsRepo.fetchQuotationTypes();
 
+      const quotationCategories: Quotation_category[] =
+        await this.quotationsRepo.fetchQuotationCategories();
+
       const company: CompanyDto = await this.companyService.getCompanyDetails();
 
       const tcs: TcsDto[] = await this.quotationsRepo.fetchQuotationTcs();
@@ -59,6 +62,7 @@ export class QuotationsService {
 
       const pageData: CreateQuotationPageData = {
         quotationTypes: quotationTypes,
+        quotationCategories: quotationCategories,
         company: company,
         tcs: tcs,
         units: units,
@@ -91,6 +95,7 @@ export class QuotationsService {
         vatExcluded,
         time,
         type,
+        category,
       } = newQuotation;
 
       const tcsCheck = verifyTcs({
@@ -154,6 +159,7 @@ export class QuotationsService {
         tcs_edited: tcsEdited ? 1 : 0,
         vat_excluded: vatExcluded ? 1 : 0,
         tcs_id: tcs.tc_id,
+        cat_id: category.cat_id,
         currency_id: currency.currency_id,
         quotation_id: quotationId,
         validity_days:

@@ -1,5 +1,6 @@
 import {
   Quotation,
+  Quotation_category,
   Quotation_client_data,
   Quotation_items,
   Quotation_status,
@@ -91,6 +92,7 @@ export type Unit2 = Omit<Unit, "unit_desc" | "updated_at" | "created_at">;
 export type CreateQuotationPageData = {
   company: CompanyDto;
   quotationTypes: Quotation_type[];
+  quotationCategories: Quotation_category[];
   tcs: TcsDto[];
   units: Unit2[];
   currencies: Currency2[];
@@ -155,6 +157,7 @@ export type NewQuotation = {
   quotationId: number;
   time: number;
   type: Quotation_type;
+  category: Quotation_category;
   tcsEdited: boolean;
   vatExcluded: boolean;
   tcs: TcsDto;
@@ -213,6 +216,7 @@ export type SummarizedQuotation = {
   time: number;
   status_id: number;
   status: string;
+  category: string;
   external_ref: string | null;
   grandTotal: number;
   subtotal: number;
@@ -238,6 +242,7 @@ export type FullQuotation = {
   quotationId: string;
   time: number;
   type: Quotation_type;
+  category: Quotation_category;
   tcsEdited: boolean;
   vatExcluded: boolean;
   tcs: TcsDto;
@@ -257,4 +262,12 @@ export type FullQuotation = {
 export type SingleQuotationPageData = {
   company: CompanyDto;
   quotation: FullQuotation;
+};
+
+export type QuotationCategoryName = "IT" | "Stationery" | "General";
+
+export type QuotationDocCommentary = {
+  [key in QuotationCategoryName]: {
+    content: string;
+  };
 };

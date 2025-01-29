@@ -36,6 +36,7 @@ const QuotationActions = ({ quotation, company }: Props) => {
       quotationId: getTimeNum(date),
       time: getTimeNum(date),
       type: quotation.type,
+      category: quotation.category,
       tcsEdited: quotation.tcsEdited,
       vatExcluded: false,
       tcs: quotation.tcs,

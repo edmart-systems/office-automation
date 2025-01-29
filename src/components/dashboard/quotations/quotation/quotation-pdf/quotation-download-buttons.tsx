@@ -1,6 +1,6 @@
 import { usePDF } from "@react-pdf/renderer";
 import React, { Fragment } from "react";
-import QuotationPdfDoc from "./quotation-pdf-doc";
+import QuotationPdfDoc from "./doc-components/quotation-pdf-doc";
 import Link from "next/link";
 import { Button, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import { Download } from "@phosphor-icons/react";

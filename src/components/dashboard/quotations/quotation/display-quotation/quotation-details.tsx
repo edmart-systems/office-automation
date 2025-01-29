@@ -27,6 +27,7 @@ type Props = {
   quotationId: string;
   tin: string | null;
   quotationType: string;
+  quotationCategory: string;
   currency: Currency2;
   createdAt: number;
   expiringAt: number;
@@ -37,6 +38,7 @@ type Props = {
 const QuotationDetails = ({
   quotationId,
   quotationType,
+  quotationCategory,
   tin,
   createdAt,
   currency,
@@ -47,7 +49,10 @@ const QuotationDetails = ({
   return (
     <Stack spacing={1} justifyContent="flex-start">
       <IntroItem title="Number" content={quotationId} />
-      <IntroItem title="Type" content={quotationType} />
+      <IntroItem
+        title="Type"
+        content={`${quotationType} (${quotationCategory})`}
+      />
       <IntroItem
         title="Currency"
         content={`${currency.currency_name}, ${currency.currency_code}`}

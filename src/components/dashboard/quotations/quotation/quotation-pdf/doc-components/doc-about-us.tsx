@@ -1,16 +1,21 @@
+import { QuotationCategoryName } from "@/types/quotations.types";
+import { quotationPdfCommentary } from "@/utils/constants.utils";
+import { Quotation_category } from "@prisma/client";
 import { StyleSheet, Text, View } from "@react-pdf/renderer";
 import React, { Fragment } from "react";
 
-const DocAboutUs = () => {
+type Props = {
+  category: Quotation_category;
+};
+
+const DocAboutUs = ({ category }: Props) => {
+  const cat = category.cat as QuotationCategoryName;
+
   return (
     <Fragment>
       <View style={styles.aboutContainer}>
         <Text style={styles.aboutTxt}>
-          We are pleased to present to you our quotation as per your request for
-          the items enlisted hereunder: Edmart Systems (U) Limited is an
-          authorized dealer of Dell, HP, Lenovo, Canon, Epson, Kaspersky,
-          Microsoft, Bit defender, CISCO, COMMANDO and with a well-equipped
-          workshop and qualified personnel.
+          {quotationPdfCommentary[cat].content}
         </Text>
       </View>
     </Fragment>

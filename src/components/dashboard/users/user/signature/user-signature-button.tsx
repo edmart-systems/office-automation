@@ -76,6 +76,7 @@ const UserSignatureButton = ({}: Props) => {
           setOpen={setOpen}
           userSignature={userSignature}
           notFound={notFound}
+          setNotFound={setNotFound}
           setUserSignature={setUserSignature}
         />
       )}

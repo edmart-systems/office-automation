@@ -165,6 +165,15 @@ model Quotation_type {
   @@map("quotation_type")
 }
 
+model Quotation_category {
+  cat_id Int    @id @default(autoincrement())
+  cat    String @db.VarChar(60)
+
+  quotations Quotation[]
+
+  @@map("quotation_category")
+}
+
 model Quotation_tcs {
   tc_id                      Int      @id @default(autoincrement())
   delivery_days              Int
@@ -218,7 +227,7 @@ model Quotation_status {
   status_id Int    @id @default(autoincrement())
   status    String @db.VarChar(12)
 
-  quotations Quotation[]
+  Quotation Quotation[]
 
   @@map("quotation_status")
 }
@@ -230,6 +239,7 @@ model Quotation {
   co_user_id                 String   @db.VarChar(20)
   time                       BigInt
   quotation_type_id          Int
+  cat_id                     Int
   tcs_edited                 Int      @default(0)
   vat_excluded               Int      @default(0)
   tcs_id                     Int
@@ -245,13 +255,14 @@ model Quotation {
   created_at                 DateTime @default(now())
   updated_at                 DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3) on update CURRENT_TIMESTAMP(3)"))
 
-  quotationStatus Quotation_status      @relation(fields: [status_id], references: [status_id])
-  quotationType   Quotation_type        @relation(fields: [quotation_type_id], references: [type_id])
-  currency        Currency              @relation(fields: [currency_id], references: [currency_id])
-  user            User                  @relation(fields: [co_user_id], references: [co_user_id])
-  client_data     Quotation_client_data @relation(fields: [client_data_id], references: [client_id])
-  lineItems       Quotation_items[]
-  tcs             Quotation_tcs         @relation(fields: [tcs_id], references: [tc_id])
+  quotationStatus   Quotation_status      @relation(fields: [status_id], references: [status_id])
+  quotationType     Quotation_type        @relation(fields: [quotation_type_id], references: [type_id])
+  quotationCategory Quotation_category    @relation(fields: [cat_id], references: [cat_id])
+  currency          Currency              @relation(fields: [currency_id], references: [currency_id])
+  user              User                  @relation(fields: [co_user_id], references: [co_user_id])
+  client_data       Quotation_client_data @relation(fields: [client_data_id], references: [client_id])
+  lineItems         Quotation_items[]
+  tcs               Quotation_tcs         @relation(fields: [tcs_id], references: [tc_id])
 
   @@index([quotation_id], map: "idx_quotation_quotation_id")
   @@map("quotation")

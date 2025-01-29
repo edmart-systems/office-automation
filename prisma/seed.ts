@@ -180,6 +180,24 @@ const main = async () => {
       ],
     });
 
+  const quotationCategoryTable: Prisma.BatchPayload =
+    await prisma.quotation_category.createMany({
+      data: [
+        {
+          cat_id: 1,
+          cat: "IT",
+        },
+        {
+          cat_id: 2,
+          cat: "Stationery",
+        },
+        {
+          cat_id: 3,
+          cat: "General",
+        },
+      ],
+    });
+
   const quotationStatusTable: Prisma.BatchPayload =
     await prisma.quotation_status.createMany({
       data: [

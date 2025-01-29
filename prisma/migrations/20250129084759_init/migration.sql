@@ -147,6 +147,14 @@ CREATE TABLE `quotation_type` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `quotation_category` (
+    `cat_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `cat` VARCHAR(60) NOT NULL,
+
+    PRIMARY KEY (`cat_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `quotation_tcs` (
     `tc_id` INTEGER NOT NULL AUTO_INCREMENT,
     `delivery_days` INTEGER NOT NULL,
@@ -183,6 +191,7 @@ CREATE TABLE `quotation` (
     `co_user_id` VARCHAR(20) NOT NULL,
     `time` BIGINT NOT NULL,
     `quotation_type_id` INTEGER NOT NULL,
+    `cat_id` INTEGER NOT NULL,
     `tcs_edited` INTEGER NOT NULL DEFAULT 0,
     `vat_excluded` INTEGER NOT NULL DEFAULT 0,
     `tcs_id` INTEGER NOT NULL,
@@ -258,6 +267,9 @@ ALTER TABLE `quotation` ADD CONSTRAINT `quotation_status_id_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `quotation` ADD CONSTRAINT `quotation_quotation_type_id_fkey` FOREIGN KEY (`quotation_type_id`) REFERENCES `quotation_type`(`type_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `quotation` ADD CONSTRAINT `quotation_cat_id_fkey` FOREIGN KEY (`cat_id`) REFERENCES `quotation_category`(`cat_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `quotation` ADD CONSTRAINT `quotation_currency_id_fkey` FOREIGN KEY (`currency_id`) REFERENCES `currency`(`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

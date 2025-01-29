@@ -96,6 +96,20 @@ const QuotationsTable = ({ isFetching, visibleRows }: Props) => {
                         </Stack>
                       </TableCell>
                       <TableCell>
+                        <Stack>
+                          <Typography
+                            fontWeight={600}
+                            variant="body2"
+                            alignItems="center"
+                          >
+                            Category
+                          </Typography>
+                          <Typography variant="body2" alignItems="center">
+                            {row.category}
+                          </Typography>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>
                         <Typography
                           fontWeight={600}
                           variant="body2"

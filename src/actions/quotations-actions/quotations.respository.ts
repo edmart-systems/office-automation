@@ -22,6 +22,7 @@ import {
   Prisma,
   PrismaClient,
   Quotation,
+  Quotation_category,
   Quotation_client_data,
   Quotation_items,
   Quotation_type,
@@ -35,6 +36,17 @@ export class QuotationsRepository {
     try {
       const quotationTypes = await this.prisma.quotation_type.findMany();
       return Promise.resolve(quotationTypes);
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
+  };
+
+  fetchQuotationCategories = async (): Promise<Quotation_category[]> => {
+    try {
+      const quotationCategories =
+        await this.prisma.quotation_category.findMany();
+      return Promise.resolve(quotationCategories);
     } catch (err) {
       logger.error(err);
       return Promise.reject(err);
@@ -139,6 +151,7 @@ export class QuotationsRepository {
           },
           quotationStatus: true,
           quotationType: true,
+          quotationCategory: true,
           tcs: {
             include: { bank: true },
           },
@@ -148,6 +161,7 @@ export class QuotationsRepository {
       if (!quotation) return Promise.resolve(null);
 
       const quotationType = quotation.quotationType;
+      const quotationCategory = quotation.quotationCategory;
 
       const {
         created_at: tcsCat,
@@ -206,6 +220,7 @@ export class QuotationsRepository {
         quotationId: quotation.quotation_id,
         time: createdAt,
         type: quotationType,
+        category: quotationCategory,
         tcsEdited: quotation.tcs_edited === 1,
         vatExcluded: quotation.vat_excluded === 1,
         tcs: tcs,
@@ -379,6 +394,7 @@ export class QuotationsRepository {
               profile_picture: true,
             },
           },
+          quotationCategory: true,
         },
         orderBy: {
           id: "desc",
@@ -410,6 +426,7 @@ export class QuotationsRepository {
           time: createdAt,
           status_id: quot.status_id,
           status: quot.quotationStatus.status,
+          category: quot.quotationCategory.cat,
           external_ref: quot.client_data.external_ref,
           grandTotal: quot.grand_total,
           subtotal: quot.sub_total,

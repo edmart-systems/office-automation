@@ -28,7 +28,7 @@ import {
   QuotationPriceSummary,
   TcsDto,
 } from "@/types/quotations.types";
-import { Quotation_type } from "@prisma/client";
+import { Quotation_category, Quotation_type } from "@prisma/client";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setUnits } from "@/redux/slices/units.slice";
 import { setCurrencies } from "@/redux/slices/currencies.slice";
@@ -100,8 +100,15 @@ const CreateQuotation = ({ baseData }: Props) => {
   const selectedDraftParams = searchParams.get("draft");
   const router = useRouter();
   const quotationDate = new Date();
-  const { company, quotationTypes, tcs, units, currencies, userSignature } =
-    baseData;
+  const {
+    company,
+    quotationTypes,
+    quotationCategories,
+    tcs,
+    units,
+    currencies,
+    userSignature,
+  } = baseData;
 
   const [quotationId, setQuotationId] = useState<number>(
     getTimeNum(quotationDate)
@@ -109,6 +116,9 @@ const CreateQuotation = ({ baseData }: Props) => {
   const [editTcs, setEditTcs] = useState<boolean>(false);
   const [selectedQuoteType, setSelectedQuoteType] = useState<Quotation_type>(
     quotationTypes[0]
+  );
+  const [selectedCategory, setSelectedCategory] = useState<Quotation_category>(
+    quotationCategories[0]
   );
   const [selectedTcs, setSelectedTcs] = useState<TcsDto>(tcs[0]);
   const [selectedCurrency, setSelectedCurrency] = useState<Currency2>(
@@ -151,6 +161,7 @@ const CreateQuotation = ({ baseData }: Props) => {
     if (isFetching) return;
     setQuotationErrors([]);
     setSelectedQuoteType(quotationTypes[0]);
+    setSelectedCategory(quotationCategories[0]);
     setEditTcs(false);
     setSelectedTcs(tcs[0]);
     setSelectedCurrency(currencies[0]);
@@ -174,6 +185,7 @@ const CreateQuotation = ({ baseData }: Props) => {
 
       setQuotationErrors([]);
       setSelectedQuoteType(selectedDraft.type);
+      setSelectedCategory(selectedDraft.category);
       setQuotationId(selectedDraft.quotationId);
       setEditTcs(selectedDraft.tcsEdited);
       setSelectedTcs(selectedDraft.tcs);
@@ -196,6 +208,7 @@ const CreateQuotation = ({ baseData }: Props) => {
 
       setQuotationErrors([]);
       setSelectedQuoteType(reuseQuotation.type);
+      setSelectedCategory(reuseQuotation.category);
       setQuotationId(reuseQuotation.quotationId);
       setEditTcs(reuseQuotation.tcsEdited);
       setSelectedTcs(reuseQuotation.tcs);
@@ -279,6 +292,7 @@ const CreateQuotation = ({ baseData }: Props) => {
       quotationId: quotationId,
       time: getTimeNum(quotationDate),
       type: selectedQuoteType,
+      category: selectedCategory,
       tcsEdited: editTcs,
       vatExcluded: excludeVat,
       tcs: selectedTcs,
@@ -351,6 +365,7 @@ const CreateQuotation = ({ baseData }: Props) => {
       quotationId: quotationId,
       time: getTimeNum(quotationDate),
       type: selectedQuoteType,
+      category: selectedCategory,
       tcsEdited: editTcs,
       vatExcluded: excludeVat,
       tcs: selectedTcs,
@@ -382,7 +397,9 @@ const CreateQuotation = ({ baseData }: Props) => {
             quotationTypes={quotationTypes}
             selectedTcs={selectedTcs}
             selectedQuoteType={selectedQuoteType}
+            selectedCategory={selectedCategory}
             setSelectedQuoteType={setSelectedQuoteType}
+            setSelectedCategory={setSelectedCategory}
             setSelectedTcs={setSelectedTcs}
             tcs={tcs}
             editTcs={editTcs}
@@ -390,6 +407,7 @@ const CreateQuotation = ({ baseData }: Props) => {
             date={quotationDate}
             selectedCurrency={selectedCurrency}
             setSelectedCurrency={setSelectedCurrency}
+            quotationCategories={quotationCategories}
           />
           <MyDivider />
           <ClientInfo setClientData={setClientData} clientData={clientData} />
