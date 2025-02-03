@@ -134,11 +134,15 @@ const BasicInfo = ({
 
       if (!checkDigits(str)) return;
 
-      const num = parseInt(str, 10);
+      const _num = parseInt(str, 10);
+      let num = isNaN(_num) ? 0 : _num;
+
+      if (num > 100) num = 100;
 
       setSelectedTcs((prev) => ({
         ...prev,
-        edited_initial_payment_percentage: isNaN(num) ? 0 : num,
+        edited_initial_payment_percentage: num,
+        edited_last_payment_percentage: 100 - num,
       }));
     } catch (err) {
       // console.log(err);
@@ -154,11 +158,15 @@ const BasicInfo = ({
 
       if (!checkDigits(str)) return;
 
-      const num = parseInt(str, 10);
+      const _num = parseInt(str, 10);
+      let num = isNaN(_num) ? 0 : _num;
+
+      if (num > 100) num = 100;
 
       setSelectedTcs((prev) => ({
         ...prev,
-        edited_last_payment_percentage: isNaN(num) ? 0 : num,
+        edited_last_payment_percentage: num,
+        edited_initial_payment_percentage: 100 - num,
       }));
     } catch (err) {
       // console.log(err);

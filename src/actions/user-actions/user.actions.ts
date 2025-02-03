@@ -7,6 +7,7 @@ import {
   UserRegPass,
   UsersAndStatusCounts,
   UserStatus,
+  UserStatusDto,
 } from "@/types/user.types";
 import { CheckUserExistenceType } from "@/types/verification.types";
 import { UserService } from "./user.service";
@@ -268,6 +269,31 @@ export const setUserAsLeftAction = async (
 
     revalidatePath(paths.dashboard.users.main + "/[id]", "page");
     return Promise.resolve(setLeftActionResponse);
+  } catch (err) {
+    logger.error(err);
+    return Promise.resolve({
+      status: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+export const checkUserStatusAction = async (
+  userId: string
+): Promise<ActionResponse<UserStatusDto>> => {
+  try {
+    const session = await getAuthSession();
+
+    if (!(await sessionService.checkIsUserSessionOk(session))) {
+      return Promise.resolve({
+        status: false,
+        message: "Not Authorized",
+      });
+    }
+
+    const res = await userService.isUserStatusOkay(userId);
+
+    return Promise.resolve(res);
   } catch (err) {
     logger.error(err);
     return Promise.resolve({

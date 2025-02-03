@@ -1,21 +1,25 @@
 import React from "react";
 import { Page, View, Document, StyleSheet, Font } from "@react-pdf/renderer";
-import DocHeader from "./doc-header";
-import DocTitle from "./doc-title";
-import DocFooter from "./doc-footer";
-import DocAboutUs from "./doc-about-us";
-import DocDetails from "./doc-details";
-import DocCurrency from "./doc-currency";
-import DocTable from "./doc-table";
-import DocTcs from "./doc-tcs";
-import DocLastTxt from "./doc-last-txt";
-import DocCreator from "./doc-creator";
-import { FullQuotation } from "@/types/quotations.types";
+import DraftDocHeader from "./draft-doc-header";
+import DraftDocTitle from "./draft-doc-title";
+import DraftDocFooter from "./draft-doc-footer";
+import DraftDocAboutUs from "./draft-doc-about-us";
+import DraftDocDetails from "./draft-doc-details";
+import DraftDocCurrency from "./draft-doc-currency";
+import DraftDocTable from "./draft-doc-table";
+import DraftDocTcs from "./draft-doc-tcs";
+import DraftDocLastTxt from "./draft-doc-last-txt";
+import {
+  FullQuotation,
+  QuotationDraftPreviewData,
+} from "@/types/quotations.types";
 import { CompanyDto } from "@/types/company.types";
 import { userNameFormatter } from "@/utils/formatters.util";
-import DocQr from "./doc-qr";
-import { generateQrKeyTemp } from "../../display-quotation/display-quotation";
-import DocItPartnersLogos from "./doc-it-partners-logos";
+import DraftDocQr from "./draft-doc-qr";
+import { generateQrKeyTemp } from "../../../quotation/display-quotation/display-quotation";
+import { fDate } from "@/utils/time";
+import DocCreator from "./draft-doc-creator";
+import DraftDocWatermark from "./draft-doc-watermark";
 
 Font.register({
   family: "Comic Sans MS",
@@ -26,17 +30,24 @@ Font.register({
 });
 
 type Props = {
-  quotation: FullQuotation;
+  quotation: QuotationDraftPreviewData;
   company: CompanyDto;
 };
 
-const QuotationPdfDoc = ({ company, quotation }: Props) => {
+const QuotationDraftPdfDoc = ({ company, quotation }: Props) => {
   const date = new Date(quotation.time);
-  const qrKey = generateQrKeyTemp({ quotation, company });
+  const draftId = String(quotation.quotationId);
+  const qrKey = `Draft${quotation.quotationId}#${(
+    company.legal_name ?? company.business_name
+  ).replace(/ /g, "-")}#To#${(
+    quotation.clientData.name ?? quotation.clientData.contactPerson
+  )?.replace(/ /g, "-")}#${fDate(quotation.time)
+    .replace(/ /g, "-")
+    .replace(/,/g, "")}`.toUpperCase();
 
   return (
     <Document
-      title={`Quotation-${(
+      title={`Quotation-Draft-${(
         quotation.clientData.name ??
         quotation.clientData.contactPerson ??
         ""
@@ -46,32 +57,35 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
         quotation.user.firstName,
         quotation.user.lastName
       )}
-      subject={`${quotation.type.name} (${quotation.category.cat})`}
+      subject={`Draft ${quotation.type.name} (${quotation.category.cat})`}
       language="En"
       creationDate={date}
     >
       <Page size="A4" style={styles.page}>
-        <DocHeader />
-        <DocQr quotationId={quotation.quotationId} qrKey={qrKey} />
+        <DraftDocWatermark />
+        <DraftDocHeader />
+        <DraftDocQr quotationId={draftId} qrKey={qrKey} />
         <View style={styles.mainContainer}>
-          <DocTitle companyName={company.legal_name ?? company.business_name} />
-          <DocDetails
-            quotationId={quotation.quotationId}
+          <DraftDocTitle
+            companyName={company.legal_name ?? company.business_name}
+          />
+          <DraftDocDetails
+            quotationId={draftId}
             tin={company.tin}
             time={quotation.time}
             client={quotation.clientData}
           />
-          <DocAboutUs category={quotation.category} />
-          <DocCurrency currency={quotation.currency} />
-          <DocTable
+          <DraftDocAboutUs category={quotation.category} />
+          <DraftDocCurrency currency={quotation.currency} />
+          <DraftDocTable
             lineItems={quotation.lineItems}
             grandTotal={quotation.grandTotal}
-            subtotal={quotation.subTotal}
+            subtotal={quotation.subtotal}
             vat={quotation.vat}
             vatPercentage={quotation.tcs.vat_percentage}
             vatExcluded={quotation.vatExcluded}
           />
-          <DocTcs
+          <DraftDocTcs
             tcsEdited={quotation.tcsEdited}
             quotationType={quotation.type}
             selectedTcs={quotation.tcs}
@@ -82,10 +96,9 @@ const QuotationPdfDoc = ({ company, quotation }: Props) => {
             companyName={company.legal_name ?? company.business_name}
             signature={quotation.signature}
           />
-          <DocLastTxt />
-          {/* {quotation.category.cat === "IT" && <DocItPartnersLogos />} */}
+          <DraftDocLastTxt />
         </View>
-        <DocFooter company={company} />
+        <DraftDocFooter company={company} />
       </Page>
     </Document>
   );
@@ -110,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QuotationPdfDoc;
+export default QuotationDraftPdfDoc;

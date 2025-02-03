@@ -7,7 +7,7 @@ type Props = {
   firstName: string;
   lastName: string;
   companyName: string;
-  signature: UserSignatureDto;
+  signature: UserSignatureDto | null;
 };
 
 const DocCreator = ({ firstName, lastName, companyName, signature }: Props) => {
@@ -27,7 +27,9 @@ const DocCreator = ({ firstName, lastName, companyName, signature }: Props) => {
               <Text style={styles.detailTitle}>Signature:</Text>
             </View>
             <View style={styles.detailSignatureContainer}>
-              <Image src={signature.dataUrl} style={styles.signatureImage} />
+              {signature && (
+                <Image src={signature.dataUrl} style={styles.signatureImage} />
+              )}
             </View>
           </View>
         </View>
@@ -107,8 +109,8 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   signatureImage: {
-    // maxWidth: "100%",
-    // maxHeight: "100%",
+    // maxWidth: "134px",
+    // maxHeight: "80px",
   },
   detailContent: {
     width: "100%",

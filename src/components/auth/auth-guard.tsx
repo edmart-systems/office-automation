@@ -47,7 +47,7 @@ const AuthGuard = ({ children }: AuthGuardProps): React.JSX.Element | null => {
       }
 
       if (status_id === 4) {
-        toast("Account Disabled", { type: "warning" });
+        toast("Your account is no-longer active", { type: "warning" });
         await signOut();
         return;
       }

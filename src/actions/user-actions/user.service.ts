@@ -11,8 +11,9 @@ import {
   UserRegPass,
   UsersAndStatusCounts,
   UserStatus,
+  UserStatusDto,
 } from "@/types/user.types";
-import { User } from "@prisma/client";
+import { Status, User } from "@prisma/client";
 import { formatPhoneNumber } from "@/utils/formatters.util";
 import bcrypt from "bcryptjs";
 import { ActionResponse } from "@/types/actions-response.types";
@@ -460,5 +461,45 @@ export class UserService {
     }
 
     return Promise.resolve(true);
+  };
+
+  isUserStatusOkay = async (
+    userId: string
+  ): Promise<ActionResponse<UserStatusDto>> => {
+    try {
+      if (!validateCompanyId(userId)) {
+        return Promise.resolve({
+          status: false,
+          message: "Unknown User",
+        });
+      }
+
+      const userStatus: UserStatusDto | null =
+        await this.userRepo.fetchUserStatus(userId);
+
+      if (!userStatus) {
+        return Promise.resolve({
+          status: false,
+          message: "Not Found",
+        });
+      }
+
+      if (userStatus.status !== "active") {
+        return Promise.resolve({
+          status: false,
+          message: "User is not active",
+          data: userStatus,
+        });
+      }
+
+      return Promise.resolve({
+        status: true,
+        message: "User is active",
+        data: userStatus,
+      });
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
   };
 }

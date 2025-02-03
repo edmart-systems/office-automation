@@ -49,6 +49,8 @@ export type UserRegPass = {
 
 export type UserStatus = "active" | "blocked" | "pending" | "inactive";
 
+export type UserStatusDto = Pick<Status, "status" | "status_id">;
+
 export type FullUser = Omit<User, "hash"> & {
   role: Omit<Role, "created_at" | "updated_at">;
   status: Omit<Status, "created_at" | "updated_at">;

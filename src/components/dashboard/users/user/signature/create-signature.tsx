@@ -23,7 +23,6 @@ import SignatureFontsMenu from "./signature-fonts-menu";
 import { Draw, Redo, Undo, UploadFile } from "@mui/icons-material";
 import SignaturePad from "react-signature-canvas";
 import { Broom } from "@phosphor-icons/react/dist/ssr";
-import Image from "next/image";
 
 const placeHolder = "e.g Usaama Nkangi";
 
@@ -60,9 +59,9 @@ const CreateSignature = ({
   const captureTrimmed = () => {
     if (!sigPadRef.current) return;
 
-    const trimmedData = sigPadRef.current
-      .getTrimmedCanvas()
-      .toDataURL("image/png");
+    const canvas = sigPadRef.current.getTrimmedCanvas();
+    const trimmedData = canvas.toDataURL("image/png");
+
     setTrimmedDataURL(trimmedData);
   };
 
@@ -178,7 +177,7 @@ const CreateSignature = ({
       <Stack
         border="2px solid #D98219"
         borderRadius="8px"
-        sx={{ overflow: "hidden" }}
+        sx={{ overflow: "hidden", cursor: "crosshair" }}
       >
         <SignaturePad
           penColor="#000"

@@ -18,10 +18,11 @@ import QuotationListItems from "./quotation-line-items";
 import TaxDiscountInfo from "./tax-discount-info";
 import NewQuotationTscInfo from "./new-quotation-tsc-info";
 import NewQuotationPriceSummary from "./new-quotation-price-summary";
-import { Save } from "@mui/icons-material";
+import { OpenInNew, Save } from "@mui/icons-material";
 import {
   CreateQuotationPageData,
   NewQuotation,
+  QuotationDraftPreviewData,
   QuotationError,
   QuotationInputClientData,
   QuotationInputLineItem,
@@ -53,6 +54,8 @@ import LoadingBackdrop from "@/components/common/loading-backdrop";
 import { createNewQuotation } from "@/actions/quotations-actions/quotations.actions";
 import { ActionResponse } from "@/types/actions-response.types";
 import { paths } from "@/utils/paths.utils";
+import QuotationDraftDialog from "./draft-preview/quotation-draft-dialog";
+import { useSession } from "next-auth/react";
 
 const MyDivider = styled(Divider)(({ theme }) => ({
   background: theme.palette.mode === "dark" ? "#b8b8b8" : "#dadada",
@@ -91,7 +94,28 @@ const submitNewQuotation = async (
   return Promise.resolve(res);
 };
 
+export const calculatePricesSummary = ({
+  lineItems,
+  excludeVat,
+  selectedTcs,
+}: {
+  lineItems: QuotationInputLineItem[];
+  excludeVat: boolean;
+  selectedTcs: TcsDto;
+}): QuotationPriceSummary => {
+  let subtotal = 0;
+  for (const item of lineItems) {
+    if (!item.quantity || !item.unitPrice) continue;
+    subtotal += item.quantity * item.unitPrice;
+  }
+
+  const vat = excludeVat ? 0 : (subtotal * selectedTcs.vat_percentage) / 100;
+  const finalTotal = subtotal + vat;
+  return { subtotal, vat, finalTotal };
+};
+
 const CreateQuotation = ({ baseData }: Props) => {
+  const { data: sessionData } = useSession();
   const { quotations: draftQuotations, reuse: reuseQuotation } = useAppSelector(
     (state) => state.quotations
   );
@@ -140,6 +164,7 @@ const CreateQuotation = ({ baseData }: Props) => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isCreated, setIsCreated] = useState<boolean>(false);
   const [openResetFields, setOpenResetField] = useState<boolean>(false);
+  const [openDraftPreview, setOpenDraftPreview] = useState<boolean>(false);
 
   const calculatePrices = () => {
     startCalculation(() => {
@@ -153,7 +178,13 @@ const CreateQuotation = ({ baseData }: Props) => {
         ? 0
         : (subtotal * selectedTcs.vat_percentage) / 100;
       const finalTotal = subtotal + vat;
-      setPriceSummary({ subtotal, vat, finalTotal });
+
+      const pricesSummary = calculatePricesSummary({
+        lineItems: lineItems,
+        excludeVat: excludeVat,
+        selectedTcs: selectedTcs,
+      });
+      setPriceSummary(pricesSummary);
     });
   };
 
@@ -281,7 +312,7 @@ const CreateQuotation = ({ baseData }: Props) => {
     typeof lineItemsCheckRes !== "boolean" && errArr.push(...lineItemsCheckRes);
 
     if (errArr.length > 0) {
-      toast("Your quotation has issues. Please resolve them to submit", {
+      toast("Quotation errors detected. Please resolve them to submit", {
         type: "error",
       });
       setQuotationErrors(errArr);
@@ -352,7 +383,7 @@ const CreateQuotation = ({ baseData }: Props) => {
 
     if (errArr.length > 0) {
       toast(
-        "Your quotation has issues. Please resolve them to save as a draft",
+        "Quotation errors detected. Please resolve them to save as a draft",
         {
           type: "error",
         }
@@ -380,6 +411,86 @@ const CreateQuotation = ({ baseData }: Props) => {
       type: "success",
     });
   };
+
+  const previewQuotationDraftHandler = () => {
+    if (!userSignature) {
+      toast("Your have no digital signature.", {
+        type: "warning",
+      });
+      setQuotationErrors([
+        {
+          message: "You have no signature, please create one to continue.",
+          origin: "Root",
+        },
+      ]);
+      return;
+    }
+
+    setQuotationErrors([]);
+    const errArr: QuotationError[] = [];
+
+    const tcsCheckRes = verifyTcs({
+      selectedTcs: selectedTcs,
+      quotationType: selectedQuoteType,
+      editTcs: editTcs,
+    });
+
+    const clientInfoCheckRes = verifyClientInfo(clientData);
+
+    const lineItemsCheckRes = verifyLineItems(lineItems);
+
+    typeof tcsCheckRes !== "boolean" && errArr.push(...tcsCheckRes);
+    typeof clientInfoCheckRes !== "boolean" &&
+      errArr.push(...clientInfoCheckRes);
+    typeof lineItemsCheckRes !== "boolean" && errArr.push(...lineItemsCheckRes);
+
+    if (errArr.length > 0) {
+      toast("Quotation errors detected. Please resolve them to submit", {
+        type: "error",
+      });
+      setQuotationErrors(errArr);
+      return;
+    }
+
+    if (!sessionData) return;
+
+    setOpenDraftPreview(true);
+  };
+
+  const generatePreviewDraftQuotation =
+    (): QuotationDraftPreviewData | null => {
+      if (!sessionData) return null;
+
+      const { user } = sessionData;
+      const pricesSummary = calculatePricesSummary({
+        lineItems: lineItems,
+        excludeVat: excludeVat,
+        selectedTcs: selectedTcs,
+      });
+
+      return {
+        quotationId: quotationId,
+        time: getTimeNum(quotationDate),
+        type: selectedQuoteType,
+        category: selectedCategory,
+        tcsEdited: editTcs,
+        vatExcluded: excludeVat,
+        tcs: selectedTcs,
+        currency: selectedCurrency,
+        clientData: clientData,
+        lineItems: lineItems,
+        signature: userSignature,
+        subtotal: pricesSummary.subtotal,
+        vat: pricesSummary.vat,
+        grandTotal: pricesSummary.finalTotal,
+        user: {
+          co_user_id: user.co_user_id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profile_picture: user.profile_picture,
+        },
+      };
+    };
 
   // useEffect(() => {
   //   const newSelectedTc = tcs.filter(
@@ -455,8 +566,8 @@ const CreateQuotation = ({ baseData }: Props) => {
           justifyContent: "space-between",
         }}
       >
-        <Stack>
-          <Tooltip title="Save As Draft" arrow>
+        <Stack direction="row" spacing={2}>
+          {/* <Tooltip title="Save As Draft" arrow>
             <IconButton
               color="secondary"
               size="large"
@@ -464,10 +575,23 @@ const CreateQuotation = ({ baseData }: Props) => {
             >
               <Save />
             </IconButton>
-          </Tooltip>
-          {/* <Button color="secondary" variant="outlined" startIcon={<Save />}>
-            Save As Draft
-          </Button> */}
+          </Tooltip> */}
+          <Button
+            color="secondary"
+            variant="outlined"
+            startIcon={<Save />}
+            onClick={saveQuotationDraftHandler}
+          >
+            Save Draft
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            startIcon={<OpenInNew />}
+            onClick={previewQuotationDraftHandler}
+          >
+            Preview Draft
+          </Button>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Button
@@ -496,8 +620,15 @@ const CreateQuotation = ({ baseData }: Props) => {
           isResetFields
         />
       )}
-
       <LoadingBackdrop open={isFetching || isCreated} />
+      {openDraftPreview && (
+        <QuotationDraftDialog
+          open={openDraftPreview}
+          setOpen={setOpenDraftPreview}
+          company={company}
+          quotation={generatePreviewDraftQuotation()}
+        />
+      )}
     </Card>
   );
 };

@@ -101,8 +101,8 @@ export const verifyClientInfo = (
     const value = clientData[key];
     try {
       if (
-        (key === "name" && value && String(value).length > 5) ||
-        (key === "contactPerson" && value && String(value).length > 5)
+        (key === "name" && value && String(value).length > 2) ||
+        (key === "contactPerson" && value && String(value).length > 2)
       ) {
         atLeastNameOrContactPerson = true;
       }
@@ -141,7 +141,7 @@ export const verifyClientInfo = (
 
   if (!atLeastNameOrContactPerson) {
     errArr.push(
-      `At least the client name or contact person must be provided, with at least 5 characters.`
+      `At least the client name or contact person must be provided, with at least 3 characters.`
     );
   }
 

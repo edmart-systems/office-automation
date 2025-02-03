@@ -166,6 +166,14 @@ export type NewQuotation = {
   lineItems: QuotationInputLineItem[];
 };
 
+export type QuotationDraftPreviewData = NewQuotation & {
+  grandTotal: number;
+  subtotal: number;
+  vat: number;
+  signature: UserSignatureDto | null;
+  user: Pick<User, "co_user_id" | "firstName" | "lastName" | "profile_picture">;
+};
+
 export type QuotationDraftSummary = {
   quotationId: number;
   name: string;

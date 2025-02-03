@@ -23,7 +23,7 @@ const QuotationQr = ({ quotationId, length, width, qrKey }: Props) => {
 
   const qrHandler = async () => {
     const key = process.env.NEXT_PUBLIC_QUOTATION_QR_URL_KEY;
-    console.log(key);
+
     if (qrSrc || !key) return;
 
     const qrUrl = `https://edmartsystems.com/verify/doc/quotation/${encryptMessage(

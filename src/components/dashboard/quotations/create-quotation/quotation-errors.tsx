@@ -25,7 +25,7 @@ const QuotationErrors = ({ quotationErrors, closeFn }: Props) => {
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="body1" color="error">
-          Quotation Errors / Issues ({quotationErrors.length})
+          Quotation Errors ({quotationErrors.length})
         </Typography>
         <IconButton size="small" onClick={closeFn}>
           <Close />

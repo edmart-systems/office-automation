@@ -7,6 +7,7 @@ import {
   UserSignatureDto,
   UserStatus,
   UserStatusCounts,
+  UserStatusDto,
 } from "@/types/user.types";
 import { CheckUserExistenceType } from "@/types/verification.types";
 import { PrismaClient, Role, Status, User } from "@prisma/client";
@@ -445,5 +446,30 @@ export class UserRepository {
       role: roleRest,
       status: statusRest,
     };
+  };
+
+  fetchUserStatus = async (userId: string): Promise<UserStatusDto | null> => {
+    try {
+      const userStatus = await this.prisma.user.findUnique({
+        select: {
+          status: true,
+        },
+        where: {
+          co_user_id: userId,
+        },
+      });
+
+      if (!userStatus || !userStatus?.status) {
+        return Promise.resolve(null);
+      }
+
+      return Promise.resolve({
+        status_id: userStatus.status.status_id,
+        status: userStatus.status.status,
+      });
+    } catch (err) {
+      logger.error(err);
+      return Promise.reject(err);
+    }
   };
 }
